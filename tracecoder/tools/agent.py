@@ -6,6 +6,7 @@ import hashlib
 import json
 import uuid
 from contextlib import nullcontext
+from copy import copy
 from typing import ClassVar
 
 from .base import Tool
@@ -45,6 +46,36 @@ def validate_report(text: str, source_ids: set[str]) -> dict:
     return report
 
 
+class _GoalChildModel:
+    """Charge child and format-correction requests without running Goal acceptance."""
+
+    def __init__(self, model, goal):
+        self._model, self.goal = model, goal
+
+    def __getattr__(self, name):
+        return getattr(self._model, name)
+
+    def chat(self, *args, **kwargs):
+        from ..eval.budget import EvalLimitExceeded
+
+        goal = self.goal
+        # Parallel children must not all spend the same remaining budget.
+        with goal._usage_lock:
+            goal.record_usage()
+            if goal.status != "active" or goal.tokens >= goal.MAX_TOKENS or goal.seconds >= goal.MAX_SECONDS:
+                if goal.status == "active":
+                    goal.stop_limit("Goal budget exhausted during child execution")
+                raise EvalLimitExceeded("Outer Goal budget exhausted")
+            response = self._model.chat(*args, **kwargs)
+            values = (response.prompt_tokens, response.completion_tokens)
+            known = all(type(value) is int and value >= 0 for value in values) and sum(values) > 0
+            goal.record_usage(sum(value for value in values if type(value) is int and value > 0))
+            if not known or goal.tokens >= goal.MAX_TOKENS or goal.seconds >= goal.MAX_SECONDS:
+                goal.stop_limit("Goal budget exhausted or child usage unknown")
+                raise EvalLimitExceeded("Outer Goal budget exhausted or usage unknown")
+            return response
+
+
 class AgentTool(Tool):
     name = "agent"
     description = (
@@ -79,9 +110,14 @@ class AgentTool(Tool):
         from ..agent import Agent
 
         parent = self._parent_agent
+        goal = parent.goal_controller
+        child_model = _GoalChildModel(parent.llm, goal) if goal and goal.status in {"active", "limit"} else parent.llm
+        # Workflow tools carry a parent binding; isolate that binding per child.
+        child_tools = [copy(t) if t.name in {"workflow", "workflow_status"} else t
+                       for t in parent.tools if t.name != "agent"]
         sub = Agent(
-            llm=parent.llm,
-            tools=[t for t in parent.tools if t.name != "agent"],  # no recursive agents
+            llm=child_model,
+            tools=child_tools,  # no recursive agents
             max_context_tokens=parent.context.max_tokens,
             max_rounds=20,
             # the sub-agent answers to the same consent layer and hooks as the parent
@@ -89,8 +125,13 @@ class AgentTool(Tool):
             hooks=parent.hooks,
             context_catalog=parent.context_catalog,
         )
+        sub.plan_mode = parent.plan_mode
+        if parent.eval_allowed_paths is not None:
+            sub.configure_eval_scope(parent.eval_workspace, sorted(parent.eval_allowed_paths))
         callback = parent.on_subagent_event
         work = getattr(parent, "work_state", None)
+        if work is not None:
+            sub.work_state = work
         if output_format == "structured" and callback is None and work is not None:
             def callback(child_id: str, kind: str, detail: dict) -> None:
                 encoded = json.dumps(detail, ensure_ascii=False).encode("utf-8")

@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import math
 import time
+from threading import RLock
 from typing import ClassVar
 
 from .goal_evaluator import GoalEvaluator
@@ -24,6 +25,7 @@ class GoalController:
         self.work = work
         self.evaluator = evaluator
         self.clock = clock
+        self._usage_lock = RLock()
         self.text = ""
         self.status = "cancelled"
         self.reason = ""
@@ -85,8 +87,8 @@ class GoalController:
             "candidate_event_id": self.candidate_event_id,
         }
         state.update(changes)
-        self.journal.append_event("note", state)
-        self._load(self.journal.events[-1]["data"])
+        event_id = self.journal.append_event("note", state)
+        self._load(self.journal.events[event_id - 1]["data"])
 
     def set(self, text: str) -> None:
         text = text.strip()
@@ -125,10 +127,11 @@ class GoalController:
             self._tick = self.clock()
 
     def record_usage(self, tokens: int = 0) -> None:
-        now = self.clock()
-        elapsed = max(0, now - self._tick) if self._tick is not None else 0.0
-        self._tick = now
-        self._save(tokens=self.tokens + max(0, tokens), seconds=self.seconds + elapsed)
+        with self._usage_lock:
+            now = self.clock()
+            elapsed = max(0, now - self._tick) if self._tick is not None else 0.0
+            self._tick = now
+            self._save(tokens=self.tokens + max(0, tokens), seconds=self.seconds + elapsed)
 
     def pause(self) -> None:
         if self._tick is not None:

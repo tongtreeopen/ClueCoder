@@ -259,3 +259,16 @@
 - 取舍：普通容器继承调用者对已挂载项目的文件权限，支持 Linux 0700 项目目录；不自动 chmod 用户项目，也不允许普通容器以 root 运行。
 - 测试：新增宿主身份与 root/Windows 回退检查、Linux 私有目录实际 Docker 写入检查。中断测试改为替换 execution 模块的 time 引用，避免全局 time.sleep mock 干扰 POSIX subprocess 清理。
 - 验证结果及未完成边界以首发后续验证报告为准。
+
+
+## 2026-10-09 release review: child scope and work-card transactions
+
+**Source mechanism.** TraceCoder inherits the local CoreCoder AgentTool, GoalController, SessionJournal and WorkflowTool mechanisms. This repair retains separate child conversations and shared consent/file tools, and adds no new delegation subsystem.
+
+**Actual behavior.** AgentTool copies workflow/workflow_status tool instances before child binding, inherits Plan Mode and evaluation allowed paths, and wraps child model requests with the outer Goal token/time check. Child requests and structured-report corrections charge the same Goal, while child completion never invokes main Goal acceptance. Parallel child requests serialize at the Goal usage lock so they cannot spend the same remaining budget; one response may cross the limit, after which its tool calls and subsequent requests are refused. Unknown/zero usage stops conservatively.
+
+**Work-card recovery.** SessionJournal.transaction holds the existing OS/thread journal mutex, refreshes external writes, and lets WorkStateStore reload the latest card before each mutation. Revision generation, event append and snapshot replacement happen in the same transaction, including separate WorkStateStore instances. File reads and ordinary file mutation tools keep their existing workspace boundary.
+
+**Tradeoffs.** Goal-bound parallel model requests serialize; network cancellation is unchanged, so a single in-flight request can exceed remaining tokens or wall time. Work-card refresh replays recorded card revisions. The existing StateLock busy timeout still applies. These costs keep the repair small and retain the fail-closed budget/recovery contracts.
+
+**Verification and boundaries.** Regression cases cover simultaneous work_update calls, separate stores, child-to-parent workflow execution, disallowed/allowed child writes, known/unknown child usage, parallel budget contention, and structured correction costs. Final results are recorded in [review repair validation](validation/2026-10-09-review-fixes.md). The earlier release real-model smoke belongs to the previous runtime tree and is not a real-model test of these repairs.

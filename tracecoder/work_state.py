@@ -6,6 +6,7 @@ import json
 import os
 import uuid
 from copy import deepcopy
+from functools import wraps
 
 from .session_journal import SessionJournal
 
@@ -20,6 +21,15 @@ def _text(value: str, limit: int) -> str:
     return value.strip()
 
 
+def _transaction(method):
+    @wraps(method)
+    def locked(self, *args, **kwargs):
+        with self.journal.transaction():
+            self._reload()
+            return method(self, *args, **kwargs)
+    return locked
+
+
 class WorkStateStore:
     def __init__(self, journal: SessionJournal):
         self.journal = journal
@@ -27,20 +37,19 @@ class WorkStateStore:
         self.snapshot_path = journal.directory / "work_state.json"
         if self.snapshot_path.is_symlink() or not self.snapshot_path.resolve().is_relative_to(journal.directory.resolve()):
             raise ValueError("Work state path escapes session")
+        with journal.transaction():
+            self._reload()
+            if self.card is not None and journal.repair:
+                self._snapshot(self.card)
+
+    def _reload(self):
         self.card: dict | None = None
-        for event in journal.events:
+        for event in self.journal.events:
             if event["kind"] == "note" and event["data"].get("type") == "work_state":
                 candidate = event["data"].get("card")
                 if not isinstance(candidate, dict) or candidate.get("revision") != ((self.card or {}).get("revision", 0) + 1):
                     raise ValueError("Invalid work state revision")
                 self.card = deepcopy(candidate)
-        if self.card is not None:
-            try:
-                saved = json.loads(self.snapshot_path.read_text(encoding="utf-8"))
-            except (OSError, ValueError):
-                saved = None
-            if saved != self.card and journal.repair:
-                self._snapshot(self.card)
 
     def _snapshot(self, card: dict) -> None:
         if self.snapshot_path.is_symlink() or not self.snapshot_path.resolve().is_relative_to(self.journal.directory.resolve()):
@@ -59,6 +68,7 @@ class WorkStateStore:
         self._snapshot(self.card)
         return deepcopy(self.card)
 
+    @_transaction
     def ensure(self, goal: str) -> dict:
         if self.card is not None:
             return deepcopy(self.card)
@@ -79,6 +89,7 @@ class WorkStateStore:
             }
         )
 
+    @_transaction
     def update(self, *, goal=None, criteria=None, step=None, next_action=None, blockers=None, evidence_event_ids=None) -> dict:
         if self.card is None:
             raise ValueError("Work card does not exist")
@@ -126,6 +137,7 @@ class WorkStateStore:
         card["status"] = "blocked" if card["blockers"] else "active"
         return self._save(card)
 
+    @_transaction
     def set_todos(self, todos: list[dict]) -> dict:
         if self.card is None or self.card["status"] == "completed":
             raise ValueError("No active work card")
@@ -135,6 +147,7 @@ class WorkStateStore:
         card["todos"] = deepcopy(todos)
         return self._save(card)
 
+    @_transaction
     def replace_goal(self, goal: str) -> dict:
         goal = _text(goal, GOAL_LIMIT)
         if not goal:
@@ -304,6 +317,7 @@ class WorkStateStore:
                 pending.discard(data.get("task_id"))
         return "Background command has no persisted terminal result; use a new session and rerun checks" if pending else ""
 
+    @_transaction
     def goal_evidence(self, since_event: int) -> tuple[list[int], str]:
         """Read-only, conservative evidence gate for an explicitly set goal."""
         if self.card is None:
@@ -354,6 +368,7 @@ class WorkStateStore:
                 return [], "Acceptance check is stale after a file or Bash action"
         return ids, "User explicitly confirmed work" if confirmed else "Acceptance checks passed"
 
+    @_transaction
     def complete(self) -> dict:
         if self.card is None:
             raise ValueError("Work card does not exist")
@@ -369,6 +384,7 @@ class WorkStateStore:
         card["archived"] = card["status"] == "completed"
         return self._save(card)
 
+    @_transaction
     def confirm(self) -> dict:
         if problem := self.background_problem():
             raise ValueError(problem)
@@ -380,6 +396,7 @@ class WorkStateStore:
         card["status"], card["archived"] = "completed", True
         return self._save(card)
 
+    @_transaction
     def reopen(self) -> dict:
         if self.card is None or self.card["status"] != "completed":
             raise ValueError("Work card is not completed")
@@ -387,6 +404,7 @@ class WorkStateStore:
         card["status"], card["archived"] = "active", False
         return self._save(card)
 
+    @_transaction
     def summary(self) -> str:
         if self.card is None or self.card["archived"]:
             return ""

@@ -8,6 +8,7 @@ import os
 import re
 import time
 import uuid
+from contextlib import contextmanager
 from copy import deepcopy
 from pathlib import Path
 
@@ -165,6 +166,16 @@ class SessionJournal:
             stream.flush()
             os.fsync(stream.fileno())
         self.warnings.append(f"Incomplete session tail preserved in {backup.name}")
+
+    @contextmanager
+    def transaction(self):
+        """Refresh and hold the journal mutex across a derived-state update."""
+        with self._write_lock:
+            self._check_paths()
+            if self.events_path.stat().st_size != self._event_bytes:
+                self.events.clear()
+                self._read_locked(self.repair)
+            yield
 
     def append_event(self, kind: str, data: dict) -> int:
         if kind not in {"message", "model", "note"} or not isinstance(data, dict):
