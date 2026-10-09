@@ -1,6 +1,6 @@
 # ClueCoder
 
-Previous name: TraceCoder. See [naming migration](docs/CLUECODER_RENAME.md) for configuration and historical evidence.
+原名 TraceCoder。配置迁移及历史验证记录说明见[命名迁移](docs/CLUECODER_RENAME.md)。
 
 **可追踪执行、可恢复状态、基于证据验收的 Python 编程 Agent。**
 
