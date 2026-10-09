@@ -14,6 +14,6 @@ Local Git history freezes this curated source. The original local `v0.1.0` tag p
 
 ## Validation
 
-See [review repair validation](validation/2026-10-09-review-fixes.md), [release follow-up](validation/2026-10-09-release-followup.md) and [initial first-release verification](validation/2026-10-09-first-release.md). Historical CoreCoder results are retained with their original identity and do not count as tests of this release.
+See [real-model repair validation](validation/2026-10-09-real-model-repairs.md), [review repair validation](validation/2026-10-09-review-fixes.md), [release follow-up](validation/2026-10-09-release-followup.md) and [initial first-release verification](validation/2026-10-09-first-release.md). Historical CoreCoder results are retained with their original identity and do not count as tests of this release.
 
 The offline demo runs only a bundled scripted model and generated Fibonacci assertions, using the current Python interpreter. It requires no API key or pytest. It exercises explicit host execution for this fixed demo; ordinary CLI Bash still requires the configured Docker isolation backend.

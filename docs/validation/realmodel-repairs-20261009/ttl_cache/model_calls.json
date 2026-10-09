@@ -1,0 +1,79 @@
+{
+  "calls": [
+    {
+      "actor": "parent",
+      "call_index": 1,
+      "completion_tokens": 57,
+      "cumulative_completion_tokens": 57,
+      "cumulative_prompt_tokens": 4247,
+      "cumulative_tokens": 4304,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 4247,
+      "usage_status": "complete"
+    },
+    {
+      "actor": "parent",
+      "call_index": 2,
+      "completion_tokens": 243,
+      "cumulative_completion_tokens": 300,
+      "cumulative_prompt_tokens": 8773,
+      "cumulative_tokens": 9073,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 4526,
+      "usage_status": "complete"
+    },
+    {
+      "actor": "parent",
+      "call_index": 3,
+      "completion_tokens": 623,
+      "cumulative_completion_tokens": 923,
+      "cumulative_prompt_tokens": 13719,
+      "cumulative_tokens": 14642,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 4946,
+      "usage_status": "complete"
+    },
+    {
+      "actor": "parent",
+      "call_index": 4,
+      "completion_tokens": 530,
+      "cumulative_completion_tokens": 1453,
+      "cumulative_prompt_tokens": 19408,
+      "cumulative_tokens": 20861,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 5689,
+      "usage_status": "complete"
+    },
+    {
+      "actor": "parent",
+      "call_index": 5,
+      "completion_tokens": 611,
+      "cumulative_completion_tokens": 2064,
+      "cumulative_prompt_tokens": 25705,
+      "cumulative_tokens": 27769,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 6297,
+      "usage_status": "complete"
+    },
+    {
+      "actor": "parent",
+      "call_index": 6,
+      "completion_tokens": 121,
+      "cumulative_completion_tokens": 2185,
+      "cumulative_prompt_tokens": 32627,
+      "cumulative_tokens": 34812,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 6922,
+      "usage_status": "complete"
+    }
+  ],
+  "limit": null,
+  "rejected_attempts": 0,
+  "version": 1
+}

@@ -1,0 +1,55 @@
+{
+  "calls": [
+    {
+      "actor": "parent",
+      "call_index": 1,
+      "completion_tokens": 79,
+      "cumulative_completion_tokens": 79,
+      "cumulative_prompt_tokens": 4235,
+      "cumulative_tokens": 4314,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 4235,
+      "usage_status": "complete"
+    },
+    {
+      "actor": "parent",
+      "call_index": 2,
+      "completion_tokens": 252,
+      "cumulative_completion_tokens": 331,
+      "cumulative_prompt_tokens": 8728,
+      "cumulative_tokens": 9059,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 4493,
+      "usage_status": "complete"
+    },
+    {
+      "actor": "parent",
+      "call_index": 3,
+      "completion_tokens": 477,
+      "cumulative_completion_tokens": 808,
+      "cumulative_prompt_tokens": 13493,
+      "cumulative_tokens": 14301,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 4765,
+      "usage_status": "complete"
+    },
+    {
+      "actor": "parent",
+      "call_index": 4,
+      "completion_tokens": 671,
+      "cumulative_completion_tokens": 1479,
+      "cumulative_prompt_tokens": 18749,
+      "cumulative_tokens": 20228,
+      "cumulative_usage_unknown": false,
+      "outcome": "completed",
+      "prompt_tokens": 5256,
+      "usage_status": "complete"
+    }
+  ],
+  "limit": null,
+  "rejected_attempts": 0,
+  "version": 1
+}

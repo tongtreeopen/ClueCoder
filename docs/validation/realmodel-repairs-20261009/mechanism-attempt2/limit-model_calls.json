@@ -1,0 +1,1 @@
+{"version": 1, "calls": [{"call_index": 1, "actor": "child:a49ee5b0828a4242974489e770ed3bab", "outcome": "completed", "prompt_tokens": 1060, "completion_tokens": 90, "usage_status": "complete", "cumulative_tokens": 1150, "cumulative_prompt_tokens": 1060, "cumulative_completion_tokens": 90, "cumulative_usage_unknown": false}], "limit": null, "rejected_attempts": 0}

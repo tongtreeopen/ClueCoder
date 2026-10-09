@@ -1,0 +1,167 @@
+{
+  "agent_revision": "6da84a4ec2a66c5b793b51f460f2de35f456f219",
+  "source_tree": "f4e9db575b8255f87f2bba7cc14f2e50eed084ed",
+  "model": "deepseek-v4-flash",
+  "configuration": {
+    "fixed_task_budget": 50000,
+    "max_calls": 50,
+    "seconds": 900,
+    "image": "ghcr.io/astral-sh/uv@sha256:aba5f865793af9275ceaa06d30935dfc6db8b81969c9fb099b0ebca6396b189e"
+  },
+  "fixed_tasks": [
+    {
+      "task_id": "retry_backoff",
+      "status": "pass",
+      "gate_status": "pass",
+      "gate_exit_code": 0,
+      "calls": 4,
+      "tokens": 20228,
+      "changed_paths": [
+        "solution.py"
+      ],
+      "forbidden_paths": [],
+      "agent_revision": "6da84a4ec2a66c5b793b51f460f2de35f456f219",
+      "model_calls_trace_complete": true,
+      "duration_seconds": 21.3205581000002,
+      "initial_gate": "test_fail",
+      "snapshot_sha256": "73e392a4f15265941bfe878beee73edebb659c2dc1d67e3bfca1460b35d254d2",
+      "artifact_dir": "retry_backoff"
+    },
+    {
+      "task_id": "ttl_cache",
+      "status": "pass",
+      "gate_status": "pass",
+      "gate_exit_code": 0,
+      "calls": 6,
+      "tokens": 34812,
+      "changed_paths": [
+        "solution.py"
+      ],
+      "forbidden_paths": [],
+      "agent_revision": "6da84a4ec2a66c5b793b51f460f2de35f456f219",
+      "model_calls_trace_complete": true,
+      "duration_seconds": 27.22795380000025,
+      "initial_gate": "test_fail",
+      "snapshot_sha256": "3d3bf4313afbda5f98d449b865512b9e750674a9d0d6827fd093a4c7c7f9bf89",
+      "artifact_dir": "ttl_cache"
+    },
+    {
+      "task_id": "config_merge",
+      "status": "agent_limit",
+      "gate_status": "pass",
+      "gate_exit_code": 0,
+      "calls": 9,
+      "tokens": 57216,
+      "changed_paths": [
+        "solution.py"
+      ],
+      "forbidden_paths": [],
+      "agent_revision": "6da84a4ec2a66c5b793b51f460f2de35f456f219",
+      "model_calls_trace_complete": true,
+      "duration_seconds": 35.63694679999753,
+      "initial_gate": "test_fail",
+      "snapshot_sha256": "0c2df5a3343b366ec5698d5517248d32c93b6d3816e5ef71ef2736e24f04fe9c",
+      "artifact_dir": "config_merge"
+    }
+  ],
+  "fixed_task_formal_passes": 2,
+  "fixed_task_gate_passes": 3,
+  "mechanism_attempts": [
+    {
+      "attempt": 1,
+      "note": "API probe launched from agent checkout; prompt cwd differed from target workspace. Retained failure.",
+      "checks": [
+        {
+          "check": "real_child_then_main_workflow",
+          "child_status": "completed",
+          "child_evidence_refs": [],
+          "binding_is_main": true,
+          "workflow_status": "limit",
+          "workflow_calls": 19,
+          "child_goal_tokens": 3941,
+          "total_goal_tokens": 50011,
+          "total_provider_tokens": 50011,
+          "total_provider_calls": 21,
+          "goal_status": "limit",
+          "workflow_note_recorded": true,
+          "passed": false,
+          "binding_check_passed": true,
+          "accounting_check_passed": true,
+          "end_to_end_completed": false
+        },
+        {
+          "check": "real_child_goal_limit",
+          "first_status": "limit",
+          "second_status": "limit",
+          "goal_tokens": 1095,
+          "provider_tokens": 1095,
+          "provider_calls": 1,
+          "goal_status": "limit",
+          "no_second_provider_call": true,
+          "passed": true
+        }
+      ]
+    },
+    {
+      "attempt": 2,
+      "note": "Launched from target project, matching CLI use; requested explicit read evidence references. Same budget.",
+      "checks": [
+        {
+          "check": "real_child_then_main_workflow",
+          "child_status": "completed",
+          "child_evidence_refs": [
+            "call_00_jjbd5FeKJcOWXtKC1bEG8474"
+          ],
+          "binding_is_main": true,
+          "workflow_status": "limit",
+          "workflow_calls": 21,
+          "child_goal_tokens": 4482,
+          "total_goal_tokens": 51626,
+          "total_provider_tokens": 51626,
+          "total_provider_calls": 24,
+          "goal_status": "limit",
+          "workflow_note_recorded": true,
+          "passed": false,
+          "binding_check_passed": true,
+          "accounting_check_passed": true,
+          "end_to_end_completed": false
+        },
+        {
+          "check": "real_child_goal_limit",
+          "first_status": "limit",
+          "second_status": "limit",
+          "goal_tokens": 1150,
+          "provider_tokens": 1150,
+          "provider_calls": 1,
+          "goal_status": "limit",
+          "no_second_provider_call": true,
+          "passed": true
+        }
+      ]
+    }
+  ],
+  "total_model_calls": 66,
+  "total_tokens": 216138,
+  "artifact_hashes": {
+    "retry_backoff/gate.txt": "d96669f80a2a6687509bb44e953d3c419a125ad449e892955dc0e04fd8c4d2b8",
+    "retry_backoff/patch.diff": "c4e82b80e7b2f7e17c8013e5632568f80b64592cda4c9f944d50f232eaf32765",
+    "retry_backoff/model_calls.json": "035ab084eed42bfc30b6b39b6b7a335c6c5e57645ffc4170953247304aa8aedd",
+    "ttl_cache/gate.txt": "bbff6af25509b255944ccdbf5aef9607e95e22dd11d145150842a86ce13fcf3f",
+    "ttl_cache/patch.diff": "fafa244776998a65cf2b330cbac90a4790779e85077d5b49e8278601864b00bc",
+    "ttl_cache/model_calls.json": "b080aa533d3cd607ae102784d71b7ffeb652041cead0a42fbaf26ca47046d056",
+    "config_merge/gate.txt": "942be4bb9bb8d05a817c38348e721ce3ae00b305efb3b07c6277c532032e89e4",
+    "config_merge/patch.diff": "7d1de64b37b4a148fce9afea274ba87e4771258e93f39a37a645ff2040ba4129",
+    "config_merge/model_calls.json": "f7b4bbda5704c3e4d052373a154047b1a5a5dd28f68c2c5158c9b0a0821e0b6f",
+    "mechanism-attempt1/model_calls.json": "821b2b10063fe69aa40c839047938a5bedf9634feaf38ae7b3d08a2620a3adf8",
+    "mechanism-attempt1/usage.json": "cad14a866bf4531931cf2fdd13bb57aa9b95d7693b077172addb6f07f04708bb",
+    "mechanism-attempt1/session-events.jsonl": "a2c1fb337a896991c1d51199832cab790beec8ea6f2bd3cb36e1cfa005408f6c",
+    "mechanism-attempt1/limit-model_calls.json": "0b485c9fcda9af5607616df085fe4c6d350f00dc41bec9876f4c98803843a40a",
+    "mechanism-attempt1/limit-usage.json": "da27d87179c0fa6d827ae61b074162300615019a44445969e7689ba426d24e88",
+    "mechanism-attempt2/model_calls.json": "0843c174a37bfc75ce3374be0fda4b8d60b6bdf3596515d370842a59f8d38d4c",
+    "mechanism-attempt2/usage.json": "db7a029f5dd6412d59fea40f7058a0f0c41df88ad85062b0689bb4c4da343fcb",
+    "mechanism-attempt2/session-events.jsonl": "d9876bd7b381f7b1923428a955bea29406b07ddda93e2d790b4afcd201f94a4a",
+    "mechanism-attempt2/limit-model_calls.json": "aa59ade382678591d1e27d5043be6bdd84e93bc90b108fc144ee2d2188c61f05",
+    "mechanism-attempt2/limit-usage.json": "819476f722eb6c837f4ed49fe3d2bb96ff1d4fbfa7536d14687fff059006d51c"
+  },
+  "scope": "three selected fixed tasks, not a full suite success rate; no claim of workflow end-to-end success"
+}

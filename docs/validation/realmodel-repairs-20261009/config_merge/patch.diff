@@ -1,0 +1,29 @@
+--- a/solution.py
++++ b/solution.py
+@@ -1,8 +1,18 @@
+-from copy import deepcopy
+-
+-
+-def merge_config(base: dict, overrides: dict) -> dict:
+-    """Merge configurations without sharing mutable values with the inputs."""
+-    result = deepcopy(base)
+-    result.update(deepcopy(overrides))
+-    return result
++from copy import deepcopy
++
++
++def merge_config(base: dict, overrides: dict) -> dict:
++    """Merge configurations without sharing mutable values with the inputs.
++
++    Values are merged recursively only when both the base and override values
++    are dictionaries; base-only keys are retained. Any other override value
++    (lists, None, falsey values, scalars, ...) replaces the base value. The
++    returned structure is an independent deep copy of the inputs.
++    """
++    result = deepcopy(base)
++    for key, value in overrides.items():
++        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
++            result[key] = merge_config(result[key], value)
++        else:
++            result[key] = deepcopy(value)
++    return result

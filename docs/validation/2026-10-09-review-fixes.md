@@ -21,3 +21,6 @@ Repairs the four reproduced findings from the review of `0f2b26bf896fc2396725c7e
 Previous release real-model checks are historical evidence for the prior runtime tree; no real-model test is claimed for these repairs. A response can cross the remaining budget; further model calls and tool execution then stop. In-flight request cancellation is unchanged. Existing corrupted duplicate-revision histories are rejected rather than silently rewritten; the repair prevents new corruption.
 
 The final repaired candidate is tagged `release-fixed-20261009`, preserving earlier freeze tags. The repository remains private; no PyPI upload or public release has been performed.
+
+
+Subsequent real-model checks of this runtime tree are recorded separately in [real-model repair validation](2026-10-09-real-model-repairs.md), including budget-limited outcomes.
