@@ -1,0 +1,48 @@
+{
+  "task_id": "retry_backoff",
+  "initial_snapshot_gate": "test_fail",
+  "attempts": [
+    {
+      "token_budget": 12000,
+      "status": "agent_limit",
+      "gate_status": "test_fail",
+      "gate_exit_code": 1,
+      "changed_paths": [
+        "solution.py"
+      ],
+      "forbidden_paths": [],
+      "calls": 3,
+      "tokens": 14960,
+      "model_calls_trace_complete": true,
+      "agent_revision": "e784de7a08a9a3a61c9885163a97855c5878cf13",
+      "image_id": "sha256:aba5f865793af9275ceaa06d30935dfc6db8b81969c9fb099b0ebca6396b189e",
+      "duration_seconds": 19.520677500000602,
+      "model": "deepseek-v4-flash",
+      "suite_sha256": "2a6e7f134e4d4e8ca518bec206c5a5f7fb75c34766e34b106481c31774ade4db",
+      "initial_gate": "test_fail"
+    },
+    {
+      "status": "pass",
+      "gate_status": "pass",
+      "gate_exit_code": 0,
+      "changed_paths": [
+        "solution.py"
+      ],
+      "forbidden_paths": [],
+      "calls": 7,
+      "tokens": 42491,
+      "model_calls_trace_complete": true,
+      "agent_revision": "e784de7a08a9a3a61c9885163a97855c5878cf13",
+      "image_id": "sha256:aba5f865793af9275ceaa06d30935dfc6db8b81969c9fb099b0ebca6396b189e",
+      "duration_seconds": 28.453154699998777,
+      "model": "deepseek-v4-flash",
+      "token_budget": 50000,
+      "attempt": 2
+    }
+  ],
+  "published_artifact_hashes": {
+    "gate.txt": "fa359cb283bca3d8ba0cc6e1a0321fb5f28676c2dd77533b42484941f0401666",
+    "model_calls.json": "0502d6377fd48fb1d482c9f229275b858b05d8c056814f5b45818d3e38b77aa7",
+    "patch.diff": "bc72cccd3577488e003d7cc2f0c2647419e3909fc09239f56afea57c30d8086c"
+  }
+}

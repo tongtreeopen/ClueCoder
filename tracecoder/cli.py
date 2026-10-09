@@ -101,7 +101,7 @@ def _local_context(workspace: Path) -> tuple[list[Tool], Callable[[], str]]:
 def _cli_context(
     workspace: Path, executor: DockerExecutor | None = None
 ) -> tuple[list[Tool], Callable[[], str], WorkspacePolicy]:
-    from .tools.workflow import WorkflowTool, WorkflowStatusTool
+    from .tools.workflow import WorkflowStatusTool, WorkflowTool
 
     policy = WorkspacePolicy(workspace)
     local_tools, catalog = _local_context(policy.root)

@@ -1,0 +1,18 @@
+--- a/solution.py
++++ b/solution.py
+@@ -1,5 +1,10 @@
+-def backoff_delays(retries: int, initial: float, cap: float) -> list[float]:
+-    """Return capped exponential delays for the requested number of retries."""
+-    if retries < 0 or initial <= 0 or cap <= 0:
+-        raise ValueError('Invalid backoff parameters')
+-    return [min(initial * (index + 1), cap) for index in range(retries)]
++def backoff_delays(retries: int, initial: float, cap: float) -> list[float]:
++    """Return capped exponential delays for the requested number of retries."""
++    if retries < 0 or initial <= 0 or cap <= 0:
++        raise ValueError('Invalid backoff parameters')
++    delays = []
++    delay = initial
++    for _ in range(retries):
++        delays.append(min(delay, cap))
++        delay *= 2
++    return delays

@@ -190,7 +190,7 @@ class WorkflowRuntime:
             except KeyboardInterrupt:
                 journal.append("run_interrupted", {"usage": context.model.usage()})
                 raise
-            except Exception as error:
+            except Exception as error:  # noqa: BLE001 - persist failures at the workflow boundary
                 status, result = "error", {"summary": type(error).__name__, "blockers": [str(error)]}
             report = {"run_id": journal.run_id, "status": status, "cached_steps": context.cached_steps,
                       "completed_steps": len(journal.completed_steps), "usage": context.model.usage(),

@@ -5,19 +5,19 @@ import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.permissions import Permission
-from tracecoder.goal import GoalController
-from tracecoder.goal_evaluator import GoalEvaluator
-from tracecoder.session_journal import SessionJournal
-from tracecoder.tools.workflow import WorkflowTool, WorkflowStatusTool
-from tracecoder.work_state import WorkStateStore
-from tracecoder.tools.base import Tool
+from typing import ClassVar
 
 from tests.test_workflow_runtime import repository, response
+from tracecoder.agent import Agent
+from tracecoder.demo import ScriptedLLM
+from tracecoder.goal import GoalController
+from tracecoder.goal_evaluator import GoalEvaluator
+from tracecoder.llm import LLMResponse, ToolCall
+from tracecoder.permissions import Permission
+from tracecoder.session_journal import SessionJournal
+from tracecoder.tools.base import Tool
+from tracecoder.tools.workflow import WorkflowStatusTool, WorkflowTool
+from tracecoder.work_state import WorkStateStore
 
 
 def test_agent_workflow_permission_and_plan_boundaries(tmp_path):
@@ -111,7 +111,7 @@ def test_actual_cli_subprocess_runs_resumes_and_queries_workflow(tmp_path):
     try:
         def run(prompt):
             process = subprocess.run([sys.executable, "-m", "tracecoder", "--yes", "-p", prompt], cwd=tmp_path,
-                                     env=env, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=90)
+                                     env=env, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=90, check=False)
             assert process.returncode == 0, process.stdout + process.stderr
 
         run("review")
@@ -135,7 +135,7 @@ def test_workflow_tool_batch_executes_serially_on_caller_thread():
     class SerialTool(Tool):
         name = "workflow"
         description = "serial probe"
-        parameters = {"type": "object"}
+        parameters: ClassVar[dict] = {"type": "object"}
 
         def execute(self):
             observed.append(threading.get_ident())

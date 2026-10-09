@@ -2,12 +2,12 @@
 
 import pytest
 
+from tests.conftest import get_tool
 from tracecoder import Agent, Config, cli
 from tracecoder.demo import ScriptedLLM
 from tracecoder.llm import LLMResponse, ToolCall
 from tracecoder.permissions import Permission
 from tracecoder.tools.write import WriteFileTool
-from tests.conftest import get_tool
 
 
 def _write_call(call_id, path):

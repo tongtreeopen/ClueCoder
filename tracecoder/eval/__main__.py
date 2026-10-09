@@ -15,7 +15,16 @@ from urllib.parse import urlsplit
 from tracecoder.eval.cases import _tree_hash, load_suite, materialize
 from tracecoder.eval.gate import run_gate
 from tracecoder.eval.report import render_markdown, summarize
-from tracecoder.eval.runner import SOURCE_ROOT, _clean, _cleanup_workers, _json, _prepare_workspace, _redactor, _revision, run_case
+from tracecoder.eval.runner import (
+    SOURCE_ROOT,
+    _clean,
+    _cleanup_workers,
+    _json,
+    _prepare_workspace,
+    _redactor,
+    _revision,
+    run_case,
+)
 from tracecoder.execution import DEFAULT_IMAGE, DockerExecutor
 
 TASK_IDS = [

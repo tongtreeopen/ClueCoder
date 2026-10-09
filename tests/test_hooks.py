@@ -1,12 +1,12 @@
 """Pre/PostToolUse shell hooks: loading, matching, blocking, failing open."""
 
-import pytest
-
 import logging
 import os
 import shlex
 import subprocess
 import sys
+
+import pytest
 
 from tracecoder import Agent
 from tracecoder.demo import ScriptedLLM

@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pytest
 
-from tracecoder.eval.report import render_markdown, summarize
 from tests.test_eval_runner import SECRET, provider
 from tests.test_eval_runner import source as source  # noqa: PLC0414 - pytest fixture re-export
+from tracecoder.eval.report import render_markdown, summarize
 
 ROOT = Path(__file__).resolve().parents[1]
 IDS = ['csv_quotes', 'retry_backoff', 'ttl_cache', 'tree_walk', 'date_ranges', 'config_merge',

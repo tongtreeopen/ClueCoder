@@ -1,12 +1,12 @@
 """Tests for the tool system."""
 
-import pytest
-
 import os
 import sys
 
-from tracecoder.tools import ALL_TOOLS
+import pytest
+
 from tests.conftest import get_tool
+from tracecoder.tools import ALL_TOOLS
 
 
 def test_tool_count():

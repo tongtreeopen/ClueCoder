@@ -9,11 +9,11 @@ from unittest import mock
 import pytest
 from openai import BadRequestError
 
+from tests.conftest import get_tool
 from tracecoder import ALL_TOOLS, LLM, Agent, Config, __version__
 from tracecoder import session as session_module
 from tracecoder.context import ContextManager, estimate_tokens
 from tracecoder.session import list_sessions, load_session, save_session
-from tests.conftest import get_tool
 
 
 def test_version():
