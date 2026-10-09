@@ -249,3 +249,13 @@
 - 保留：文件工具的 WorkspacePolicy、权限与 Plan Mode；旧工具测试使用明确的临时工作区和新工具实例，不放宽运行时路径限制。
 - 简化：离线 demo 使用标准库及断言，去除普通安装对开发依赖 pytest 的隐式要求，并避免 pytest 从 Windows 路径向上探测导致的权限失败。
 - 验证与边界：见 `docs/validation/2026-10-09-first-release.md`；固定脚本 demo 不证明真实模型自主性或 Docker 可用性。
+
+
+## 2026-10-09 Linux Docker 首发验证增量
+
+- 来源：现有 DockerExecutor 的非 root 容器隔离及独立 runner；远端 Linux 检查暴露私有项目目录无法被固定 nobody UID 写入。
+- 实际入口：普通 DockerExecutor 在 Unix 非 root 调用时使用宿主 UID/GID；Windows 和 root 调用保留 65534 回退。带 run_id 的独立评测 worker 继续使用 65534，由 runner 的 _prepare_workspace 准备权限；/testbed 原有边界不变。
+- 保留：禁用网络、只读容器根、能力裁剪、启动工作区挂载、deadline 与容器清理。
+- 取舍：普通容器继承调用者对已挂载项目的文件权限，支持 Linux 0700 项目目录；不自动 chmod 用户项目，也不允许普通容器以 root 运行。
+- 测试：新增宿主身份与 root/Windows 回退检查、Linux 私有目录实际 Docker 写入检查。中断测试改为替换 execution 模块的 time 引用，避免全局 time.sleep mock 干扰 POSIX subprocess 清理。
+- 验证结果及未完成边界以首发后续验证报告为准。

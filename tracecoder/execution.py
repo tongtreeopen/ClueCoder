@@ -16,6 +16,13 @@ DEFAULT_IMAGE = (
 MAX_OUTPUT_BYTES = 1_000_000
 
 
+def _sandbox_user() -> str:
+    # Match a non-root Unix caller so private project directories remain usable.
+    if os.name == "posix" and os.getuid() != 0:
+        return f"{os.getuid()}:{os.getgid()}"
+    return "65534:65534"
+
+
 class DockerExecutor:
     def __init__(self, workspace: Path, image: str = DEFAULT_IMAGE, run_id: str | None = None,
                  workspace_target: str = "/workspace"):
@@ -73,7 +80,8 @@ class DockerExecutor:
             "docker", "create", f"--name={name}", "--pull=never", "--network=none",
             "--cap-drop=ALL", "--security-opt=no-new-privileges", "--pids-limit=64",
             "--memory=512m", "--cpus=1", "--read-only", "--init",
-            "--tmpfs=/tmp:rw,noexec,nosuid,size=64m", "--user=65534:65534",
+            "--tmpfs=/tmp:rw,noexec,nosuid,size=64m",
+            "--user=" + ("65534:65534" if self.run_id else _sandbox_user()),
             f"--mount=type=bind,source={self.workspace},target={self.workspace_target}",
             f"--workdir={self.workspace_target}", "--env=HOME=/tmp",
             "--entrypoint=/bin/sh", self.image, "-c", command,

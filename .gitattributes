@@ -1,2 +1,4 @@
 benchmarks/** text eol=lf
 *.patch whitespace=-blank-at-eol
+
+docs/validation/release-smoke-20261009/** text eol=lf

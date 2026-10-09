@@ -5,6 +5,7 @@ import sys
 import time
 import uuid
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 
@@ -12,7 +13,8 @@ from tracecoder import cli as cli_module
 from tracecoder import execution as execution_module
 from tracecoder import session as session_module
 from tracecoder.demo import run_demo
-from tracecoder.execution import DockerExecutor
+from tracecoder.eval.runner import _prepare_workspace
+from tracecoder.execution import DockerExecutor, _sandbox_user
 from tracecoder.tools.bash import DockerBashTool
 
 
@@ -20,6 +22,7 @@ from tracecoder.tools.bash import DockerBashTool
 def executor(tmp_path):
     if not DockerExecutor.available():
         pytest.skip("Pinned Docker image or Linux engine is unavailable")
+    _prepare_workspace(tmp_path)
     return DockerExecutor(tmp_path, run_id=uuid.uuid4().hex)
 
 
@@ -45,7 +48,7 @@ def test_verified_docker_uses_testbed_without_changing_ordinary_mode(docker_read
     assert "/workspace" not in DockerBashTool(verified).description
     assert verified.run("pwd; id -u; echo $BASH_ENV") == "/testbed\n0\n/root/.bashrc"
     assert "exit code" in verified.run("python -c 'import socket; socket.create_connection((\"1.1.1.1\", 53), timeout=1)'")
-    assert DockerExecutor(tmp_path).run("id -u; pwd") == "65534\n/workspace"
+    assert DockerExecutor(tmp_path).run("id -u; pwd") == _sandbox_user().split(":")[0] + "\n/workspace"
     assert "/workspace" in DockerBashTool(DockerExecutor(tmp_path)).description
 
 
@@ -147,10 +150,36 @@ def test_interrupt_cleans_up_docker_client_and_container(executor, monkeypatch):
         real_sleep(0.5)
         raise KeyboardInterrupt
 
-    monkeypatch.setattr(execution_module.time, "sleep", interrupt_after_start)
+    # Replacing the shared time.sleep also interrupts POSIX subprocess.wait in cleanup.
+    monkeypatch.setattr(execution_module, "time", SimpleNamespace(
+        sleep=interrupt_after_start, monotonic=time.monotonic,
+    ))
     with pytest.raises(KeyboardInterrupt):
         executor.run("sleep 15", timeout=20)
     assert not subprocess.run(
         ["docker", "ps", "-a", "--filter", f"label=tracecoder.eval.run={executor.run_id}", "--format", "{{.Names}}"],
         capture_output=True, text=True, check=True,
     ).stdout.strip()
+
+
+@pytest.mark.parametrize(("name", "uid", "gid", "expected"), [
+    ("posix", 1001, 1002, "1001:1002"),
+    ("posix", 0, 0, "65534:65534"),
+    ("nt", 0, 0, "65534:65534"),
+])
+def test_sandbox_user_matches_nonroot_caller_with_safe_fallback(monkeypatch, name, uid, gid, expected):
+    monkeypatch.setattr(execution_module, "os", SimpleNamespace(
+        name=name, getuid=lambda: uid, getgid=lambda: gid,
+    ))
+    assert _sandbox_user() == expected
+
+
+def test_private_workspace_is_writable_without_root(tmp_path, docker_ready):
+    if sys.platform != "linux" or _sandbox_user() == "65534:65534":
+        pytest.skip("Native non-root Linux UID ownership case")
+    tmp_path.chmod(0o700)
+    executor = DockerExecutor(tmp_path)
+    result = executor.run("id -u; printf caller-owned > created.txt")
+    assert result == _sandbox_user().split(":")[0]
+    assert (tmp_path / "created.txt").read_text(encoding="utf-8") == "caller-owned"
+    assert (tmp_path / "created.txt").stat().st_uid == execution_module.os.getuid()

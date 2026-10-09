@@ -22,6 +22,8 @@ docker pull ghcr.io/astral-sh/uv@sha256:aba5f865793af9275ceaa06d30935dfc6db8b819
 docker image inspect ghcr.io/astral-sh/uv@sha256:aba5f865793af9275ceaa06d30935dfc6db8b81969c9fb099b0ebca6396b189e
 ```
 
+Ordinary containers use the non-root Unix caller UID/GID for project-file access; Windows and root callers use UID/GID 65534. A root caller must provide a directory accessible to that unprivileged user. Independent evaluation keeps its separate prepared worker permissions.
+
 The engine type must be `linux`, and image inspection must succeed. Pulling downloads the image; allow sufficient time and disk space. TraceCoder itself refuses to fetch or substitute an unverified image during execution. Its Bash commands run in a network-disabled container, so dependencies must already be available in the image or mounted workspace. `--yes` grants tool consent; it does not bypass isolation or workspace policy.
 
 If Docker is stopped or the image is absent, file tools remain available but Bash returns an explicit unavailable result. Do not treat an unexecuted check as acceptance evidence.
