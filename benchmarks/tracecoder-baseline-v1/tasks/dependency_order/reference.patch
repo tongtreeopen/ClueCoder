@@ -1,0 +1,23 @@
+--- a/solution.py
++++ b/solution.py
+@@ -1,14 +1,19 @@
+ def dependency_order(graph: dict[str, list[str]]) -> list[str]:
+     """Return dependencies before dependents; reject dependency cycles."""
+     visited = set()
++    active = set()
+     result = []
+ 
+     def visit(node):
++        if node in active:
++            raise ValueError('Dependency cycle')
+         if node in visited:
+             return
+-        visited.add(node)
++        active.add(node)
+         for dependency in graph.get(node, []):
+             visit(dependency)
++        active.remove(node)
++        visited.add(node)
+         result.append(node)
+ 
+     for node in graph:

@@ -1,0 +1,18 @@
+--- a/solution.py
++++ b/solution.py
+@@ -4,10 +4,11 @@
+             raise ValueError('capacity must be positive')
+         self.capacity = capacity
+         self.items = []
+-
++
+     def push(self, item):
+-        if len(self.items) < self.capacity:
+-            self.items.append(item)
++        if len(self.items) == self.capacity:
++            self.items.pop(0)
++        self.items.append(item)
+-
++
+     def pop(self):
+         return self.items.pop(0)

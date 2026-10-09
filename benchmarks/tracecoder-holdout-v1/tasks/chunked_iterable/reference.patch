@@ -1,0 +1,9 @@
+--- a/solution.py
++++ b/solution.py
+@@ -8,4 +8,6 @@
+         if len(chunk) == size:
+             result.append(chunk)
+             chunk = []
++    if chunk:
++        result.append(chunk)
+     return result

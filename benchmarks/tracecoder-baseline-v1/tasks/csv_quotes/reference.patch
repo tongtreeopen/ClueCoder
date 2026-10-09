@@ -1,0 +1,10 @@
+--- a/solution.py
++++ b/solution.py
+@@ -1,3 +1,6 @@
++import csv
++
++
+ def parse_record(record: str) -> list[str]:
+     """Parse one CSV record, including quoted fields."""
+-    return record.split(',') if record else []
++    return next(csv.reader([record]))

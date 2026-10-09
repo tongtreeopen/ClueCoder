@@ -1,0 +1,11 @@
+--- a/solution.py
++++ b/solution.py
+@@ -13,7 +13,7 @@
+         if key not in self._entries:
+             return default
+         value, expires = self._entries[key]
+-        if expires < now:
++        if expires <= now:
+             del self._entries[key]
+             return default
+         return value

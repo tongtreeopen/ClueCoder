@@ -1,0 +1,11 @@
+--- a/solution.py
++++ b/solution.py
+@@ -7,7 +7,7 @@
+         raise ValueError('step_days must be positive')
+     result = []
+     current = start
+-    while current < end:
++    while current <= end:
+         result.append(current)
+         current += timedelta(days=step_days)
+     return result

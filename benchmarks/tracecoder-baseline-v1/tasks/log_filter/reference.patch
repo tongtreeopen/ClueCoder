@@ -1,0 +1,10 @@
+--- a/solution.py
++++ b/solution.py
+@@ -9,6 +9,6 @@
+     for record in records:
+         if record['level'] not in LEVELS:
+             raise ValueError('Unknown record level')
+-        if record['level'] >= minimum:
++        if LEVELS.index(record['level']) >= LEVELS.index(minimum):
+             result.append(record)
+     return result

@@ -1,0 +1,13 @@
+--- a/solution.py
++++ b/solution.py
+@@ -4,5 +4,9 @@
+ def merge_config(base: dict, overrides: dict) -> dict:
+     """Merge configurations without sharing mutable values with the inputs."""
+     result = deepcopy(base)
+-    result.update(deepcopy(overrides))
++    for key, value in overrides.items():
++        if isinstance(result.get(key), dict) and isinstance(value, dict):
++            result[key] = merge_config(result[key], value)
++        else:
++            result[key] = deepcopy(value)
+     return result

@@ -1,0 +1,165 @@
+{
+  "id": "tracecoder-holdout-v1",
+  "tasks": [
+    {
+      "id": "chunked_iterable",
+      "prompt": "Repair chunked(items, size). Consume a possibly one-pass iterable once and return a list of lists of at most size items, preserving order. Include the final partial chunk; empty input returns []. size must be a positive integer, otherwise raise ValueError. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/chunked_iterable/snapshot",
+      "snapshot_sha256": "9b730ad7677d4e62ced2122e65277987412b313c1274823466c403f74301473d",
+      "gate_dir": "tasks/chunked_iterable/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "stable_unique",
+      "prompt": "Repair stable_unique(items, key=None). Keep the first item for each distinct hashable key and preserve first-seen order. If key is omitted, each item itself is its key. Accept a one-pass iterable; return a new list without changing the input. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/stable_unique/snapshot",
+      "snapshot_sha256": "9b62b8fb0ec5906fe120fdeb6567c703752e2b77e86863f33e6fac97c310dd3f",
+      "gate_dir": "tasks/stable_unique/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "query_parameters",
+      "prompt": "Repair parse_query(query). Input is a URL query string without a leading question mark. Return a dict mapping decoded key strings to lists of decoded value strings, preserving value order. Decode percent escapes as UTF-8 and plus signs as spaces; preserve blank values and ignore empty ampersand segments. Empty input returns {}. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/query_parameters/snapshot",
+      "snapshot_sha256": "69c62faf9527ae26fbb244d046b2489487d8f76cdb411712d8c31523a1c5c5bf",
+      "gate_dir": "tasks/query_parameters/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "bounded_queue",
+      "prompt": "Repair BoundedQueue(capacity). push(item) appends to a FIFO queue; when full, discard the oldest item before appending. pop() removes and returns the oldest item, raising IndexError when empty. len(queue) returns the current count. capacity must be a positive integer or raise ValueError. Falsey items are ordinary values. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/bounded_queue/snapshot",
+      "snapshot_sha256": "af55e75630907d2a862bd1f1885f04ce7d9b36019e446ff13c836076eef781ae",
+      "gate_dir": "tasks/bounded_queue/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "weighted_average",
+      "prompt": "Repair weighted_average(samples), where each item is a (value, weight) pair of finite numbers. Return sum(value * weight) / sum(weight). Zero weights contribute nothing; reject a negative weight or zero total weight with ValueError. Accept a one-pass iterable without mutating inputs. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/weighted_average/snapshot",
+      "snapshot_sha256": "bf4ef3d40774a359e9ceb34ac973f77f0c9269e35cf19af593b4b4bca53bc71c",
+      "gate_dir": "tasks/weighted_average/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "text_edits",
+      "prompt": "Repair apply_edits(text, edits). Each edit is (start, end, replacement) with zero-based half-open offsets into the ORIGINAL string; edits arrive sorted by start and must not overlap. Return the edited string while preserving untouched characters. Reject an out-of-range or reversed span, or overlapping spans, with ValueError. An empty edit list returns text. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/text_edits/snapshot",
+      "snapshot_sha256": "34269298ce778987dacc8e24ea6775276eca38efb62ced1c41c4715cfe781004",
+      "gate_dir": "tasks/text_edits/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "balanced_brackets",
+      "prompt": "Repair balanced_brackets(text). Return whether (), [], and {} brackets are properly nested and matched. Ignore every other character; empty text is balanced. A closing bracket without its matching opener returns False. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/balanced_brackets/snapshot",
+      "snapshot_sha256": "00ff767c7e05646d042dae1e1f0e65b6c34e8abfa741c942caf8ec42ac6f595a",
+      "gate_dir": "tasks/balanced_brackets/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "ragged_transpose",
+      "prompt": "Repair transpose_ragged(rows, fill=None). Return columns from a possibly one-pass iterable of row iterables. The result has as many columns as the longest row; every column has one entry per input row, using fill where a row is short. Preserve falsey values and None; empty rows return []. Do not change input rows. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/ragged_transpose/snapshot",
+      "snapshot_sha256": "5718152da2f7bcc064896e8157b6cbfa097beacce8bd16cbd00326e5ad7572d8",
+      "gate_dir": "tasks/ragged_transpose/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    }
+  ]
+}

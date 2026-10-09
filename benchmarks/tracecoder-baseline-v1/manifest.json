@@ -1,0 +1,165 @@
+{
+  "id": "tracecoder-baseline-v1",
+  "tasks": [
+    {
+      "id": "csv_quotes",
+      "prompt": "Repair parse_record(record). Input is one valid CSV record without embedded newlines, using comma delimiters, double-quote quoting and doubled double-quotes as escapes. Return its fields as strings, preserving whitespace and empty fields; an empty record returns []. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/csv_quotes/snapshot",
+      "snapshot_sha256": "b11806c86a39fc79a06dae43b76e2852491d0e2e57d11bf1403ee7d17056cdc5",
+      "gate_dir": "tasks/csv_quotes/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "retry_backoff",
+      "prompt": "Repair backoff_delays(retries, initial, cap). Produce exactly retries exponential delays: the first is min(initial, cap), each subsequent uncapped delay doubles. Every delay is capped at cap. retries is an integer and initial/cap are numeric. Reject negative retries and nonpositive initial/cap with ValueError; zero retries returns []. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/retry_backoff/snapshot",
+      "snapshot_sha256": "73e392a4f15265941bfe878beee73edebb659c2dc1d67e3bfca1460b35d254d2",
+      "gate_dir": "tasks/retry_backoff/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "ttl_cache",
+      "prompt": "Repair TTLCache expiry. put(key, value, ttl, now) replaces an entry and expires it at now + ttl. get(key, now, default=None) returns the value only while now is strictly before expiry; expired entries are removed, missing entries return default. A zero TTL expires immediately. Negative TTL raises ValueError without replacing an existing entry. Preserve falsey values. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/ttl_cache/snapshot",
+      "snapshot_sha256": "3d3bf4313afbda5f98d449b865512b9e750674a9d0d6827fd093a4c7c7f9bf89",
+      "gate_dir": "tasks/ttl_cache/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "tree_walk",
+      "prompt": "Repair walk_leaves(value, path=()). Traverse nested dicts and lists depth-first in their existing order, returning a list of (full_path_tuple, scalar) pairs. Dict keys and integer list indexes extend the current path; scalars include None and falsey values. Empty containers produce no leaves. Honor an optional initial path and do not modify input. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/tree_walk/snapshot",
+      "snapshot_sha256": "7fcb2fce3206d5378d09b1c6829bc67a4d4f95937cbfda19578ed3dfdfff781e",
+      "gate_dir": "tasks/tree_walk/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "date_ranges",
+      "prompt": "Repair date_range(start, end, step_days=1) for datetime.date inputs within ordinary calendar ranges. Return dates from start in positive integer step_days increments, including end if a step lands on it. Equal endpoints return [start]; start after end returns []. Reject zero or negative step_days with ValueError. Handle month/year boundaries and leap days. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/date_ranges/snapshot",
+      "snapshot_sha256": "9d3bb28b2f4dba43320d4d932b5df1d4e39a0c4f338d15c1db2112ed4b359d34",
+      "gate_dir": "tasks/date_ranges/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "config_merge",
+      "prompt": "Repair merge_config(base, overrides). Recursively merge values only when both are dictionaries, retaining base-only keys. All other override values, including lists, None and falsey values, replace the base value. Return an independent deep copy: neither calling the function nor mutating the result may change either input. Inputs are acyclic standard Python containers. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/config_merge/snapshot",
+      "snapshot_sha256": "0c2df5a3343b366ec5698d5517248d32c93b6d3816e5ef71ef2736e24f04fe9c",
+      "gate_dir": "tasks/config_merge/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "log_filter",
+      "prompt": "Repair filter_logs(records, minimum). Levels increase in severity as debug, info, warning, error, critical. Keep records at or above minimum, including equality, preserving input order and record contents without mutating input. records may be a one-pass iterable of dictionaries containing level. Unknown minimum or record levels raise ValueError. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/log_filter/snapshot",
+      "snapshot_sha256": "08cb0ac8c32fa807a8668a347179b13059515e4f8fe3dc4e7e60a50105f4f0f9",
+      "gate_dir": "tasks/log_filter/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    },
+    {
+      "id": "dependency_order",
+      "prompt": "Repair dependency_order(graph), where graph maps node strings to ordered lists of dependency strings. Use depth-first traversal in dictionary insertion order and each dependency list order, appending a node after its dependencies. Include dependency-only nodes, emit each node once, and reject all cycles (including self cycles) with ValueError. Do not modify graph. Modify only solution.py. Use only the Python standard library.",
+      "snapshot_dir": "tasks/dependency_order/snapshot",
+      "snapshot_sha256": "288b2095313bb071bb092323cd3a312c20b25435d47fa1e8cdeb3eccb656dc3c",
+      "gate_dir": "tasks/dependency_order/gate",
+      "gate_command": [
+        "python",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "/gate",
+        "-p",
+        "test_*.py"
+      ],
+      "allowed_paths": [
+        "solution.py"
+      ]
+    }
+  ]
+}

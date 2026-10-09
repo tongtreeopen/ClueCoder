@@ -1,0 +1,2 @@
+benchmarks/** text eol=lf
+*.patch whitespace=-blank-at-eol

@@ -1,0 +1,19 @@
+--- a/solution.py
++++ b/solution.py
+@@ -1,11 +1,11 @@
+ def weighted_average(samples):
+     total = 0
+-    count = 0
++    total_weight = 0
+     for value, weight in samples:
+         if weight < 0:
+             raise ValueError('negative weight')
+         total += value * weight
+-        count += 1
+-    if count == 0:
+-        raise ValueError('no samples')
+-    return total / count
++        total_weight += weight
++    if total_weight == 0:
++        raise ValueError('zero total weight')
++    return total / total_weight

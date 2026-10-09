@@ -1,0 +1,8 @@
+--- a/solution.py
++++ b/solution.py
+@@ -1,2 +1,4 @@
+ def transpose_ragged(rows, fill=None):
+-    return [list(column) for column in zip(*rows)]
++    rows = [list(row) for row in rows]
++    return [[row[index] if index < len(row) else fill for row in rows]
++            for index in range(max((len(row) for row in rows), default=0))]

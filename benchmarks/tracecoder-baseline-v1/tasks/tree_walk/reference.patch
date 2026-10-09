@@ -1,0 +1,11 @@
+--- a/solution.py
++++ b/solution.py
+@@ -3,7 +3,7 @@
+     leaves = []
+     if isinstance(value, dict):
+         for key, child in value.items():
+-            leaves.extend(walk_leaves(child, (key,)))
++            leaves.extend(walk_leaves(child, path + (key,)))
+     elif isinstance(value, list):
+         for index, child in enumerate(value):
+             leaves.extend(walk_leaves(child, path + (index,)))

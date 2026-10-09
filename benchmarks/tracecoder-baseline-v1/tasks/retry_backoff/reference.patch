@@ -1,0 +1,14 @@
+--- a/solution.py
++++ b/solution.py
+@@ -2,4 +2,10 @@
+     """Return capped exponential delays for the requested number of retries."""
+     if retries < 0 or initial <= 0 or cap <= 0:
+         raise ValueError('Invalid backoff parameters')
+-    return [min(initial * (index + 1), cap) for index in range(retries)]
++    delays = []
++    delay = min(initial, cap)
++    for _ in range(retries):
++        delays.append(delay)
++        if delay < cap:
++            delay = min(delay * 2, cap)
++    return delays

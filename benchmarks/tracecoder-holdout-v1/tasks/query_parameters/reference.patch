@@ -1,0 +1,15 @@
+--- a/solution.py
++++ b/solution.py
+@@ -1,8 +1,8 @@
++from urllib.parse import parse_qsl
++
++
+ def parse_query(query):
+     result = {}
+-    for part in query.split('&'):
+-        if not part:
+-            continue
+-        name, _, value = part.partition('=')
++    for name, value in parse_qsl(query, keep_blank_values=True, encoding='utf-8'):
+         result.setdefault(name, []).append(value)
+     return result

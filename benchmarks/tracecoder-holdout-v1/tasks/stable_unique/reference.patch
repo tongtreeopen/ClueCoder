@@ -1,0 +1,15 @@
+--- a/solution.py
++++ b/solution.py
+@@ -1,5 +1,9 @@
+ def stable_unique(items, key=None):
+-    selected = {}
++    selected = []
++    seen = set()
+     for item in items:
+-        selected[item if key is None else key(item)] = item
+-    return list(selected.values())
++        marker = item if key is None else key(item)
++        if marker not in seen:
++            seen.add(marker)
++            selected.append(item)
++    return selected
