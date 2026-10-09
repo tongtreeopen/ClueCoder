@@ -1,10 +1,10 @@
-# ClueCoder naming migration validation
+# ClueCoder release validation
 
 Implementation revision: `a504ecf55565d00442abe0be6359f35640e3468f`.
 Runtime tree: `f8a1349e012b5d1f59b2ae1a98745bb95f47d382`.
 Test tree: `b2dfeb7096f4e3c6aed5bfa492c37e2a1b3791ca`.
 
-The distribution, import package, CLI, configuration prefix, state directories, Docker labels, suite IDs, documentation and private GitHub repository use ClueCoder. CoreCoder authorship and MIT notices remain. No automatic migration of existing state occurs; see [migration instructions](../CLUECODER_RENAME.md).
+The distribution, import package, CLI, configuration prefix, state directories, Docker labels, suite IDs, documentation and private GitHub repository use ClueCoder. CoreCoder authorship and MIT notices remain. See [project origin](../PROJECT_ORIGIN.md) for the CoreCoder foundation and current configuration.
 
 [CI run 37934319139](https://github.com/tongtreeopen/ClueCoder/actions/runs/37934319139) passed all 15 jobs against the implementation revision:
 
@@ -17,6 +17,6 @@ Local checks: wheel and sdist build; Twine metadata check; Ruff; compileall; `CL
 
 Local full suite on Windows/Python 3.13 with Docker available: **599 passed, 1 skipped in 551.27 seconds**. The skip requires native Linux non-root execution; that case passed in the separate Ubuntu Docker CI job.
 
-92 tracked historical evidence and benchmark task files were compared byte-for-byte in Git against pre-rename revision `f48ffef08762212d4f080b18442c963d35fdc339`; all were unchanged. Only benchmark suite manifest IDs changed; historical hashes retain their original meaning. Previous release tags remain unchanged.
+92 tracked historical evidence and benchmark task files were compared byte-for-byte in Git against reference revision `f48ffef08762212d4f080b18442c963d35fdc339`; all were unchanged. Benchmark task contents and historical hashes retain their recorded meaning. Previous release tags remain unchanged.
 
-No fresh real-model call was made for this naming migration. Earlier real-model results retain the tested revision and original TraceCoder identity. The repository remains private; neither public release nor PyPI upload was performed.
+No fresh real-model call was made for this release check. Earlier real-model results retain their tested revision and original recorded identifiers. The repository remains private; neither public release nor PyPI upload was performed.

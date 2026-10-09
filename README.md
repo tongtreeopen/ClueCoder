@@ -1,14 +1,12 @@
 # ClueCoder
 
-Previous name: TraceCoder. See [naming migration](docs/CLUECODER_RENAME.md) for configuration and historical evidence.
-
 **A Python coding agent with traceable execution, recoverable state, and evidence-based task verification.**
 
 English | [中文](https://github.com/tongtreeopen/ClueCoder/blob/main/README_CN.md)
 
 ClueCoder is for developers who want to inspect how an agent changes code, understand why it stops, and resume unfinished work. The model reads, reasons, and selects tools. The runtime records actions and enforces workspace boundaries, budgets, and completion evidence.
 
-This is a maintained extension of upstream CoreCoder. The same added mechanisms also exist in the local extended CoreCoder workspace; the ClueCoder name identifies this curated distribution, not an independently reimplemented engine.
+ClueCoder is developed on top of [CoreCoder](https://github.com/he-yufeng/CoreCoder), adding traceable execution, recoverable state, and evidence-based task verification. Upstream authorship and the MIT license are preserved.
 
 The project tracks a task beyond patch generation: preserve the current request, record actual operations, recover progress, and distinguish a proposed final answer from a result supported by checks.
 

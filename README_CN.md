@@ -1,7 +1,5 @@
 # ClueCoder
 
-原名 TraceCoder。配置迁移及历史验证记录说明见[命名迁移](docs/CLUECODER_RENAME.md)。
-
 **可追踪执行、可恢复状态、基于证据验收的 Python 编程 Agent。**
 
 中文 | [English](https://github.com/tongtreeopen/ClueCoder/blob/main/README.md)
@@ -10,7 +8,7 @@ ClueCoder 面向需要理解 Agent 如何修改代码、为什么停止、如何
 
 我们关注的不只是生成补丁，还包括一项任务从开始到交接的完整过程：保留当前需求，记录真实操作，恢复工作进度，并区分“模型说完成”和“已有检查证据”。
 
-本项目是基于上游 CoreCoder 的维护扩展。这些新增机制也存在于本地扩展后的 CoreCoder 工作区；ClueCoder 标识的是整理后的独立发布版本，而非重新实现的全新引擎。
+ClueCoder 是在 [CoreCoder](https://github.com/he-yufeng/CoreCoder) 基础上开发的编程 Agent，扩展了可追踪执行、可恢复状态和基于证据的任务验收能力，并保留上游作者署名与 MIT 许可证。
 
 ## 能做什么
 
