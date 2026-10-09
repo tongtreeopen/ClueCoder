@@ -8,13 +8,13 @@ import sys
 
 import pytest
 
-from tracecoder import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.hooks import Hooks, load_hooks
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.permissions import Permission
-from tracecoder.tools.agent import AgentTool
-from tracecoder.tools.write import WriteFileTool
+from cluecoder import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.hooks import Hooks, load_hooks
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.permissions import Permission
+from cluecoder.tools.agent import AgentTool
+from cluecoder.tools.write import WriteFileTool
 
 
 def _python_script(tmp_path, name, body):
@@ -119,7 +119,7 @@ def test_failing_hook_is_skipped_with_a_warning(tmp_path, caplog):
 
 
 def test_slow_hook_times_out_and_is_skipped(tmp_path, caplog, monkeypatch):
-    monkeypatch.setattr("tracecoder.hooks.TIMEOUT", 0.3)
+    monkeypatch.setattr("cluecoder.hooks.TIMEOUT", 0.3)
     agent = _agent(
         tmp_path,
         Hooks(pre=[{"matcher": "*", "command": _python_script(tmp_path, "slow.py", "import time\ntime.sleep(5)\n")}], post=[]),

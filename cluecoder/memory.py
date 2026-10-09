@@ -37,8 +37,8 @@ class MemoryStore:
             raise ValueError("Invalid memory scope")
         self.workspace = workspace.resolve()
         self.scope = scope
-        self.directory = (self.workspace / ".tracecoder" / "memory" if scope == "project" else
-                          (user_root or Path.home() / ".tracecoder" / "memory").absolute())
+        self.directory = (self.workspace / ".cluecoder" / "memory" if scope == "project" else
+                          (user_root or Path.home() / ".cluecoder" / "memory").absolute())
         self._lock = StateLock(lambda: self._root(create=True) / ".memory.lock")
 
     def _root(self, create: bool = False) -> Path:

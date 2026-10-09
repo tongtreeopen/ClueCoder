@@ -4,16 +4,16 @@ import sys
 
 import pytest
 
-from tracecoder import Agent
-from tracecoder import session as session_module
-from tracecoder.cli_memory import MemoryCLI
-from tracecoder.config import Config
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse
-from tracecoder.memory import MemoryStore
-from tracecoder.memory_workflow import MemoryWorkflow
+from cluecoder import Agent
+from cluecoder import session as session_module
+from cluecoder.cli_memory import MemoryCLI
+from cluecoder.config import Config
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse
+from cluecoder.memory import MemoryStore
+from cluecoder.memory_workflow import MemoryWorkflow
 
-cli_module = importlib.import_module("tracecoder.cli")
+cli_module = importlib.import_module("cluecoder.cli")
 
 
 def test_review_mode_requires_answer_and_auto_mode_is_explicit(tmp_path):
@@ -115,7 +115,7 @@ def test_main_safe_memory_auto_is_default_across_one_shot_modes(tmp_path, monkey
     seen = []
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPENAI_API_KEY", "offline-test-key")
-    monkeypatch.setattr(sys, "argv", ["tracecoder", *args])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", *args])
     monkeypatch.setattr(cli_module, "_run_once", lambda agent, prompt, memory, journal: seen.append(memory.auto))
     monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path / "sessions")
     if "--resume" in args:
@@ -126,7 +126,7 @@ def test_main_safe_memory_auto_is_default_across_one_shot_modes(tmp_path, monkey
 
 
 def test_memory_auto_flag_requires_one_shot_prompt(monkeypatch):
-    monkeypatch.setattr(sys, "argv", ["tracecoder", "--memory-auto"])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", "--memory-auto"])
     with pytest.raises(SystemExit) as error:
         cli_module._parse_args()
     assert error.value.code == 2

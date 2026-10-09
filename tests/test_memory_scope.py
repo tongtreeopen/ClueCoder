@@ -1,8 +1,8 @@
 from pathlib import Path
 
-from tracecoder.cli import _local_context
-from tracecoder.memory import MemoryStore
-from tracecoder.tools.memory import ReadMemoryTool, SearchMemoryTool
+from cluecoder.cli import _local_context
+from cluecoder.memory import MemoryStore
+from cluecoder.tools.memory import ReadMemoryTool, SearchMemoryTool
 
 
 def test_user_and_project_memory_are_isolated_and_explicit(tmp_path):

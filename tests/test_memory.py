@@ -3,12 +3,12 @@ import subprocess
 
 import pytest
 
-from tracecoder import Agent, cli
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.memory import MemoryStore
-from tracecoder.permissions import Permission
-from tracecoder.tools.memory import ListMemoriesTool, ReadMemoryTool, RememberTool
+from cluecoder import Agent, cli
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.memory import MemoryStore
+from cluecoder.permissions import Permission
+from cluecoder.tools.memory import ListMemoriesTool, ReadMemoryTool, RememberTool
 
 
 def test_memory_persists_and_requires_explicit_replace(tmp_path):
@@ -57,13 +57,13 @@ def test_read_only_operations_do_not_create_store(tmp_path):
     store = MemoryStore(tmp_path)
     assert store.list() == "(no memories found)"
     assert store.read("missing").startswith("Error")
-    assert not (tmp_path / ".tracecoder").exists()
+    assert not (tmp_path / ".cluecoder").exists()
 
 
 def test_symlinked_memory_root_is_rejected(tmp_path):
     outside = tmp_path.parent / "outside-memory"
     outside.mkdir(exist_ok=True)
-    root = tmp_path / ".tracecoder" / "memory"
+    root = tmp_path / ".cluecoder" / "memory"
     root.parent.mkdir(parents=True)
     try:
         root.symlink_to(outside, target_is_directory=True)
@@ -78,7 +78,7 @@ def test_junction_parent_is_rejected_before_creating_memory_directory(tmp_path):
     outside = tmp_path / "outside"
     workspace.mkdir()
     outside.mkdir()
-    link = workspace / ".tracecoder"
+    link = workspace / ".cluecoder"
     result = subprocess.run(["cmd", "/c", "mklink", "/J", str(link), str(outside)], capture_output=True, text=True, check=False)
     if result.returncode:
         pytest.skip(f"Cannot create junction: {result.stderr}")
@@ -108,7 +108,7 @@ def test_symlinked_memory_file_is_rejected(tmp_path):
 def test_symlinked_memory_index_refuses_write(tmp_path):
     store = MemoryStore(tmp_path)
     store.remember("first", "简介", "正文")
-    index = tmp_path / ".tracecoder" / "memory" / "MEMORY.md"
+    index = tmp_path / ".cluecoder" / "memory" / "MEMORY.md"
     outside = tmp_path.parent / "outside-memory-index.md"
     outside.write_text("external", encoding="utf-8")
     index.unlink()
@@ -132,7 +132,7 @@ def test_plan_mode_refuses_remember_but_allows_read(tmp_path):
     assert agent.chat("记住") == "done"
     assert "refused" in agent.messages[2]["content"]
     assert store.list() == "(no memories found)"
-    assert not (tmp_path / ".tracecoder").exists()
+    assert not (tmp_path / ".cluecoder").exists()
 
 
 def test_cli_local_context_includes_memory_tools_and_index(tmp_path):
@@ -163,7 +163,7 @@ def test_permission_denial_does_not_save_memory(tmp_path):
                   tools=[RememberTool(store)], permission=Permission())
     assert agent.chat("记住") == "done"
     assert "Permission denied" in agent.messages[2]["content"]
-    assert not (tmp_path / ".tracecoder").exists()
+    assert not (tmp_path / ".cluecoder").exists()
 
 
 def test_read_memory_is_allowed_in_plan_mode(tmp_path):

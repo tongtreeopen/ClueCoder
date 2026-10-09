@@ -9,8 +9,8 @@ import sys
 
 import pytest
 
-from tracecoder import cli as cli_module
-from tracecoder import session as session_module
+from cluecoder import cli as cli_module
+from cluecoder import session as session_module
 
 
 class _OfflineLLM:
@@ -28,7 +28,7 @@ def _drive_cli(tmp_path, monkeypatch, prompt):
     monkeypatch.setattr(cli_module.DockerExecutor, "try_create", lambda workspace: None)
     monkeypatch.setattr(cli_module, "LLM", _OfflineLLM)
     monkeypatch.setattr(cli_module, "LiteLLM", _OfflineLLM)
-    monkeypatch.setattr(sys, "argv", ["tracecoder", "--yes", "-p", prompt])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", "--yes", "-p", prompt])
 
     captured = {}
 

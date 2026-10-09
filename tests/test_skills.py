@@ -1,16 +1,16 @@
 import pytest
 
-from tracecoder import Agent, cli
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.permissions import Permission
-from tracecoder.skills import SkillCatalog
-from tracecoder.tools.agent import AgentTool
-from tracecoder.tools.skill import LoadSkillTool
+from cluecoder import Agent, cli
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.permissions import Permission
+from cluecoder.skills import SkillCatalog
+from cluecoder.tools.agent import AgentTool
+from cluecoder.tools.skill import LoadSkillTool
 
 
 def test_project_skill_wins_and_loads_full_text(tmp_path):
-    project = tmp_path / ".tracecoder" / "skills" / "review" / "SKILL.md"
+    project = tmp_path / ".cluecoder" / "skills" / "review" / "SKILL.md"
     user = tmp_path / "user" / "review" / "SKILL.md"
     project.parent.mkdir(parents=True)
     user.parent.mkdir(parents=True)
@@ -27,7 +27,7 @@ def test_unknown_skill_is_not_a_path(tmp_path):
 
 
 def test_oversized_skill_is_skipped(tmp_path):
-    manifest = tmp_path / ".tracecoder" / "skills" / "large" / "SKILL.md"
+    manifest = tmp_path / ".cluecoder" / "skills" / "large" / "SKILL.md"
     manifest.parent.mkdir(parents=True)
     manifest.write_text("x" * 65537, encoding="utf-8")
     catalog = SkillCatalog(tmp_path, user_root=tmp_path / "user")
@@ -37,7 +37,7 @@ def test_oversized_skill_is_skipped(tmp_path):
 
 @pytest.mark.parametrize("frontmatter", ["name: [broken", "- not-a-mapping"])
 def test_broken_yaml_is_skipped_with_warning(tmp_path, caplog, frontmatter):
-    manifest = tmp_path / ".tracecoder" / "skills" / "broken" / "SKILL.md"
+    manifest = tmp_path / ".cluecoder" / "skills" / "broken" / "SKILL.md"
     manifest.parent.mkdir(parents=True)
     manifest.write_text(f"---\n{frontmatter}\n---\nbody", encoding="utf-8")
     assert "broken" not in SkillCatalog(tmp_path, user_root=tmp_path / "user").catalog()
@@ -49,7 +49,7 @@ def test_symlinked_skill_root_is_skipped(tmp_path):
     manifest = outside / "unsafe" / "SKILL.md"
     manifest.parent.mkdir(parents=True, exist_ok=True)
     manifest.write_text("---\nname: unsafe\ndescription: outside\n---\nsecret", encoding="utf-8")
-    root = tmp_path / ".tracecoder" / "skills"
+    root = tmp_path / ".cluecoder" / "skills"
     root.parent.mkdir(parents=True)
     try:
         root.symlink_to(outside, target_is_directory=True)
@@ -64,7 +64,7 @@ def test_skill_root_symlink_within_workspace_is_skipped(tmp_path):
     manifest = elsewhere / "unsafe" / "SKILL.md"
     manifest.parent.mkdir(parents=True)
     manifest.write_text("---\nname: unsafe\ndescription: outside root\n---\nsecret", encoding="utf-8")
-    root = tmp_path / ".tracecoder" / "skills"
+    root = tmp_path / ".cluecoder" / "skills"
     root.parent.mkdir(parents=True)
     try:
         root.symlink_to(elsewhere, target_is_directory=True)
@@ -76,7 +76,7 @@ def test_skill_root_symlink_within_workspace_is_skipped(tmp_path):
 def test_symlinked_skill_manifest_is_skipped(tmp_path):
     outside = tmp_path.parent / "outside-skill.md"
     outside.write_text("---\nname: outside\ndescription: 外部\n---\nsecret", encoding="utf-8")
-    manifest = tmp_path / ".tracecoder" / "skills" / "linked" / "SKILL.md"
+    manifest = tmp_path / ".cluecoder" / "skills" / "linked" / "SKILL.md"
     manifest.parent.mkdir(parents=True)
     try:
         manifest.symlink_to(outside)
@@ -88,7 +88,7 @@ def test_symlinked_skill_manifest_is_skipped(tmp_path):
 
 
 def test_catalog_is_a_startup_snapshot(tmp_path):
-    manifest = tmp_path / ".tracecoder" / "skills" / "review" / "SKILL.md"
+    manifest = tmp_path / ".cluecoder" / "skills" / "review" / "SKILL.md"
     manifest.parent.mkdir(parents=True)
     manifest.write_text("---\nname: review\ndescription: old\n---\nold body", encoding="utf-8")
     catalog = SkillCatalog(tmp_path, user_root=tmp_path / "user")
@@ -109,7 +109,7 @@ def test_load_skill_tool_is_read_only_in_plan_mode(tmp_path):
 
 
 def test_cli_local_context_uses_workspace_skill_catalog(tmp_path):
-    manifest = tmp_path / ".tracecoder" / "skills" / "review" / "SKILL.md"
+    manifest = tmp_path / ".cluecoder" / "skills" / "review" / "SKILL.md"
     manifest.parent.mkdir(parents=True)
     manifest.write_text("---\nname: review\ndescription: 审查代码\n---\n项目正文", encoding="utf-8")
     tools, context = cli._local_context(tmp_path)
@@ -119,7 +119,7 @@ def test_cli_local_context_uses_workspace_skill_catalog(tmp_path):
 
 
 def test_skill_body_appears_only_after_tool_call(tmp_path):
-    manifest = tmp_path / ".tracecoder" / "skills" / "review" / "SKILL.md"
+    manifest = tmp_path / ".cluecoder" / "skills" / "review" / "SKILL.md"
     manifest.parent.mkdir(parents=True)
     manifest.write_text("---\nname: review\ndescription: 审查\n---\n项目正文", encoding="utf-8")
     catalog = SkillCatalog(tmp_path, user_root=tmp_path / "user")
@@ -131,7 +131,7 @@ def test_skill_body_appears_only_after_tool_call(tmp_path):
 
 
 def test_sub_agent_inherits_skill_context_and_tool(tmp_path):
-    manifest = tmp_path / ".tracecoder" / "skills" / "review" / "SKILL.md"
+    manifest = tmp_path / ".cluecoder" / "skills" / "review" / "SKILL.md"
     manifest.parent.mkdir(parents=True)
     manifest.write_text("---\nname: review\ndescription: 审查\n---\n项目正文", encoding="utf-8")
     catalog = SkillCatalog(tmp_path, user_root=tmp_path / "user")
@@ -161,11 +161,11 @@ def test_sub_agent_inherits_skill_context_and_tool(tmp_path):
 
 
 def test_cli_one_shot_loads_project_skill(tmp_path, monkeypatch):
-    manifest = tmp_path / ".tracecoder" / "skills" / "review" / "SKILL.md"
+    manifest = tmp_path / ".cluecoder" / "skills" / "review" / "SKILL.md"
     manifest.parent.mkdir(parents=True)
     manifest.write_text("---\nname: review\ndescription: 审查\n---\n项目正文", encoding="utf-8")
     monkeypatch.chdir(tmp_path)
-    monkeypatch.setattr("sys.argv", ["tracecoder", "--api-key", "offline", "-p", "load review"])
+    monkeypatch.setattr("sys.argv", ["cluecoder", "--api-key", "offline", "-p", "load review"])
     requests = []
 
     class RecordingLLM(ScriptedLLM):

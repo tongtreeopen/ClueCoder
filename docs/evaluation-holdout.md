@@ -1,14 +1,14 @@
 # Fixed holdout validation suite
 
-`tracecoder-holdout-v1` is a second, versioned set of eight Python repair tasks for
-checking a future Agent candidate after development on `tracecoder-baseline-v1`.
+`cluecoder-holdout-v1` is a second, versioned set of eight Python repair tasks for
+checking a future Agent candidate after development on `cluecoder-baseline-v1`.
 Its manifest SHA-256 is
-`9faef87735a00b1867dff1ffdd2ba358838ab1cf4cee38cc28a2cde85e6c06fb`.
+`d825bc061313e8973ec4e61f142ec0de060f0c1a13df4f8144a33dd1a9a49e6e`.
 Keep its prompts, snapshots, Gates, reference patches, task order and budgets fixed
 when comparing candidates. The runner records the manifest and Gate hashes for each
 run. Do not place Gate tests or reference patches in the Agent workspace.
 
-Validate the fixtures without a model from a clean TraceCoder checkout with the
+Validate the fixtures without a model from a clean ClueCoder checkout with the
 configured local Docker image:
 
 ```powershell
@@ -22,7 +22,7 @@ performance. The holdout has not been run with a real model at this freeze point
 To run a future candidate, use a new output directory outside the checkout:
 
 ```powershell
-py -3.13 -m tracecoder.eval run --suite benchmarks/tracecoder-holdout-v1/manifest.json --output E:\eval-runs\holdout-001 --model YOUR_MODEL --provider openai --base-url https://YOUR_ENDPOINT/v1
+py -3.13 -m cluecoder.eval run --suite benchmarks/cluecoder-holdout-v1/manifest.json --output E:\eval-runs\holdout-001 --model YOUR_MODEL --provider openai --base-url https://YOUR_ENDPOINT/v1
 ```
 
 The same Docker isolation, 900-second task limit, shared 50-call and 100,000-token

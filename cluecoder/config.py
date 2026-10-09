@@ -36,21 +36,21 @@ class Config:
     @classmethod
     def from_env(cls) -> "Config":
         # load .env if present (won't override existing env vars)
-        if os.getenv("TRACECODER_EVAL_MODE") != "1":
+        if os.getenv("CLUECODER_EVAL_MODE") != "1":
             _load_dotenv()
         # pick up common env vars automatically
         api_key = (
-            os.getenv("TRACECODER_API_KEY")
+            os.getenv("CLUECODER_API_KEY")
             or os.getenv("OPENAI_API_KEY")
             or os.getenv("DEEPSEEK_API_KEY")
             or ""
         )
         return cls(
-            model=os.getenv("TRACECODER_MODEL", "gpt-5.5"),
+            model=os.getenv("CLUECODER_MODEL", "gpt-5.5"),
             api_key=api_key,
-            base_url=os.getenv("OPENAI_BASE_URL") or os.getenv("TRACECODER_BASE_URL"),
-            max_tokens=int(os.getenv("TRACECODER_MAX_TOKENS", "4096")),
-            temperature=float(os.getenv("TRACECODER_TEMPERATURE", "0")),
-            max_context_tokens=int(os.getenv("TRACECODER_MAX_CONTEXT", "128000")),
-            provider=os.getenv("TRACECODER_PROVIDER", "openai"),
+            base_url=os.getenv("OPENAI_BASE_URL") or os.getenv("CLUECODER_BASE_URL"),
+            max_tokens=int(os.getenv("CLUECODER_MAX_TOKENS", "4096")),
+            temperature=float(os.getenv("CLUECODER_TEMPERATURE", "0")),
+            max_context_tokens=int(os.getenv("CLUECODER_MAX_CONTEXT", "128000")),
+            provider=os.getenv("CLUECODER_PROVIDER", "openai"),
         )

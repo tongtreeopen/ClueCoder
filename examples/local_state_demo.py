@@ -4,13 +4,13 @@ import json
 import tempfile
 from pathlib import Path
 
-from tracecoder.memory import MemoryStore
-from tracecoder.skills import SkillCatalog
-from tracecoder.tasks import TaskStore
+from cluecoder.memory import MemoryStore
+from cluecoder.skills import SkillCatalog
+from cluecoder.tasks import TaskStore
 
 
 def run_demo(workspace: Path) -> dict[str, str]:
-    manifest = workspace / ".tracecoder" / "skills" / "review" / "SKILL.md"
+    manifest = workspace / ".cluecoder" / "skills" / "review" / "SKILL.md"
     manifest.parent.mkdir(parents=True, exist_ok=True)
     manifest.write_text("---\nname: review\ndescription: 审查代码\n---\n检查错误处理", encoding="utf-8")
     skill = SkillCatalog(workspace, user_root=workspace / "user-skills")

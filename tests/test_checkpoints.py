@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from tracecoder import checkpoints
-from tracecoder.tools.edit import EditFileTool
-from tracecoder.tools.write import WriteFileTool
+from cluecoder import checkpoints
+from cluecoder.tools.edit import EditFileTool
+from cluecoder.tools.write import WriteFileTool
 
 
 def setup_function():

@@ -10,13 +10,13 @@ import sys
 
 import pytest
 
-from tracecoder import mcp
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.hooks import Hooks
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.mcp import MCPError, load_mcp_tools
-from tracecoder.permissions import Permission
+from cluecoder import mcp
+from cluecoder.agent import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.hooks import Hooks
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.mcp import MCPError, load_mcp_tools
+from cluecoder.permissions import Permission
 
 FAKE_SERVER = """
 import json, os, sys, time

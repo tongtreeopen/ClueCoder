@@ -12,10 +12,10 @@ from importlib.util import find_spec
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from tracecoder.eval.cases import _tree_hash, load_suite, materialize
-from tracecoder.eval.gate import run_gate
-from tracecoder.eval.report import render_markdown, summarize
-from tracecoder.eval.runner import (
+from cluecoder.eval.cases import _tree_hash, load_suite, materialize
+from cluecoder.eval.gate import run_gate
+from cluecoder.eval.report import render_markdown, summarize
+from cluecoder.eval.runner import (
     SOURCE_ROOT,
     _clean,
     _cleanup_workers,
@@ -25,7 +25,7 @@ from tracecoder.eval.runner import (
     _revision,
     run_case,
 )
-from tracecoder.execution import DEFAULT_IMAGE, DockerExecutor
+from cluecoder.execution import DEFAULT_IMAGE, DockerExecutor
 
 TASK_IDS = [
     "csv_quotes",
@@ -47,7 +47,7 @@ HOLDOUT_TASK_IDS = [
     "balanced_brackets",
     "ragged_transpose",
 ]
-SUITES = {"tracecoder-baseline-v1": TASK_IDS, "tracecoder-holdout-v1": HOLDOUT_TASK_IDS}
+SUITES = {"cluecoder-baseline-v1": TASK_IDS, "cluecoder-holdout-v1": HOLDOUT_TASK_IDS}
 
 
 def run_suite(manifest: Path, output: Path, model: str, provider: str, base_url: str | None, max_tokens: int = 100000) -> dict:
@@ -61,7 +61,7 @@ def run_suite(manifest: Path, output: Path, model: str, provider: str, base_url:
     results, checks = [], []
     scheduled = TASK_IDS
     metadata = {
-        "suite_id": "tracecoder-baseline-v1",
+        "suite_id": "cluecoder-baseline-v1",
         "suite_sha256": None,
         "configuration": {
             "model": model,
@@ -110,10 +110,10 @@ def run_suite(manifest: Path, output: Path, model: str, provider: str, base_url:
             ):
                 raise ValueError("Base URL must be HTTP(S) without credentials, query or fragment")
             metadata["configuration"]["base_url"] = base_url
-        if not any(os.environ.get(key) for key in ("TRACECODER_API_KEY", "OPENAI_API_KEY", "DEEPSEEK_API_KEY")):
-            raise ValueError("Missing credential: set TRACECODER_API_KEY, OPENAI_API_KEY or DEEPSEEK_API_KEY in the environment")
+        if not any(os.environ.get(key) for key in ("CLUECODER_API_KEY", "OPENAI_API_KEY", "DEEPSEEK_API_KEY")):
+            raise ValueError("Missing credential: set CLUECODER_API_KEY, OPENAI_API_KEY or DEEPSEEK_API_KEY in the environment")
         metadata["agent_revision"] = _revision(SOURCE_ROOT)
-        with tempfile.TemporaryDirectory(prefix="tracecoder-suite-preflight-") as temporary:
+        with tempfile.TemporaryDirectory(prefix="cluecoder-suite-preflight-") as temporary:
             for task in suite.tasks:
                 workspace = Path(temporary).resolve() / task.id
                 materialize(task, workspace)
@@ -121,11 +121,11 @@ def run_suite(manifest: Path, output: Path, model: str, provider: str, base_url:
                 run_id = uuid.uuid4().hex
                 try:
                     ready = DockerExecutor(workspace, DEFAULT_IMAGE, run_id).run(
-                        "test -w /workspace && test ! -e /gate && printf tracecoder-eval-ready", timeout=15
+                        "test -w /workspace && test ! -e /gate && printf cluecoder-eval-ready", timeout=15
                     )
                 finally:
                     cleaned = _cleanup_workers(run_id)
-                if ready != "tracecoder-eval-ready" or not cleaned:
+                if ready != "cluecoder-eval-ready" or not cleaned:
                     raise RuntimeError(f"Worker Docker preflight or cleanup failed: {ready}")
                 gate = run_gate(task, workspace, DEFAULT_IMAGE)
                 checks.append({"task_id": task.id, **asdict(gate)})

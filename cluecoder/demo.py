@@ -122,9 +122,9 @@ def _script(workdir: Path, strict: bool = False) -> list[LLMResponse]:
 
 def run_demo(strict: bool = False, workspace: Path | None = None) -> int:
     workdir = (
-        Path(tempfile.mkdtemp(prefix="tracecoder-demo-", dir=workspace))
+        Path(tempfile.mkdtemp(prefix="cluecoder-demo-", dir=workspace))
         if strict
-        else Path(tempfile.mkdtemp(prefix="tracecoder-demo-"))
+        else Path(tempfile.mkdtemp(prefix="cluecoder-demo-"))
     )
     if strict:
         root = workspace or Path.cwd()
@@ -147,7 +147,7 @@ def run_demo(strict: bool = False, workspace: Path | None = None) -> int:
     else:
         agent = Agent(llm=ScriptedLLM(_script(workdir)), tools=[WriteFileTool(WorkspacePolicy(workdir)), BashTool()])
 
-    console.print(Panel.fit(f"[bold]{_TASK}[/]", title="tracecoder demo (offline)"))
+    console.print(Panel.fit(f"[bold]{_TASK}[/]", title="cluecoder demo (offline)"))
     result = agent.chat(
         _TASK,
         on_tool=lambda name, args: console.print(f"[cyan]tool:[/] {name} {_brief(args)}"),

@@ -4,14 +4,14 @@ import sys
 
 import pytest
 
-from tracecoder import Agent
-from tracecoder import cli as cli_module
-from tracecoder import session as session_module
-from tracecoder.checkpoints import clear, pending, record, undo
-from tracecoder.cli import _cli_context
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.permissions import Permission
+from cluecoder import Agent
+from cluecoder import cli as cli_module
+from cluecoder import session as session_module
+from cluecoder.checkpoints import clear, pending, record, undo
+from cluecoder.cli import _cli_context
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.permissions import Permission
 
 
 class RecordingLLM(ScriptedLLM):
@@ -74,7 +74,7 @@ def test_main_uses_strict_tools_in_every_mode(tmp_path, monkeypatch, args):
     seen = []
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPENAI_API_KEY", "offline-test-key")
-    monkeypatch.setattr(sys, "argv", ["tracecoder", *args])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", *args])
     monkeypatch.setattr(cli_module, "_run_once", lambda agent, prompt, memory, journal: seen.append((agent, memory)))
     monkeypatch.setattr(cli_module, "_repl", lambda agent, config, policy, memory, journal: seen.append((agent, memory)))
     monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path / "sessions")
@@ -96,12 +96,12 @@ def test_main_uses_strict_tools_in_every_mode(tmp_path, monkeypatch, args):
 def test_cli_demo_is_offline_and_does_not_create_sessions(tmp_path, monkeypatch, capsys):
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path / "sessions")
-    monkeypatch.setattr(sys, "argv", ["tracecoder", "--demo"])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", "--demo"])
     monkeypatch.setattr(cli_module.DockerExecutor, "try_create", lambda workspace: None)
     with pytest.raises(SystemExit) as result:
         cli_module.main()
     assert result.value.code == 0
-    assert "tracecoder demo (offline)" in capsys.readouterr().out
+    assert "cluecoder demo (offline)" in capsys.readouterr().out
     assert not (tmp_path / "sessions").exists()
 
 

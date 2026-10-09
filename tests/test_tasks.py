@@ -5,12 +5,12 @@ from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
-from tracecoder import Agent, cli
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.permissions import Permission
-from tracecoder.tasks import TaskStore
-from tracecoder.tools.task import CreateTaskTool
+from cluecoder import Agent, cli
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.permissions import Permission
+from cluecoder.tasks import TaskStore
+from cluecoder.tools.task import CreateTaskTool
 
 
 def test_task_survives_new_store_instance(tmp_path):
@@ -23,7 +23,7 @@ def test_task_survives_new_store_instance(tmp_path):
 def test_task_id_mismatch_is_rejected(tmp_path):
     store = TaskStore(tmp_path)
     task = store.create("检查配置")
-    path = tmp_path / ".tracecoder" / "tasks" / f"{task.id}.json"
+    path = tmp_path / ".cluecoder" / "tasks" / f"{task.id}.json"
     data = json.loads(path.read_text(encoding="utf-8"))
     data["id"] = "task_ffffffff"
     path.write_text(json.dumps(data), encoding="utf-8")
@@ -42,7 +42,7 @@ def test_invalid_id_and_empty_subject(tmp_path):
 def test_symlinked_tasks_directory_is_rejected(tmp_path):
     outside = tmp_path.parent / "outside-tasks"
     outside.mkdir(exist_ok=True)
-    directory = tmp_path / ".tracecoder" / "tasks"
+    directory = tmp_path / ".cluecoder" / "tasks"
     directory.parent.mkdir(parents=True)
     try:
         directory.symlink_to(outside, target_is_directory=True)
@@ -58,7 +58,7 @@ def test_junction_parent_is_rejected_before_creating_tasks_directory(tmp_path):
     outside = tmp_path / "outside"
     workspace.mkdir()
     outside.mkdir()
-    link = workspace / ".tracecoder"
+    link = workspace / ".cluecoder"
     result = subprocess.run(["cmd", "/c", "mklink", "/J", str(link), str(outside)], capture_output=True, text=True, check=False)
     if result.returncode:
         pytest.skip(f"Cannot create junction: {result.stderr}")
@@ -73,7 +73,7 @@ def test_junction_parent_is_rejected_before_creating_tasks_directory(tmp_path):
 def test_malformed_task_status_is_a_validation_error(tmp_path):
     store = TaskStore(tmp_path)
     task = store.create("校验输入")
-    path = tmp_path / ".tracecoder" / "tasks" / f"{task.id}.json"
+    path = tmp_path / ".cluecoder" / "tasks" / f"{task.id}.json"
     data = json.loads(path.read_text(encoding="utf-8"))
     data["status"] = []
     path.write_text(json.dumps(data), encoding="utf-8")
@@ -140,7 +140,7 @@ def test_invalid_dependency_and_owner_leave_task_unchanged(tmp_path):
 def test_dependency_update_validates_values_before_writing(tmp_path):
     store = TaskStore(tmp_path)
     task = store.create("安全更新")
-    path = tmp_path / ".tracecoder" / "tasks" / f"{task.id}.json"
+    path = tmp_path / ".cluecoder" / "tasks" / f"{task.id}.json"
     before = path.read_bytes()
     with pytest.raises(ValueError, match="dependency"):
         store.update(task.id, [["not-an-id"]])
@@ -186,7 +186,7 @@ def test_cli_task_tools_share_workspace_store(tmp_path):
         by_name["claim_task"].execute(created["id"])
     by_name["claim_task"].execute(prerequisite["id"])
     by_name["complete_task"].execute(prerequisite["id"])
-    assert json.loads(by_name["claim_task"].execute(created["id"]))["owner"] == "tracecoder"
+    assert json.loads(by_name["claim_task"].execute(created["id"]))["owner"] == "cluecoder"
     assert json.loads(by_name["complete_task"].execute(created["id"]))["status"] == "completed"
     assert {task["id"] for task in json.loads(by_name["list_tasks"].execute())} == {created["id"], prerequisite["id"]}
 

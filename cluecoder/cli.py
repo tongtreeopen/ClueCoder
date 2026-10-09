@@ -125,12 +125,12 @@ def _cli_context(
 
 def _parse_args():
     p = argparse.ArgumentParser(
-        prog="tracecoder",
-        description="TraceCoder: traceable execution, recoverable state, and evidence-based task verification.",
+        prog="cluecoder",
+        description="ClueCoder: traceable execution, recoverable state, and evidence-based task verification.",
         epilog="Start in your project directory. Bash requires local Docker isolation. "
         "Use /help for commands and tool guidance; enable verification with /goal <task>.",
     )
-    p.add_argument("-m", "--model", help="Model name (default: $TRACECODER_MODEL or gpt-5.5)")
+    p.add_argument("-m", "--model", help="Model name (default: $CLUECODER_MODEL or gpt-5.5)")
     p.add_argument("--base-url", help="API base URL (default: $OPENAI_BASE_URL)")
     p.add_argument("--api-key", help="API key (default: $OPENAI_API_KEY)")
     p.add_argument("-p", "--prompt", help="One-shot prompt (non-interactive mode)")
@@ -147,7 +147,7 @@ def _parse_args():
 
 def main():
     args = _parse_args()
-    eval_mode = os.getenv("TRACECODER_EVAL_MODE") == "1"
+    eval_mode = os.getenv("CLUECODER_EVAL_MODE") == "1"
     if eval_mode and (not args.prompt or not args.yes or args.resume):
         raise SystemExit("Evaluation mode requires --yes -p and does not support --resume")
 
@@ -169,7 +169,7 @@ def main():
     if not config.api_key:
         console.print("[red bold]No API key found.[/]")
         console.print(
-            "Set one of: OPENAI_API_KEY, DEEPSEEK_API_KEY, or TRACECODER_API_KEY\n"
+            "Set one of: OPENAI_API_KEY, DEEPSEEK_API_KEY, or CLUECODER_API_KEY\n"
             "\nExamples:\n"
             "  # OpenAI\n"
             "  export OPENAI_API_KEY=sk-...\n"
@@ -178,7 +178,7 @@ def main():
             "  export OPENAI_API_KEY=sk-... OPENAI_BASE_URL=https://api.deepseek.com\n"
             "\n"
             "  # Ollama (local)\n"
-            "  export OPENAI_API_KEY=ollama OPENAI_BASE_URL=http://localhost:11434/v1 TRACECODER_MODEL=qwen2.5-coder\n"
+            "  export OPENAI_API_KEY=ollama OPENAI_BASE_URL=http://localhost:11434/v1 CLUECODER_MODEL=qwen2.5-coder\n"
         )
         sys.exit(1)
 
@@ -191,14 +191,14 @@ def main():
         max_tokens=config.max_tokens,
     )
     if eval_mode:
-        required = {"TRACECODER_EVAL_USAGE_PATH", "TRACECODER_EVAL_MAX_CALLS", "TRACECODER_EVAL_MAX_TOKENS"}
+        required = {"CLUECODER_EVAL_USAGE_PATH", "CLUECODER_EVAL_MAX_CALLS", "CLUECODER_EVAL_MAX_TOKENS"}
         if missing := sorted(required - os.environ.keys()):
             raise SystemExit("Missing evaluation configuration: " + ", ".join(missing))
         llm = BudgetedModel(
             llm,
-            Path(os.environ["TRACECODER_EVAL_USAGE_PATH"]),
-            max_calls=int(os.environ["TRACECODER_EVAL_MAX_CALLS"]),
-            max_tokens=int(os.environ["TRACECODER_EVAL_MAX_TOKENS"]),
+            Path(os.environ["CLUECODER_EVAL_USAGE_PATH"]),
+            max_calls=int(os.environ["CLUECODER_EVAL_MAX_CALLS"]),
+            max_tokens=int(os.environ["CLUECODER_EVAL_MAX_TOKENS"]),
         )
     # consent layer: ask in the REPL, refuse in one-shot mode, --yes skips it
     if args.yes:
@@ -274,8 +274,8 @@ def main():
         context_catalog=memory_cli.context,
     )
     _bind_work(agent, journal, memory_cli, work)
-    if eval_mode and os.getenv("TRACECODER_EVAL_ALLOWED_PATHS"):
-        agent.configure_eval_scope(workspace, json.loads(os.environ["TRACECODER_EVAL_ALLOWED_PATHS"]))
+    if eval_mode and os.getenv("CLUECODER_EVAL_ALLOWED_PATHS"):
+        agent.configure_eval_scope(workspace, json.loads(os.environ["CLUECODER_EVAL_ALLOWED_PATHS"]))
     if eval_mode:
         agent.eval_trace_error = False
 
@@ -391,7 +391,7 @@ def _bind_work(agent: Agent, journal: SessionJournal, memory: MemoryCLI, work: W
     journal.set_context_budget(
         agent.context.max_tokens,
         getattr(agent.llm, "extra", {}).get("max_tokens", 4096),
-        "TRACECODER_MAX_CONTEXT" if os.getenv("TRACECODER_MAX_CONTEXT") else "configured default",
+        "CLUECODER_MAX_CONTEXT" if os.getenv("CLUECODER_MAX_CONTEXT") else "configured default",
     )
     agent.work_state = work
     memory.journal = journal
@@ -480,8 +480,8 @@ def _run_once(agent: Agent, prompt: str, memory: MemoryCLI | None = None, journa
         if memory:
             memory.begin_turn(prompt)
         response = agent.chat(prompt, on_token=on_token, on_tool=on_tool)
-        turn_path = os.getenv("TRACECODER_EVAL_TURN_PATH")
-        if turn_path and os.getenv("TRACECODER_EVAL_MODE") == "1":
+        turn_path = os.getenv("CLUECODER_EVAL_TURN_PATH")
+        if turn_path and os.getenv("CLUECODER_EVAL_MODE") == "1":
             reason = (
                 "trace_error"
                 if getattr(agent, "eval_trace_error", False)
@@ -503,7 +503,7 @@ def _run_once(agent: Agent, prompt: str, memory: MemoryCLI | None = None, journa
     elif memory:
         memory.after_turn(agent, prompt, interactive=False)
     if journal:
-        console.print(f"[dim]Session: {journal.id} (resume with tracecoder -r {journal.id})[/dim]")
+        console.print(f"[dim]Session: {journal.id} (resume with cluecoder -r {journal.id})[/dim]")
     if goal is not None and goal.text and goal.status not in {"cancelled", "achieved"}:
         sys.exit(1)
 
@@ -521,7 +521,7 @@ def _repl(
     mcp_count = sum(1 for t in agent.tools if t.name.startswith("mcp__"))
     console.print(
         Panel(
-            f"[bold]TraceCoder[/bold] v{__version__}\n"
+            f"[bold]ClueCoder[/bold] v{__version__}\n"
             "Traceable execution · recoverable work · evidence-based verification\n"
             f"Model: [cyan]{config.model}[/cyan]"
             + (f"  Base: [dim]{config.base_url}[/dim]" if config.base_url else "")
@@ -547,7 +547,7 @@ def _repl(
         )
     )
 
-    hist_path = os.path.expanduser("~/.tracecoder_history")
+    hist_path = os.path.expanduser("~/.cluecoder_history")
     history = FileHistory(hist_path)
     if memory is not None and memory.queue is not None:
         memory.start_background(delay=0)
@@ -610,7 +610,7 @@ def _repl(
                 memory.recalled = ""
             console.print(
                 "[yellow]Conversation reset.[/yellow]"
-                + (f" Previous session: {old_id}; resume with tracecoder -r {old_id}" if journal else "")
+                + (f" Previous session: {old_id}; resume with cluecoder -r {old_id}" if journal else "")
             )
             continue
         if user_input == "/plan":
@@ -706,7 +706,7 @@ def _repl(
         if user_input == "/save":
             sid = journal.id if journal else save_session(agent.messages, config.model)
             console.print(f"[green]Session saved: {sid}[/green]")
-            console.print(f"Resume with: tracecoder -r {sid}")
+            console.print(f"Resume with: cluecoder -r {sid}")
             continue
         if user_input == "/diff":
             from .tools.edit import _changed_files
@@ -812,7 +812,7 @@ def _repl(
 def _show_help():
     console.print(
         Panel(
-            "[bold]TraceCoder commands:[/bold]\n"
+            "[bold]ClueCoder commands:[/bold]\n"
             "  /help          Show this help\n"
             "  /reset         Start a new session; saved sessions remain resumable\n"
             "  /model         Show current model\n"
@@ -835,7 +835,7 @@ def _show_help():
             "  /plan          Toggle plan mode: read-only, then a plan to approve\n"
             "  /save          Show the automatically saved session ID\n"
             "  /sessions      List saved sessions\n"
-            "  quit           Exit TraceCoder\n"
+            "  quit           Exit ClueCoder\n"
             "\n"
             "[bold]Model tools (request in natural language, not slash commands):[/bold]\n"
             "  Skills         load_skill reads project/user rules on demand\n"
@@ -847,17 +847,17 @@ def _show_help():
             "                 Review is serial and read-only; findings are not test evidence\n"
             "\n"
             "[bold]Startup and boundaries:[/bold]\n"
-            "  tracecoder --resume ID  Restore a session without replaying old tools\n"
-            "  tracecoder --yes -p TEXT  One-shot run with tool consent\n"
+            "  cluecoder --resume ID  Restore a session without replaying old tools\n"
+            "  cluecoder --yes -p TEXT  One-shot run with tool consent\n"
             "  Files stay in the startup workspace; Bash requires configured local Docker\n"
             "  --yes does not bypass isolation, Plan Mode, or evidence checks\n"
             "  Background tasks are process-local; exiting cleans up active tasks\n"
-            "  Settings use TRACECODER_*; project state is .tracecoder/\n"
+            "  Settings use CLUECODER_*; project state is .cluecoder/\n"
             "\n"
             "[bold]Input:[/bold]\n"
             "  Enter          Submit message\n"
             "  Esc+Enter      Insert newline (for pasting code)",
-            title="TraceCoder Help",
+            title="ClueCoder Help",
             border_style="dim",
         )
     )

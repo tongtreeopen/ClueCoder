@@ -14,10 +14,10 @@ import time
 import uuid
 from pathlib import Path
 
-from tracecoder.eval.cases import TaskSpec, _tree_hash, materialize
-from tracecoder.eval.gate import run_gate
-from tracecoder.execution import DockerExecutor
-from tracecoder.session_journal import _SECRET, _digest
+from cluecoder.eval.cases import TaskSpec, _tree_hash, materialize
+from cluecoder.eval.gate import run_gate
+from cluecoder.execution import DockerExecutor
+from cluecoder.session_journal import _SECRET, _digest
 
 SOURCE_ROOT = Path(__file__).resolve().parents[2]
 MAX_LOG_BYTES = 4_000_000
@@ -63,8 +63,8 @@ def _child_env(home: Path, usage: Path, model: str, provider: str, base_url: str
                image: str, run_id: str, turn_path: Path | None = None,
                max_tokens: int = 100000) -> dict[str, str]:
     env = {key: value for key, value in os.environ.items()
-           if not key.startswith(("TRACECODER_", "PYTHON")) and key not in {"OPENAI_BASE_URL"}}
-    for key in ("TRACECODER_API_KEY",):
+           if not key.startswith(("CLUECODER_", "PYTHON")) and key not in {"OPENAI_BASE_URL"}}
+    for key in ("CLUECODER_API_KEY",):
         if key in os.environ:
             env[key] = os.environ[key]
     env.update({
@@ -72,22 +72,22 @@ def _child_env(home: Path, usage: Path, model: str, provider: str, base_url: str
         "LOCALAPPDATA": str(home / "localappdata"), "XDG_CONFIG_HOME": str(home / "config"),
         "XDG_CACHE_HOME": str(home / "cache"), "PYTHONPATH": str(SOURCE_ROOT), "PYTHONSAFEPATH": "1",
         "PYTHONNOUSERSITE": "1", "PYTHONDONTWRITEBYTECODE": "1", "PYTHONIOENCODING": "utf-8",
-        "TRACECODER_EVAL_MODE": "1", "TRACECODER_EVAL_RUN_ID": run_id, "TRACECODER_EVAL_IMAGE": image,
-        "TRACECODER_EVAL_USAGE_PATH": str(usage), "TRACECODER_EVAL_MAX_CALLS": "50",
-        "TRACECODER_EVAL_MAX_TOKENS": str(max_tokens), "TRACECODER_MODEL": model, "TRACECODER_PROVIDER": provider,
-        "TRACECODER_TEMPERATURE": "0", "TRACECODER_MAX_TOKENS": "4096", "TRACECODER_MAX_CONTEXT": "128000",
+        "CLUECODER_EVAL_MODE": "1", "CLUECODER_EVAL_RUN_ID": run_id, "CLUECODER_EVAL_IMAGE": image,
+        "CLUECODER_EVAL_USAGE_PATH": str(usage), "CLUECODER_EVAL_MAX_CALLS": "50",
+        "CLUECODER_EVAL_MAX_TOKENS": str(max_tokens), "CLUECODER_MODEL": model, "CLUECODER_PROVIDER": provider,
+        "CLUECODER_TEMPERATURE": "0", "CLUECODER_MAX_TOKENS": "4096", "CLUECODER_MAX_CONTEXT": "128000",
     })
     if base_url:
         env["OPENAI_BASE_URL"] = base_url
     if turn_path is not None:
-        env["TRACECODER_EVAL_TURN_PATH"] = str(turn_path)
+        env["CLUECODER_EVAL_TURN_PATH"] = str(turn_path)
     return env
 
 
 def _cleanup_workers(run_id: str) -> bool:
     if not re.fullmatch(r"[0-9a-f]{32}", run_id):
         return False
-    command = ["docker", "ps", "-aq", "--filter", f"label=tracecoder.eval.run={run_id}"]
+    command = ["docker", "ps", "-aq", "--filter", f"label=cluecoder.eval.run={run_id}"]
     try:
         listed = subprocess.run(command, capture_output=True, text=True, timeout=10, check=True)
         for container in listed.stdout.split():
@@ -101,7 +101,7 @@ def _cleanup_workers(run_id: str) -> bool:
                     continue
                 return False
             labels = json.loads(inspected.stdout)[0]["Config"].get("Labels") or {}
-            if labels.get("tracecoder.eval.run") != run_id:
+            if labels.get("cluecoder.eval.run") != run_id:
                 return False
             removed = subprocess.run(["docker", "rm", "-f", container], capture_output=True, text=True,
                                      timeout=10, check=False)
@@ -283,7 +283,7 @@ def run_case(task: TaskSpec, output_root: Path, model: str, provider: str,
 
     definition = {"id": task.id, "prompt": task.prompt, "snapshot_sha256": task.snapshot_sha256,
                   "gate_command": task.gate_command, "allowed_paths": task.allowed_paths}
-    command = [sys.executable, "-m", "tracecoder", "--yes", "-p", task.prompt, "--model", model]
+    command = [sys.executable, "-m", "cluecoder", "--yes", "-p", task.prompt, "--model", model]
     metadata = {"version": 1, "run_id": run_id, "task_id": task.id, "model": model, "provider": provider,
                 "base_url": base_url, "temperature": 0, "max_output_tokens": 4096, "max_context_tokens": 128000,
                 "budgets": {"seconds": 900, "calls": 50, "tokens": max_tokens, "gate_seconds": 120},
@@ -296,7 +296,7 @@ def run_case(task: TaskSpec, output_root: Path, model: str, provider: str,
     usage = {"calls": 0, "tokens": 0, "usage_unknown": True, "limit": None}
     for name in ("events.jsonl", "stdout.txt", "stderr.txt", "patch.diff", "gate.txt"):
         write(name, "")
-    with tempfile.TemporaryDirectory(prefix="tracecoder-eval-") as temporary:
+    with tempfile.TemporaryDirectory(prefix="cluecoder-eval-") as temporary:
         root = Path(temporary).resolve()
         workspace, home = root / "workspace", root / "home"
         home.mkdir()
@@ -319,8 +319,8 @@ def run_case(task: TaskSpec, output_root: Path, model: str, provider: str,
                 raise ValueError("Invalid Docker image ID")
             metadata["image_id"] = inspected.stdout.strip()
             ready = DockerExecutor(workspace, image, run_id).run(
-                "test -w /workspace && test ! -e /gate && printf tracecoder-eval-ready", timeout=15)
-            if ready != "tracecoder-eval-ready" or not _cleanup_workers(run_id):
+                "test -w /workspace && test ! -e /gate && printf cluecoder-eval-ready", timeout=15)
+            if ready != "cluecoder-eval-ready" or not _cleanup_workers(run_id):
                 raise RuntimeError(f"Worker Docker preflight failed: {ready}")
             result["docker_valid"] = True
             result["reproducible"] = True
@@ -329,7 +329,7 @@ def run_case(task: TaskSpec, output_root: Path, model: str, provider: str,
             worker_started = time.monotonic()
             try:
                 environment = _child_env(home, usage_path, model, provider, base_url, image, run_id, turn_path, max_tokens)
-                environment["TRACECODER_EVAL_ALLOWED_PATHS"] = json.dumps(task.allowed_paths)
+                environment["CLUECODER_EVAL_ALLOWED_PATHS"] = json.dumps(task.allowed_paths)
                 outcome = _run_process(command, workspace, environment)
             finally:
                 clean = _cleanup_workers(run_id)
@@ -352,7 +352,7 @@ def run_case(task: TaskSpec, output_root: Path, model: str, provider: str,
             turn = json.loads(turn_path.read_text(encoding="utf-8")) if turn_path.exists() else {}
             result["turn_completed"] = turn.get("completed") is True
             result["turn_reason"] = turn.get("reason", "missing")
-            sessions = list((home / ".tracecoder" / "sessions").glob("*/events.jsonl"))
+            sessions = list((home / ".cluecoder" / "sessions").glob("*/events.jsonl"))
             result["session_ids"] = [path.parent.name for path in sessions]
             events, result["journal_warnings"] = _archive_events(sessions, redact)
             write("events.jsonl", events)

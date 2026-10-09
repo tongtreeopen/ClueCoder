@@ -6,12 +6,12 @@ from types import SimpleNamespace
 import httpx
 from openai import BadRequestError
 
-from tracecoder.agent import Agent
-from tracecoder.context import ContextManager
-from tracecoder.context_assembler import ContextAssembler
-from tracecoder.llm import LLMResponse
-from tracecoder.session_journal import SessionJournal
-from tracecoder.work_state import WorkStateStore
+from cluecoder.agent import Agent
+from cluecoder.context import ContextManager
+from cluecoder.context_assembler import ContextAssembler
+from cluecoder.llm import LLMResponse
+from cluecoder.session_journal import SessionJournal
+from cluecoder.work_state import WorkStateStore
 
 
 def _conversation():
@@ -120,7 +120,7 @@ def test_cumulative_budget_prompts_are_eval_only_and_one_time(tmp_path, monkeypa
     journal = SessionJournal.create(tmp_path / "sessions", workspace, "m")
     agent = Agent(Budget(), tools=[])
     agent.work_state = SimpleNamespace(journal=journal)
-    monkeypatch.setenv("TRACECODER_EVAL_MODE", "1")
+    monkeypatch.setenv("CLUECODER_EVAL_MODE", "1")
     assert "60%" in agent._budget_checkpoint()
     assert agent._budget_checkpoint() == ""
 
@@ -129,6 +129,6 @@ def test_cumulative_budget_prompts_are_eval_only_and_one_time(tmp_path, monkeypa
     (tests / "test_fix.py").write_text("print('changed')", encoding="utf-8")
     agent.llm.tokens = 80
     assert "80%" in agent._budget_checkpoint()
-    monkeypatch.delenv("TRACECODER_EVAL_MODE")
+    monkeypatch.delenv("CLUECODER_EVAL_MODE")
     agent.llm.tokens = 90
     assert agent._budget_checkpoint() == ""

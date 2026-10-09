@@ -1,8 +1,8 @@
-from tracecoder.demo import ScriptedLLM
-from tracecoder.extraction_queue import ExtractionQueue
-from tracecoder.llm import LLMResponse
-from tracecoder.memory import MemoryStore
-from tracecoder.session_journal import SessionJournal
+from cluecoder.demo import ScriptedLLM
+from cluecoder.extraction_queue import ExtractionQueue
+from cluecoder.llm import LLMResponse
+from cluecoder.memory import MemoryStore
+from cluecoder.session_journal import SessionJournal
 
 
 def _queue(tmp_path, responses):

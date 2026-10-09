@@ -157,7 +157,7 @@ class MemoryCLI:
                 if self._last_activity == last_activity:
                     break
 
-        self._worker = threading.Thread(target=work, name="tracecoder-memory-extraction", daemon=True)
+        self._worker = threading.Thread(target=work, name="cluecoder-memory-extraction", daemon=True)
         self._worker.start()
 
     def set_extraction(self, enabled: bool) -> str:

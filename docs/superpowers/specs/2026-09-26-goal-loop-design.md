@@ -1,6 +1,6 @@
 # TraceCoder 显式 Goal Loop 架构设计
 
-> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 tracecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
+> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 cluecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
 
 日期：2026-09-26。状态：设计已获用户确认；已在当前 TraceCoder 工作树实施，实际入口与验证边界见[机制对照](../../learn-claude-code-mechanism-comparison.md)和实施计划（归档材料未收录于此副本）。
 
@@ -14,7 +14,7 @@
 
 ## 现状与方案选择
 
-当前 [`Agent.chat`](../../../tracecoder/agent.py) 在模型不再调用工具时立即追加助手消息、设置 `last_turn_completed` 并返回。`WorkStateStore` 已有会话工作卡、阻碍、验收条件及 Bash 命令与工具结果事件的对应检查，但完成门只有显式调用 `work_update(complete=true)` 或 `/work confirm` 才运行；普通最终回答不会经过它。CLI 的回复会流式显示，因而不能在显示后再驳回。`SessionJournal` 可记录带序号的持久事件，`ContextAssembler` 负责模型视图，MemoryCLI 在已完成回合后排入记忆提取。
+当前 [`Agent.chat`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/agent.py) 在模型不再调用工具时立即追加助手消息、设置 `last_turn_completed` 并返回。`WorkStateStore` 已有会话工作卡、阻碍、验收条件及 Bash 命令与工具结果事件的对应检查，但完成门只有显式调用 `work_update(complete=true)` 或 `/work confirm` 才运行；普通最终回答不会经过它。CLI 的回复会流式显示，因而不能在显示后再驳回。`SessionJournal` 可记录带序号的持久事件，`ContextAssembler` 负责模型视图，MemoryCLI 在已完成回合后排入记忆提取。
 
 考虑三种接法：
 

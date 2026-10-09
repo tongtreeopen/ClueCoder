@@ -1,10 +1,10 @@
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.permissions import Permission
-from tracecoder.tools.read import ReadFileTool
-from tracecoder.tools.write import WriteFileTool
-from tracecoder.workspace import WorkspacePolicy
+from cluecoder.agent import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.permissions import Permission
+from cluecoder.tools.read import ReadFileTool
+from cluecoder.tools.write import WriteFileTool
+from cluecoder.workspace import WorkspacePolicy
 
 
 def test_repeated_unchanged_reads_warn_but_execute_and_new_turn_resets(tmp_path):

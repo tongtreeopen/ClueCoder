@@ -2,9 +2,9 @@
 
 import pytest
 
-from tracecoder.execution import DockerExecutor
-from tracecoder.tools import default_tools
-from tracecoder.tools.bash import BashTool
+from cluecoder.execution import DockerExecutor
+from cluecoder.tools import default_tools
+from cluecoder.tools.bash import BashTool
 
 
 def get_tool(name: str):

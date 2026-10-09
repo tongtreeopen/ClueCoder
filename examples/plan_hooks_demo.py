@@ -20,16 +20,16 @@ from rich.panel import Panel
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from tracecoder.agent import Agent
-from tracecoder.cli import _brief
-from tracecoder.demo import ScriptedLLM
-from tracecoder.hooks import Hooks
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.tools.bash import BashTool
-from tracecoder.tools.edit import EditFileTool
-from tracecoder.tools.read import ReadFileTool
-from tracecoder.tools.write import WriteFileTool
-from tracecoder.workspace import WorkspacePolicy
+from cluecoder.agent import Agent
+from cluecoder.cli import _brief
+from cluecoder.demo import ScriptedLLM
+from cluecoder.hooks import Hooks
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.tools.bash import BashTool
+from cluecoder.tools.edit import EditFileTool
+from cluecoder.tools.read import ReadFileTool
+from cluecoder.tools.write import WriteFileTool
+from cluecoder.workspace import WorkspacePolicy
 
 console = Console()
 
@@ -108,14 +108,14 @@ def _script(workdir: Path) -> list[LLMResponse]:
 
 
 def run() -> int:
-    workdir = Path(tempfile.mkdtemp(prefix="tracecoder-demo-"))
+    workdir = Path(tempfile.mkdtemp(prefix="cluecoder-demo-"))
     (workdir / "fib.py").write_text(FIB_PY, encoding="utf-8")
     policy = WorkspacePolicy(workdir)
     agent = Agent(llm=ScriptedLLM(_script(workdir)), hooks=DemoHooks(),
                   tools=[ReadFileTool(policy), WriteFileTool(policy), EditFileTool(policy), BashTool()])
     agent.plan_mode = True
 
-    console.print(Panel.fit(f"[bold]{TASK}[/]", title="tracecoder demo · plan mode + hooks (offline)"))
+    console.print(Panel.fit(f"[bold]{TASK}[/]", title="cluecoder demo · plan mode + hooks (offline)"))
     console.print("[dim]plan mode ON — mutating tools are refused until the plan is approved[/]")
 
     plan = agent.chat(

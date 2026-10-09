@@ -18,7 +18,7 @@ def system_prompt(tools) -> str:
     uname = platform.uname()
 
     return f"""\
-You are TraceCoder, an AI coding assistant running in the user's terminal.
+You are ClueCoder, an AI coding assistant running in the user's terminal.
 You help with software engineering: writing code, fixing bugs, refactoring, explaining code, running commands, and more.
 
 # Environment

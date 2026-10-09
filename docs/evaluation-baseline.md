@@ -1,12 +1,12 @@
 # Independent evaluation baseline
 
-Run from a clean TraceCoder Git checkout with Python 3.10+, its existing dependencies,
-Docker Linux Engine, and the local digest-pinned `DEFAULT_IMAGE` in `tracecoder/execution.py`.
-No image or dependency is downloaded by the runner. Export `TRACECODER_API_KEY`,
+Run from a clean ClueCoder Git checkout with Python 3.10+, its existing dependencies,
+Docker Linux Engine, and the local digest-pinned `DEFAULT_IMAGE` in `cluecoder/execution.py`.
+No image or dependency is downloaded by the runner. Export `CLUECODER_API_KEY`,
 `OPENAI_API_KEY`, or `DEEPSEEK_API_KEY` in the process environment; `.env` is not loaded.
 
 ```powershell
-py -3.13 -m tracecoder.eval run --suite benchmarks/tracecoder-baseline-v1/manifest.json --output E:\eval-runs\baseline-v1-001 --model YOUR_MODEL --provider openai --base-url https://YOUR_ENDPOINT/v1
+py -3.13 -m cluecoder.eval run --suite benchmarks/cluecoder-baseline-v1/manifest.json --output E:\eval-runs\baseline-v1-001 --model YOUR_MODEL --provider openai --base-url https://YOUR_ENDPOINT/v1
 ```
 
 The output directory must be new and outside the Agent checkout and suite directory.
@@ -69,9 +69,9 @@ evaluation; concurrent host mutation and transformed/encoded secret exfiltration
 outside this local baseline's guarantees.
 
 A separate frozen eight-task validation suite is available at
-`benchmarks/tracecoder-holdout-v1/manifest.json`. Its use and validation boundary are
+`benchmarks/cluecoder-holdout-v1/manifest.json`. Its use and validation boundary are
 documented in [evaluation-holdout.md](evaluation-holdout.md). The original baseline
-manifest at `benchmarks/tracecoder-baseline-v1/manifest.json` and its historical
+manifest at `benchmarks/cluecoder-baseline-v1/manifest.json` and its historical
 results are unchanged.
 
 

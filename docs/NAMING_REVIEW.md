@@ -1,3 +1,5 @@
+> 本文保留改名前的来源与验证记录。当前项目名为 ClueCoder，包入口为 `cluecoder/`；参见 [命名迁移](CLUECODER_RENAME.md)。
+
 # TraceCoder 命名与来源审查（2026-10-09）
 
 范围：发布副本的源码、配置、测试、示例、评测 fixtures、README、设计与验证说明。最初检查时本目录无 Git 历史；现已建立独立 Git 历史与私有远端。以改名要求和原 CoreCoder 工作区为对照，未开展全仓行为正确性审计。

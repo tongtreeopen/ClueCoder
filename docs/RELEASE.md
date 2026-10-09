@@ -1,12 +1,12 @@
-# TraceCoder first release
+# ClueCoder first release
 
-- Version: 0.1.0 (independent TraceCoder version sequence).
+- Version: 0.1.0 (independent ClueCoder version sequence).
 - Maintainer: Tong ShuKai (local Git identity).
-- GitHub repository: https://github.com/tongtreeopen/TraceCoder (private during CI validation).
+- GitHub repository: https://github.com/tongtreeopen/ClueCoder (private during CI validation).
 - Upstream: CoreCoder by Yufeng He; original copyright and MIT license remain in LICENSE.
 - This source was curated from a modified local CoreCoder workspace. Its parent HEAD was f03bd9b6f7dd0e5dc96609436c1de3b6b27106a8; that commit alone does not reproduce the copied dirty workspace.
 - Compared with the locally saved upstream origin/main 427633641c4e8c624530475b9806a0029df0d388, additions include Goal verification, journals, memory, budget-aware context, Docker execution, structured review, and independent evaluation. This comparison does not claim the remote upstream is unchanged today.
-- Compared with the local extended CoreCoder workspace, TraceCoder began as a renamed publication copy, not a separate implementation of those capabilities.
+- Compared with the local extended CoreCoder workspace, ClueCoder began as a renamed publication copy, not a separate implementation of those capabilities.
 
 ## Publication status
 

@@ -26,14 +26,14 @@ def capture_source(workspace: Path) -> dict:
     if Path(git(workspace, "rev-parse", "--show-toplevel").decode().strip()).resolve() != workspace:
         raise ValueError("Workflow workspace must be the Git repository root")
     others = git(workspace, "ls-files", "--others", "--exclude-standard", "-z").decode().split("\0")
-    if any(path and not path.startswith(".tracecoder/") for path in others):
+    if any(path and not path.startswith(".cluecoder/") for path in others):
         raise ValueError("Workflow requires tracked source files; add untracked files first")
     files = {}
     for name in git(workspace, "ls-files", "-z").decode().split("\0"):
         if not name:
             continue
         path = workspace / name
-        if name.startswith((".tracecoder/", ".git/")) or path.is_symlink() or not path.resolve().is_relative_to(workspace):
+        if name.startswith((".cluecoder/", ".git/")) or path.is_symlink() or not path.resolve().is_relative_to(workspace):
             raise ValueError("Workflow source contains internal files or an escaping link")
         if path.is_dir():
             raise ValueError("Workflow submodules are not supported")
@@ -91,7 +91,7 @@ class ReviewPolicy(WorkspacePolicy):
 
     def resolve(self, path):
         resolved = super().resolve(path)
-        if resolved.relative_to(self.root).parts and resolved.relative_to(self.root).parts[0].casefold() in {".tracecoder", ".git"}:
+        if resolved.relative_to(self.root).parts and resolved.relative_to(self.root).parts[0].casefold() in {".cluecoder", ".git"}:
             raise ValueError("Workflow cannot read internal runtime files")
         if resolved.is_file() and self.tracked is not None and resolved.relative_to(self.root).as_posix() not in self.tracked:
             raise ValueError("Workflow can only read captured tracked files")
@@ -152,7 +152,7 @@ class WorkflowRuntime:
         from .workflows.review import review_changes
 
         self.workspace = Path(workspace).resolve()
-        self.root = self.workspace / ".tracecoder" / "workflows"
+        self.root = self.workspace / ".cluecoder" / "workflows"
         self.model = model
         self.goal, self.on_usage = goal, on_usage
         self.registry = registry if registry is not None else {"review-changes": ("1", review_changes)}

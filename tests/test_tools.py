@@ -5,8 +5,8 @@ import sys
 
 import pytest
 
+from cluecoder.tools import ALL_TOOLS
 from tests.conftest import get_tool
-from tracecoder.tools import ALL_TOOLS
 
 
 def test_tool_count():
@@ -66,7 +66,7 @@ def test_bash_blocks_rm_force_recursive_variants():
 
 def test_bash_allows_non_destructive_rm():
     """A plain or non-forced local rm should not be blocked."""
-    from tracecoder.tools.bash import _check_dangerous
+    from cluecoder.tools.bash import _check_dangerous
 
     assert _check_dangerous("rm -f notes.log") is None
     assert _check_dangerous("rm -r ./build_output") is None
@@ -94,7 +94,7 @@ def test_bash_blocks_pipe_to_sh():
 
 def test_bash_chained_cd_resolves_sequentially(tmp_path):
     """`cd a && cd b` must end in a/b, not resolve both against the start dir."""
-    import tracecoder.tools.bash as bash_mod
+    import cluecoder.tools.bash as bash_mod
 
     (tmp_path / "a" / "b").mkdir(parents=True)
     saved = getattr(bash_mod._local, "cwd", None)
@@ -108,7 +108,7 @@ def test_bash_chained_cd_resolves_sequentially(tmp_path):
 
 def test_bash_semicolon_cd_chain_is_tracked(tmp_path):
     """`cd a; cd b` is the same chain to the real shell: it must end in a/b."""
-    import tracecoder.tools.bash as bash_mod
+    import cluecoder.tools.bash as bash_mod
 
     (tmp_path / "a" / "b").mkdir(parents=True)
     saved = getattr(bash_mod._local, "cwd", None)
@@ -122,7 +122,7 @@ def test_bash_semicolon_cd_chain_is_tracked(tmp_path):
 
 def test_bash_subshell_cd_is_not_tracked(tmp_path):
     """`( cd a )` runs in a subshell: the real cwd never moves, so neither does ours."""
-    import tracecoder.tools.bash as bash_mod
+    import cluecoder.tools.bash as bash_mod
 
     (tmp_path / "a").mkdir()
     saved = getattr(bash_mod._local, "cwd", None)
@@ -138,7 +138,7 @@ def test_bash_cwd_is_thread_local(tmp_path):
     """Parallel bash calls must not race on a shared cwd: each thread tracks its own."""
     import threading
 
-    import tracecoder.tools.bash as bash_mod
+    import cluecoder.tools.bash as bash_mod
 
     (tmp_path / "ta").mkdir()
     (tmp_path / "tb").mkdir()
@@ -164,7 +164,7 @@ def test_bash_cwd_is_thread_local(tmp_path):
 
 def test_bash_cwd_ignores_separators_inside_quotes(tmp_path):
     """`echo "x; cd a"` is one statement: the quoted `cd a` must not move us."""
-    import tracecoder.tools.bash as bash_mod
+    import cluecoder.tools.bash as bash_mod
 
     (tmp_path / "a").mkdir()
     saved = str(tmp_path)
@@ -178,7 +178,7 @@ def test_bash_cwd_ignores_separators_inside_quotes(tmp_path):
 
 def test_bash_cwd_bare_cd_goes_home(tmp_path):
     """A bare `cd` with no target lands in $HOME, same as the real shell."""
-    import tracecoder.tools.bash as bash_mod
+    import cluecoder.tools.bash as bash_mod
 
     (tmp_path / "a").mkdir()
     saved = str(tmp_path)
@@ -191,7 +191,7 @@ def test_bash_cwd_bare_cd_goes_home(tmp_path):
 
 def test_bash_cwd_quoted_target_with_spaces(tmp_path):
     """`cd "quoted dir"` must resolve the space-bearing name as one token."""
-    import tracecoder.tools.bash as bash_mod
+    import cluecoder.tools.bash as bash_mod
 
     (tmp_path / "quoted dir").mkdir()
     saved = str(tmp_path)
@@ -205,7 +205,7 @@ def test_bash_cwd_quoted_target_with_spaces(tmp_path):
 def test_bash_cwd_backslash_path_not_mangled():
     """Windows-style backslash targets must survive the splitter verbatim;
     shlex posix mode would eat the backslashes and the isdir check would fail."""
-    from tracecoder.tools.bash import _split_words
+    from cluecoder.tools.bash import _split_words
 
     assert _split_words(r"cd C:\Users\runneradmin\a") == ["cd", r"C:\Users\runneradmin\a"]
 
@@ -229,7 +229,7 @@ def test_read_file(tmp_path):
 
 def test_read_file_not_found():
     read = get_tool("read_file")
-    r = read.execute(file_path="/tmp/tracecoder_nonexistent_file.txt")
+    r = read.execute(file_path="/tmp/cluecoder_nonexistent_file.txt")
     assert "not found" in r.lower() or "Error" in r
 
 
@@ -414,7 +414,7 @@ def test_agent_tool_schema():
 # fresh instances, not the registry singleton: the list is per-instance state
 
 def test_todo_write_creates_ordered_list():
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
     todo = TodoWriteTool()
     r = todo.execute(tasks=[
         {"content": "read the failing module", "status": "done"},
@@ -428,7 +428,7 @@ def test_todo_write_creates_ordered_list():
 
 def test_todo_write_replaces_whole_list():
     """Each call replaces the list outright; nothing is appended or merged."""
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
     todo = TodoWriteTool()
     todo.execute(tasks=[{"content": "old task", "status": "pending"}])
     todo.execute(tasks=[{"content": "new task", "status": "in_progress"}])
@@ -439,7 +439,7 @@ def test_todo_write_replaces_whole_list():
 
 def test_todo_write_status_flow():
     """A task walks pending -> in_progress -> done by rewriting the full list."""
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
     todo = TodoWriteTool()
     todo.execute(tasks=[{"content": "ship it", "status": "pending"}])
     assert "[pending] ship it" in todo.render()
@@ -450,7 +450,7 @@ def test_todo_write_status_flow():
 
 
 def test_todo_write_clear():
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
     todo = TodoWriteTool()
     todo.execute(tasks=[{"content": "temp", "status": "pending"}])
     r = todo.execute(tasks=[])
@@ -459,7 +459,7 @@ def test_todo_write_clear():
 
 
 def test_todo_write_rejects_bad_status():
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
     todo = TodoWriteTool()
     r = todo.execute(tasks=[{"content": "x", "status": "doing"}])
     assert "invalid status" in r
@@ -467,7 +467,7 @@ def test_todo_write_rejects_bad_status():
 
 
 def test_todo_write_rejects_empty_content():
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
     todo = TodoWriteTool()
     assert "content" in todo.execute(tasks=[{"content": "  ", "status": "pending"}])
     assert "content" in todo.execute(tasks=[{"status": "pending"}])
@@ -475,14 +475,14 @@ def test_todo_write_rejects_empty_content():
 
 
 def test_todo_write_rejects_non_list():
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
     todo = TodoWriteTool()
     assert "Error" in todo.execute(tasks="just a string")
 
 
 def test_todo_write_bad_call_keeps_old_list():
     """Validation happens before the swap: a rejected call must not clobber state."""
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
     todo = TodoWriteTool()
     todo.execute(tasks=[{"content": "keep me", "status": "pending"}])
     todo.execute(tasks=[{"content": "bad", "status": "nope"}])

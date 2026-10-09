@@ -1,5 +1,5 @@
-from tracecoder import session as session_module
-from tracecoder.session import load_session, resume_journal, save_session, start_journal
+from cluecoder import session as session_module
+from cluecoder.session import load_session, resume_journal, save_session, start_journal
 
 
 def test_default_session_ids_do_not_collide(tmp_path, monkeypatch):

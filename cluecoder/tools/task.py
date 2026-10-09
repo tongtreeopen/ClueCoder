@@ -64,7 +64,7 @@ class ClaimTaskTool(_TaskTool):
 
 class CompleteTaskTool(_TaskTool):
     name = "complete_task"
-    description = "Complete a task claimed by this TraceCoder instance. Requires consent."
+    description = "Complete a task claimed by this ClueCoder instance. Requires consent."
     parameters: ClassVar = {"type": "object", "properties": {"task_id": {"type": "string"}}, "required": ["task_id"]}
 
     def execute(self, task_id: str) -> str:

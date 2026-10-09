@@ -8,9 +8,9 @@ from pathlib import Path
 
 import pytest
 
+from cluecoder.eval.report import render_markdown, summarize
 from tests.test_eval_runner import SECRET, provider
 from tests.test_eval_runner import source as source  # noqa: PLC0414 - pytest fixture re-export
-from tracecoder.eval.report import render_markdown, summarize
 
 ROOT = Path(__file__).resolve().parents[1]
 IDS = ['csv_quotes', 'retry_backoff', 'ttl_cache', 'tree_walk', 'date_ranges', 'config_merge',
@@ -63,8 +63,8 @@ def test_report_without_any_completed_gate_has_no_rate():
 def test_cli_missing_credentials_reports_eight_without_requests(tmp_path):
     env = {key: value for key, value in os.environ.items()
            if not any(part in key.upper() for part in ('KEY', 'TOKEN', 'SECRET', 'PASSWORD', 'CREDENTIAL'))}
-    completed = subprocess.run([sys.executable, '-m', 'tracecoder.eval', 'run', '--suite',
-                                str(ROOT / 'benchmarks/tracecoder-baseline-v1/manifest.json'), '--output',
+    completed = subprocess.run([sys.executable, '-m', 'cluecoder.eval', 'run', '--suite',
+                                str(ROOT / 'benchmarks/cluecoder-baseline-v1/manifest.json'), '--output',
                                 str(tmp_path / 'report'), '--model', 'test', '--base-url', 'http://127.0.0.1:1/v1'],
                                cwd=ROOT, env=env, capture_output=True, text=True, timeout=30, check=False)
     assert completed.returncode == 2, completed.stderr
@@ -73,7 +73,7 @@ def test_cli_missing_credentials_reports_eight_without_requests(tmp_path):
     assert summary['success_rate'] is None and summary['gate_completed'] == 0
     assert summary['failure_counts'] == {'setup_error': 8}
     assert 'credential' in summary['preflight_error'].lower()
-    assert summary['suite_sha256'] and summary['suite_id'] == 'tracecoder-baseline-v1'
+    assert summary['suite_sha256'] and summary['suite_id'] == 'cluecoder-baseline-v1'
     assert summary['configuration']['max_tokens'] == 100000
     assert '0%' not in render_markdown(summary)
 
@@ -82,7 +82,7 @@ def test_cli_rejects_changed_suite_before_worker(tmp_path):
     (tmp_path / 'suite').mkdir()
     manifest = tmp_path / 'suite/manifest.json'
     manifest.write_text('{"id":"bad","tasks":[]}', encoding='utf-8')
-    completed = subprocess.run([sys.executable, '-m', 'tracecoder.eval', 'run', '--suite', str(manifest),
+    completed = subprocess.run([sys.executable, '-m', 'cluecoder.eval', 'run', '--suite', str(manifest),
                                 '--output', str(tmp_path / 'report'), '--model', 'test'], cwd=ROOT,
                                capture_output=True, text=True, timeout=30, check=False)
     assert completed.returncode == 2
@@ -91,8 +91,8 @@ def test_cli_rejects_changed_suite_before_worker(tmp_path):
 
 
 def test_cli_never_archives_url_credentials(tmp_path):
-    completed = subprocess.run([sys.executable, '-m', 'tracecoder.eval', 'run', '--suite',
-                                str(ROOT / 'benchmarks/tracecoder-baseline-v1/manifest.json'), '--output',
+    completed = subprocess.run([sys.executable, '-m', 'cluecoder.eval', 'run', '--suite',
+                                str(ROOT / 'benchmarks/cluecoder-baseline-v1/manifest.json'), '--output',
                                 str(tmp_path / 'report'), '--model', 'test', '--base-url',
                                 'http://user:password-is-private@127.0.0.1:1/v1?key=private-query'],
                                cwd=ROOT, capture_output=True, text=True, timeout=30, check=False)
@@ -103,10 +103,10 @@ def test_cli_never_archives_url_credentials(tmp_path):
 
 
 def test_cli_runs_all_cases_with_real_docker_and_scripted_provider(docker_ready, source, tmp_path):
-    env = {**os.environ, 'TRACECODER_API_KEY': SECRET, 'PYTHONPATH': str(source), 'PYTHONSAFEPATH': '1'}
+    env = {**os.environ, 'CLUECODER_API_KEY': SECRET, 'PYTHONPATH': str(source), 'PYTHONSAFEPATH': '1'}
     with provider() as server:
-        completed = subprocess.run([sys.executable, '-m', 'tracecoder.eval', 'run', '--suite',
-                                    str(ROOT / 'benchmarks/tracecoder-baseline-v1/manifest.json'), '--output',
+        completed = subprocess.run([sys.executable, '-m', 'cluecoder.eval', 'run', '--suite',
+                                    str(ROOT / 'benchmarks/cluecoder-baseline-v1/manifest.json'), '--output',
                                     str(tmp_path / 'report'), '--model', 'scripted', '--base-url',
                                     f'http://127.0.0.1:{server.server_port}/v1'], cwd=source, env=env,
                                    capture_output=True, text=True, timeout=240, check=False)

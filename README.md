@@ -1,12 +1,14 @@
-# TraceCoder
+# ClueCoder
+
+Previous name: TraceCoder. See [naming migration](docs/CLUECODER_RENAME.md) for configuration and historical evidence.
 
 **A Python coding agent with traceable execution, recoverable state, and evidence-based task verification.**
 
-English | [中文](https://github.com/tongtreeopen/TraceCoder/blob/main/README_CN.md)
+English | [中文](https://github.com/tongtreeopen/ClueCoder/blob/main/README_CN.md)
 
-TraceCoder is for developers who want to inspect how an agent changes code, understand why it stops, and resume unfinished work. The model reads, reasons, and selects tools. The runtime records actions and enforces workspace boundaries, budgets, and completion evidence.
+ClueCoder is for developers who want to inspect how an agent changes code, understand why it stops, and resume unfinished work. The model reads, reasons, and selects tools. The runtime records actions and enforces workspace boundaries, budgets, and completion evidence.
 
-This is a maintained extension of upstream CoreCoder. The same added mechanisms also exist in the local extended CoreCoder workspace; the TraceCoder name identifies this curated distribution, not an independently reimplemented engine.
+This is a maintained extension of upstream CoreCoder. The same added mechanisms also exist in the local extended CoreCoder workspace; the ClueCoder name identifies this curated distribution, not an independently reimplemented engine.
 
 The project tracks a task beyond patch generation: preserve the current request, record actual operations, recover progress, and distinguish a proposed final answer from a result supported by checks.
 
@@ -34,16 +36,16 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install -e .
 
-$env:TRACECODER_API_KEY = "YOUR_API_KEY"
-$env:TRACECODER_BASE_URL = "https://YOUR_PROVIDER/v1"
-$env:TRACECODER_MODEL = "YOUR_MODEL"
+$env:CLUECODER_API_KEY = "YOUR_API_KEY"
+$env:CLUECODER_BASE_URL = "https://YOUR_PROVIDER/v1"
+$env:CLUECODER_MODEL = "YOUR_MODEL"
 ```
 
 Start in the repository you want to work on:
 
 ```powershell
 cd E:\path\to\your-project
-tracecoder
+cluecoder
 ```
 
 Example request:
@@ -55,10 +57,10 @@ Fix empty-input handling in parse_config, add regression tests, run the relevant
 For one-shot execution, explicitly approve mutating tools:
 
 ```powershell
-tracecoder --yes -p "Fix empty-input handling in parse_config, add regression tests, and run the checks"
+cluecoder --yes -p "Fix empty-input handling in parse_config, add regression tests, and run the checks"
 ```
 
-CLI file tools are restricted to the startup workspace. Bash requires a local Docker Linux Engine and the configured digest-pinned image; otherwise execution is refused. See the [first-run checklist](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/GETTING_STARTED.md) for the exact image pull command and [execution.py](https://github.com/tongtreeopen/TraceCoder/blob/main/tracecoder/execution.py) for its definition. `--yes` does not bypass workspace or execution boundaries. Without Docker, tasks that require Bash checks cannot complete those checks.
+CLI file tools are restricted to the startup workspace. Bash requires a local Docker Linux Engine and the configured digest-pinned image; otherwise execution is refused. See the [first-run checklist](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/GETTING_STARTED.md) for the exact image pull command and [execution.py](https://github.com/tongtreeopen/ClueCoder/blob/main/cluecoder/execution.py) for its definition. `--yes` does not bypass workspace or execution boundaries. Without Docker, tasks that require Bash checks cannot complete those checks.
 
 ## Completion supported by evidence
 
@@ -83,7 +85,7 @@ Goal defaults are three automatic continuations, 15 minutes of active time, and 
 | `/goal <task>`, `/goal`, `/goal off` | Set, inspect, or disable a Goal |
 | `/work status`, `/work confirm`, `/work reopen` | Inspect, accept, or reopen the work card |
 | `/save`, `/sessions` | Show the current session ID and available sessions |
-| `tracecoder --resume <ID>` | Resume a session |
+| `cluecoder --resume <ID>` | Resume a session |
 | `/memory status`, `/memory review` | Inspect extraction jobs and review candidates |
 | `/memory accept <ID>`, `/memory reject <ID>` | Handle memory candidates |
 | `/memory undo` | Undo the latest controlled memory-management operation |
@@ -95,33 +97,33 @@ Background tasks, project Tasks, and review Workflows are model-invoked tools, n
 
 | Variable | Purpose |
 | --- | --- |
-| `TRACECODER_API_KEY` | Credentials; also accepts `OPENAI_API_KEY` and `DEEPSEEK_API_KEY` |
-| `TRACECODER_BASE_URL` | OpenAI-compatible endpoint; `OPENAI_BASE_URL` takes precedence |
-| `TRACECODER_MODEL` | Model name; configure it explicitly |
-| `TRACECODER_PROVIDER` | `openai` by default, optionally `litellm` |
-| `TRACECODER_MAX_CONTEXT` | Context token budget, default 128000 |
-| `TRACECODER_MAX_TOKENS` | Per-response output limit, default 4096 |
+| `CLUECODER_API_KEY` | Credentials; also accepts `OPENAI_API_KEY` and `DEEPSEEK_API_KEY` |
+| `CLUECODER_BASE_URL` | OpenAI-compatible endpoint; `OPENAI_BASE_URL` takes precedence |
+| `CLUECODER_MODEL` | Model name; configure it explicitly |
+| `CLUECODER_PROVIDER` | `openai` by default, optionally `litellm` |
+| `CLUECODER_MAX_CONTEXT` | Context token budget, default 128000 |
+| `CLUECODER_MAX_TOKENS` | Per-response output limit, default 4096 |
 
 Ordinary CLI runs load `.env`; existing process variables take precedence. Install the optional LiteLLM backend with `python -m pip install -e ".[litellm]"`.
 
-Project Skills, memory, and Tasks live under `.tracecoder/`. User Skills, memory, and sessions live under `~/.tracecoder/`. Previous CoreCoder data is not migrated automatically. Journals and memory may contain project content and should follow your project's data-handling requirements.
+Project Skills, memory, and Tasks live under `.cluecoder/`. User Skills, memory, and sessions live under `~/.cluecoder/`. Previous CoreCoder data is not migrated automatically. Journals and memory may contain project content and should follow your project's data-handling requirements.
 
 ## Evaluation and development
 
 ```powershell
 python -m pip install -e ".[dev]"
 python -m pytest tests/ -q
-python -m ruff check tracecoder tests examples
+python -m ruff check cluecoder tests examples
 ```
 
-The fixed suites are `benchmarks/tracecoder-baseline-v1/` and `benchmarks/tracecoder-holdout-v1/`. Gate tests and reference patches are excluded from the Agent workspace. Reports preserve calls, usage, patches, and Gate results. See the [baseline protocol](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/evaluation-baseline.md) and [holdout protocol](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/evaluation-holdout.md) for setup, commands, and scoring limitations.
+The fixed suites are `benchmarks/cluecoder-baseline-v1/` and `benchmarks/cluecoder-holdout-v1/`. Gate tests and reference patches are excluded from the Agent workspace. Reports preserve calls, usage, patches, and Gate results. See the [baseline protocol](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/evaluation-baseline.md) and [holdout protocol](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/evaluation-holdout.md) for setup, commands, and scoring limitations.
 
-This is an experimental project. The first-release Windows/Python 3.13 regression passed 539 tests with 47 skipped; Docker and live-model checks were not run. TraceCoder 0.1.0 uses its own release version sequence and is maintained by Tong ShuKai. See the [first-release verification](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/validation/2026-10-09-first-release.md) for current checks and the [release record](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/RELEASE.md) for provenance and publication status. `tracecoder --demo` uses a bundled scripted model and generated Python assertions; it needs no API key or pytest. Ordinary CLI Bash still requires Docker. Historical real-model and Docker results apply only to their recorded source snapshots. Candidate programs can read `/gate` in the validation container; the evaluator does not claim adversarial hidden-test isolation.
+This is an experimental project. The first-release Windows/Python 3.13 regression passed 539 tests with 47 skipped; Docker and live-model checks were not run. ClueCoder 0.1.0 uses its own release version sequence and is maintained by Tong ShuKai. See the [first-release verification](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/validation/2026-10-09-first-release.md) for current checks and the [release record](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/RELEASE.md) for provenance and publication status. `cluecoder --demo` uses a bundled scripted model and generated Python assertions; it needs no API key or pytest. Ordinary CLI Bash still requires Docker. Historical real-model and Docker results apply only to their recorded source snapshots. Candidate programs can read `/gate` in the validation container; the evaluator does not claim adversarial hidden-test isolation.
 
 ## Code and documentation
 
 ```text
-tracecoder/
+cluecoder/
   agent.py                 Model and tool loop
   cli.py                   CLI assembly and interaction
   context_assembler.py     Model input assembly
@@ -135,13 +137,13 @@ tracecoder/
   eval/                   Independent evaluation runner
 ```
 
-- [Skill, Memory, and Task guide (Chinese)](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/skill-memory-task-usage.md)
-- [Mechanism attribution and tradeoffs (Chinese)](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/learn-claude-code-mechanism-comparison.md)
-- [Design documents](https://github.com/tongtreeopen/TraceCoder/tree/main/docs/superpowers/specs/)
-- [Historical validation summaries and provenance](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/HISTORICAL_VALIDATION.md)
+- [Skill, Memory, and Task guide (Chinese)](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/skill-memory-task-usage.md)
+- [Mechanism attribution and tradeoffs (Chinese)](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/learn-claude-code-mechanism-comparison.md)
+- [Design documents](https://github.com/tongtreeopen/ClueCoder/tree/main/docs/superpowers/specs/)
+- [Historical validation summaries and provenance](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/HISTORICAL_VALIDATION.md)
 
 ## Origin and license
 
-TraceCoder extends [CoreCoder by Yufeng He](https://github.com/he-yufeng/CoreCoder) and draws on mechanism examples from [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code). Our additions focus on evidence-based completion, recoverable state, reviewable memory provenance, budget-aware context, controlled background execution, structured review, and independent evaluation. The mechanism comparison documents their sources and limitations.
+ClueCoder extends [CoreCoder by Yufeng He](https://github.com/he-yufeng/CoreCoder) and draws on mechanism examples from [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code). Our additions focus on evidence-based completion, recoverable state, reviewable memory provenance, budget-aware context, controlled background execution, structured review, and independent evaluation. The mechanism comparison documents their sources and limitations.
 
-The original copyright and [MIT License](https://github.com/tongtreeopen/TraceCoder/blob/main/LICENSE) are preserved.
+The original copyright and [MIT License](https://github.com/tongtreeopen/ClueCoder/blob/main/LICENSE) are preserved.

@@ -55,7 +55,7 @@ def summarize(results: list[dict], scheduled: int) -> dict:
 def render_markdown(summary: dict) -> str:
     rate = summary["success_rate"]
     lines = [
-        "# TraceCoder evaluation",
+        "# ClueCoder evaluation",
         "",
         f"Suite: {summary.get('suite_id', 'unknown')}",
         f"Suite SHA-256: {summary.get('suite_sha256', 'unknown')}",

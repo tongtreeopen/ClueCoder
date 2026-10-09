@@ -29,12 +29,12 @@ class Task:
 class TaskStore:
     def __init__(self, workspace: Path):
         self.workspace = workspace.resolve()
-        self.directory = self.workspace / ".tracecoder" / "tasks"
+        self.directory = self.workspace / ".cluecoder" / "tasks"
         # ponytail: serialize the small project store; split locks only if contention matters.
         self._lock = StateLock(lambda: self._root(create=True) / ".store.lock")
 
     def _root(self, create: bool = False) -> Path:
-        parent = self.workspace / ".tracecoder"
+        parent = self.workspace / ".cluecoder"
         if parent.resolve() != parent.absolute() or self.directory.resolve() != self.directory.absolute():
             raise ValueError("Task directory escapes workspace")
         if create:
@@ -162,7 +162,7 @@ class TaskStore:
             self._replace(task)
             return task
 
-    def claim(self, task_id: str, owner: str = "tracecoder") -> Task:
+    def claim(self, task_id: str, owner: str = "cluecoder") -> Task:
         if not isinstance(owner, str) or not owner.strip():
             raise ValueError("Invalid task owner")
         with self._lock:
@@ -175,7 +175,7 @@ class TaskStore:
             self._replace(task)
             return task
 
-    def complete(self, task_id: str, owner: str = "tracecoder") -> Task:
+    def complete(self, task_id: str, owner: str = "cluecoder") -> Task:
         with self._lock:
             task = self.get(task_id)
             if task.status != "in_progress":

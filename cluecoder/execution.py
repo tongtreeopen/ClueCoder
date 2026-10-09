@@ -30,7 +30,7 @@ class DockerExecutor:
         if not self.workspace.is_dir() or "," in str(self.workspace):
             raise ValueError("Docker workspace must be an existing directory without commas")
         self.image = image
-        self.run_id = run_id or (os.getenv("TRACECODER_EVAL_RUN_ID") if os.getenv("TRACECODER_EVAL_MODE") == "1" else None)
+        self.run_id = run_id or (os.getenv("CLUECODER_EVAL_RUN_ID") if os.getenv("CLUECODER_EVAL_MODE") == "1" else None)
         if self.run_id is not None and not re.fullmatch(r"[0-9a-f]{32}", self.run_id):
             raise ValueError("Invalid evaluation run ID")
         if workspace_target not in ("/workspace", "/testbed") or workspace_target == "/testbed" and not self.run_id:
@@ -53,8 +53,8 @@ class DockerExecutor:
 
     @classmethod
     def try_create(cls, workspace: Path) -> "DockerExecutor | None":
-        evaluating = os.getenv("TRACECODER_EVAL_MODE") == "1"
-        image = os.environ.get("TRACECODER_EVAL_IMAGE", "") if evaluating else DEFAULT_IMAGE
+        evaluating = os.getenv("CLUECODER_EVAL_MODE") == "1"
+        image = os.environ.get("CLUECODER_EVAL_IMAGE", "") if evaluating else DEFAULT_IMAGE
         if evaluating and not re.fullmatch(r"[^\s@]+@sha256:[0-9a-f]{64}", image):
             raise ValueError("Evaluation requires a digest-pinned worker image")
         if not cls.available(image):
@@ -62,7 +62,7 @@ class DockerExecutor:
                 raise RuntimeError("Evaluation worker Docker image unavailable")
             return None
         if evaluating:
-            return cls(workspace, image, workspace_target=os.getenv("TRACECODER_EVAL_WORKSPACE_TARGET", "/workspace"))
+            return cls(workspace, image, workspace_target=os.getenv("CLUECODER_EVAL_WORKSPACE_TARGET", "/workspace"))
         try:
             return cls(workspace, image)
         except ValueError:
@@ -73,7 +73,7 @@ class DockerExecutor:
             raise ValueError("command must be non-empty text")
         if type(timeout) is not int or not 1 <= timeout <= 300:
             raise ValueError("timeout must be between 1 and 300 seconds")
-        name = f"tracecoder-sandbox-{uuid.uuid4().hex}"
+        name = f"cluecoder-sandbox-{uuid.uuid4().hex}"
         if self.run_id:
             command = "umask 000; " + command
         args = [
@@ -91,7 +91,7 @@ class DockerExecutor:
             args[args.index("--entrypoint=/bin/sh")] = "--entrypoint=/bin/bash"
             args.insert(args.index(self.image), "--env=BASH_ENV=/root/.bashrc")
         if self.run_id:
-            args.insert(2, f"--label=tracecoder.eval.run={self.run_id}")
+            args.insert(2, f"--label=cluecoder.eval.run={self.run_id}")
             args.insert(2, "--env=PYTHONDONTWRITEBYTECODE=1")
         if background:
             args[args.index("--entrypoint=/bin/bash" if self.workspace_target == "/testbed"

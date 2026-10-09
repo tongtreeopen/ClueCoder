@@ -3,16 +3,16 @@
 import subprocess
 from pathlib import Path
 
-from tracecoder.eval.cases import load_suite, materialize
-from tracecoder.eval.gate import run_gate
-from tracecoder.execution import DEFAULT_IMAGE
+from cluecoder.eval.cases import load_suite, materialize
+from cluecoder.eval.gate import run_gate
+from cluecoder.execution import DEFAULT_IMAGE
 
 
 def test_all_fixed_cases_discriminate(docker_ready, tmp_path: Path):
     image_id = subprocess.run(["docker", "image", "inspect", "--format", "{{.Id}}", DEFAULT_IMAGE],
                               capture_output=True, text=True, check=True).stdout.strip()
-    suite = load_suite(Path(__file__).resolve().parents[1] / "benchmarks/tracecoder-baseline-v1/manifest.json")
-    assert suite.id == "tracecoder-baseline-v1"
+    suite = load_suite(Path(__file__).resolve().parents[1] / "benchmarks/cluecoder-baseline-v1/manifest.json")
+    assert suite.id == "cluecoder-baseline-v1"
     assert {task.id for task in suite.tasks} == {
         "csv_quotes", "retry_backoff", "ttl_cache", "tree_walk", "date_ranges", "config_merge",
         "log_filter", "dependency_order",

@@ -1,11 +1,11 @@
 import json
 from types import SimpleNamespace
 
-from tracecoder import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLM, LLMResponse, ToolCall
-from tracecoder.memory import MemoryStore
-from tracecoder.memory_workflow import MemoryWorkflow
+from cluecoder import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLM, LLMResponse, ToolCall
+from cluecoder.memory import MemoryStore
+from cluecoder.memory_workflow import MemoryWorkflow
 
 
 class RecordingLLM(LLM):

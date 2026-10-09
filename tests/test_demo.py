@@ -2,8 +2,8 @@
 
 import pytest
 
-from tracecoder.demo import ScriptedLLM, _script, run_demo
-from tracecoder.llm import LLMResponse, ToolCall
+from cluecoder.demo import ScriptedLLM, _script, run_demo
+from cluecoder.llm import LLMResponse, ToolCall
 
 
 def test_scripted_llm_plays_turns_in_order():
@@ -24,7 +24,7 @@ def test_scripted_llm_plays_turns_in_order():
 
 
 def test_demo_runs_the_full_loop(tmp_path, monkeypatch):
-    monkeypatch.setattr("tracecoder.demo.tempfile.mkdtemp", lambda prefix: str(tmp_path))
+    monkeypatch.setattr("cluecoder.demo.tempfile.mkdtemp", lambda prefix: str(tmp_path))
 
     assert run_demo() == 0
     fib = (tmp_path / "fib.py").read_text()

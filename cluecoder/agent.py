@@ -1,6 +1,6 @@
 """Core agent loop.
 
-This is the heart of TraceCoder.  The pattern is simple:
+This is the heart of ClueCoder.  The pattern is simple:
 
     user message -> LLM (with tools) -> tool calls? -> execute -> loop
                                       -> text reply? -> return to user
@@ -82,7 +82,7 @@ class Agent:
         self._todo = next((t for t in self.tools if isinstance(t, TodoWriteTool)), None)
 
     def _budget_checkpoint(self) -> str:
-        if os.getenv("TRACECODER_EVAL_MODE") != "1" or getattr(self.llm, "usage_unknown", True):
+        if os.getenv("CLUECODER_EVAL_MODE") != "1" or getattr(self.llm, "usage_unknown", True):
             return ""
         limit = getattr(self.llm, "max_tokens", 0)
         used = getattr(self.llm, "tokens", 0)

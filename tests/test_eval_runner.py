@@ -16,7 +16,7 @@ from threading import Thread
 
 import pytest
 
-from tracecoder.eval.runner import (
+from cluecoder.eval.runner import (
     _archive_events,
     _child_env,
     _cleanup_workers,
@@ -27,8 +27,8 @@ from tracecoder.eval.runner import (
     _revision,
     _run_process,
 )
-from tracecoder.execution import DEFAULT_IMAGE
-from tracecoder.session_journal import SessionJournal, _digest
+from cluecoder.execution import DEFAULT_IMAGE
+from cluecoder.session_journal import SessionJournal, _digest
 
 ROOT = Path(__file__).resolve().parents[1]
 SECRET = "synthetic-provider-credential-987654321"
@@ -142,7 +142,7 @@ def test_archive_rejects_gapped_or_duplicate_journal_sequences(tmp_path):
 @pytest.fixture
 def source(tmp_path):
     root = tmp_path / "source"
-    shutil.copytree(ROOT / "tracecoder", root / "tracecoder", ignore=shutil.ignore_patterns("__pycache__"))
+    shutil.copytree(ROOT / "cluecoder", root / "cluecoder", ignore=shutil.ignore_patterns("__pycache__"))
     (root / ".gitignore").write_text("__pycache__/\n", encoding="utf-8")
     git(root, "init")
     git(root, "add", ".")
@@ -260,8 +260,8 @@ def launch(source, tmp_path, image, url, max_tokens=100000):
     script = """
 import json, sys
 from pathlib import Path
-from tracecoder.eval.cases import TaskSpec, _tree_hash
-from tracecoder.eval.runner import run_case
+from cluecoder.eval.cases import TaskSpec, _tree_hash
+from cluecoder.eval.runner import run_case
 root = Path(sys.argv[1])
 task = TaskSpec('test', 'Fix solution.py so answer is 42.', root / 'snapshot',
                 _tree_hash(root / 'snapshot'), root / 'gate',
@@ -273,7 +273,7 @@ print(json.dumps(run_case(task, root / 'output', 'test', 'openai', sys.argv[3], 
         "PYTHONPATH": str(source),
         "PYTHONSAFEPATH": "1",
         "PYTHONDONTWRITEBYTECODE": "1",
-        "TRACECODER_API_KEY": SECRET,
+        "CLUECODER_API_KEY": SECRET,
     }
     result = subprocess.run(
         [sys.executable, "-c", script, str(tmp_path), image, url, str(max_tokens)],
@@ -290,15 +290,15 @@ print(json.dumps(run_case(task, root / 'output', 'test', 'openai', sys.argv[3], 
 def test_runner_isolates_home_and_hides_gate(docker_ready, source, tmp_path):
     env = _child_env(tmp_path / "home", tmp_path / "usage.json", "test", "openai", None, DEFAULT_IMAGE, "a" * 32)
     assert env["HOME"] == env["USERPROFILE"] == str(tmp_path / "home")
-    assert env["TRACECODER_EVAL_MAX_CALLS"] == "50"
-    assert env["TRACECODER_EVAL_MAX_TOKENS"] == "100000"
+    assert env["CLUECODER_EVAL_MAX_CALLS"] == "50"
+    assert env["CLUECODER_EVAL_MAX_TOKENS"] == "100000"
     assert (
         _child_env(tmp_path / "home", tmp_path / "usage.json", "test", "openai", None, DEFAULT_IMAGE, "a" * 32, max_tokens=30000)[
-            "TRACECODER_EVAL_MAX_TOKENS"
+            "CLUECODER_EVAL_MAX_TOKENS"
         ]
         == "30000"
     )
-    assert "TRACECODER_EVAL_MODE" not in os.environ
+    assert "CLUECODER_EVAL_MODE" not in os.environ
     with provider() as server:
         result = launch(source, tmp_path, DEFAULT_IMAGE, f"http://127.0.0.1:{server.server_port}/v1", max_tokens=30000)
     assert result["status"] == "pass", result
@@ -309,7 +309,7 @@ def test_runner_isolates_home_and_hides_gate(docker_ready, source, tmp_path):
     assert metadata["budgets"]["tokens"] == 30000
     assert metadata["agent_revision"] == git(source, "rev-parse", "HEAD").strip()
     assert metadata["image_id"].startswith("sha256:")
-    assert metadata["worker_command"][1:4] == ["-m", "tracecoder", "--yes"]
+    assert metadata["worker_command"][1:4] == ["-m", "cluecoder", "--yes"]
     assert metadata["task_sha256"] and metadata["gate_sha256"] and metadata["snapshot_sha256"]
     assert len(result["session_ids"]) == 1
     assert result["changed_paths"] == ["solution.py"]
@@ -344,7 +344,7 @@ def test_child_env_uses_per_task_token_budget(tmp_path):
     env = _child_env(
         tmp_path / "home", tmp_path / "usage.json", "test", "openai", None, DEFAULT_IMAGE, "a" * 32, max_tokens=30000
     )
-    assert env["TRACECODER_EVAL_MAX_TOKENS"] == "30000"
+    assert env["CLUECODER_EVAL_MAX_TOKENS"] == "30000"
 
 
 def test_runner_rejects_dirty_official_run(source, tmp_path):
@@ -404,16 +404,16 @@ def test_timeout_cleans_only_run_labeled_containers(docker_ready, tmp_path):
     try:
         env = {
             **os.environ,
-            "TRACECODER_EVAL_MODE": "1",
-            "TRACECODER_EVAL_RUN_ID": run_id,
-            "TRACECODER_EVAL_IMAGE": DEFAULT_IMAGE,
+            "CLUECODER_EVAL_MODE": "1",
+            "CLUECODER_EVAL_RUN_ID": run_id,
+            "CLUECODER_EVAL_IMAGE": DEFAULT_IMAGE,
             "PYTHONPATH": str(ROOT),
         }
         command = [
             sys.executable,
             "-c",
             (
-                "from pathlib import Path; from tracecoder.execution import DockerExecutor; "
+                "from pathlib import Path; from cluecoder.execution import DockerExecutor; "
                 "DockerExecutor.try_create(Path.cwd()).run('printf started > started.txt; sleep 60', timeout=120)"
             ),
         ]
@@ -423,7 +423,7 @@ def test_timeout_cleans_only_run_labeled_containers(docker_ready, tmp_path):
         assert _cleanup_workers(run_id)
         assert subprocess.run(["docker", "inspect", other], capture_output=True, check=False).returncode == 0
         assert not subprocess.run(
-            ["docker", "ps", "-aq", "--filter", f"label=tracecoder.eval.run={run_id}"], capture_output=True, text=True, check=True
+            ["docker", "ps", "-aq", "--filter", f"label=cluecoder.eval.run={run_id}"], capture_output=True, text=True, check=True
         ).stdout.strip()
     finally:
         subprocess.run(["docker", "rm", "-f", other], capture_output=True, check=False)
@@ -436,7 +436,7 @@ def test_runner_redacts_stdout_and_stderr(tmp_path):
         dict(os.environ),
         timeout=10,
     )
-    redact = _redactor({"TRACECODER_API_KEY": SECRET})
+    redact = _redactor({"CLUECODER_API_KEY": SECRET})
     assert redact(result["stdout"]).strip() == "[REDACTED_SECRET]"
     assert redact(result["stderr"]).strip() == "[REDACTED_SECRET]"
 
@@ -444,9 +444,9 @@ def test_runner_redacts_stdout_and_stderr(tmp_path):
 def test_worker_uses_requested_image_and_fails_closed(tmp_path):
     env = {
         **os.environ,
-        "TRACECODER_EVAL_MODE": "1",
-        "TRACECODER_EVAL_RUN_ID": uuid.uuid4().hex,
-        "TRACECODER_EVAL_IMAGE": "missing.invalid/worker@sha256:" + "0" * 64,
+        "CLUECODER_EVAL_MODE": "1",
+        "CLUECODER_EVAL_RUN_ID": uuid.uuid4().hex,
+        "CLUECODER_EVAL_IMAGE": "missing.invalid/worker@sha256:" + "0" * 64,
         "PYTHONPATH": str(ROOT),
         "PYTHONSAFEPATH": "1",
     }
@@ -456,7 +456,7 @@ def test_worker_uses_requested_image_and_fails_closed(tmp_path):
             "-c",
             (
                 "from pathlib import Path; "
-                "from tracecoder.execution import DockerExecutor; "
+                "from cluecoder.execution import DockerExecutor; "
                 "DockerExecutor.try_create(Path.cwd()).run('touch HOST_FALLBACK')"
             ),
         ],
@@ -489,20 +489,20 @@ def test_patch_replays_files_without_final_newline(tmp_path, before, after):
 
 
 def test_interrupted_journal_keeps_candidate_and_limit_status(docker_ready, source, tmp_path):
-    (source / "tracecoder" / "__main__.py").write_text(
+    (source / "cluecoder" / "__main__.py").write_text(
         """
 import json, os, sys, time
 from pathlib import Path
-from tracecoder.session_journal import _digest
+from cluecoder.session_journal import _digest
 Path('solution.py').write_bytes(b'answer = 42')
-session = Path.home() / '.tracecoder' / 'sessions' / 'interrupted'
+session = Path.home() / '.cluecoder' / 'sessions' / 'interrupted'
 session.mkdir(parents=True)
 event = {'seq': 1, 'kind': 'message', 'data': {'message': {'role': 'assistant', 'content': 'done'}}, 'redacted': False}
 event['checksum'] = _digest(event)
 (session / 'events.jsonl').write_bytes((json.dumps(event) + '\\n{"seq": 2, "content": "').encode() + b'\\xe4\\xbd')
-Path(os.environ['TRACECODER_EVAL_USAGE_PATH']).write_text(
+Path(os.environ['CLUECODER_EVAL_USAGE_PATH']).write_text(
     json.dumps({'calls': 1, 'tokens': 6, 'usage_unknown': False, 'limit': None}))
-Path(os.environ['TRACECODER_EVAL_USAGE_PATH']).with_name('model_calls.json').write_text('{broken')
+Path(os.environ['CLUECODER_EVAL_USAGE_PATH']).with_name('model_calls.json').write_text('{broken')
 sys.stdout.write('x' * 5000000)
 sys.stdout.flush()
 time.sleep(60)
@@ -529,7 +529,7 @@ time.sleep(60)
 
 
 def test_native_linux_workspace_allows_worker_and_host_edits(docker_ready):
-    volume = "tracecoder-eval-permissions-" + uuid.uuid4().hex
+    volume = "cluecoder-eval-permissions-" + uuid.uuid4().hex
     subprocess.run(["docker", "volume", "create", volume], capture_output=True, check=True)
     run = [
         "docker",
@@ -602,7 +602,7 @@ assert Path('/native/private').stat().st_mode & 0o777 == 0o700
                 *run,
                 "--user=1000:1000",
                 f"--mount=type=volume,source={volume},target=/native",
-                f"--mount=type=bind,source={ROOT / 'tracecoder/eval/runner.py'},target=/runner.py,readonly",
+                f"--mount=type=bind,source={ROOT / 'cluecoder/eval/runner.py'},target=/runner.py,readonly",
                 DEFAULT_IMAGE,
                 "python",
                 "-c",

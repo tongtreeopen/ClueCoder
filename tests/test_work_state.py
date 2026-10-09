@@ -1,13 +1,13 @@
 import json
 
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.permissions import Permission
-from tracecoder.session_journal import SessionJournal
-from tracecoder.tools.todo import TodoWriteTool
-from tracecoder.tools.work import WorkUpdateTool
-from tracecoder.work_state import WorkStateStore
+from cluecoder.agent import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.permissions import Permission
+from cluecoder.session_journal import SessionJournal
+from cluecoder.tools.todo import TodoWriteTool
+from cluecoder.tools.work import WorkUpdateTool
+from cluecoder.work_state import WorkStateStore
 
 
 def test_work_card_restores_from_events_when_snapshot_is_stale(tmp_path):

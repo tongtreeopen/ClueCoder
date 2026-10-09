@@ -4,8 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from tracecoder.session_journal import SessionJournal
-from tracecoder.tasks import TaskStore
+from cluecoder.session_journal import SessionJournal
+from cluecoder.tasks import TaskStore
 
 
 def _worker(workspace, task_ids, session_id, barrier, results):

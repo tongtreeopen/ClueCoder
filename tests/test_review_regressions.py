@@ -6,18 +6,18 @@ from threading import Barrier
 
 import pytest
 
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.goal import GoalController
-from tracecoder.goal_evaluator import GoalEvaluator
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.session_journal import SessionJournal
-from tracecoder.tools.agent import AgentTool
-from tracecoder.tools.work import WorkUpdateTool
-from tracecoder.tools.workflow import WorkflowTool
-from tracecoder.tools.write import WriteFileTool
-from tracecoder.work_state import WorkStateStore
-from tracecoder.workspace import WorkspacePolicy
+from cluecoder.agent import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.goal import GoalController
+from cluecoder.goal_evaluator import GoalEvaluator
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.session_journal import SessionJournal
+from cluecoder.tools.agent import AgentTool
+from cluecoder.tools.work import WorkUpdateTool
+from cluecoder.tools.workflow import WorkflowTool
+from cluecoder.tools.write import WriteFileTool
+from cluecoder.work_state import WorkStateStore
+from cluecoder.workspace import WorkspacePolicy
 
 
 def state(tmp_path):
@@ -73,7 +73,7 @@ def test_child_workflow_binding_is_isolated(tmp_path, monkeypatch):
         captured.append((runtime.goal, runtime.on_usage))
         return {"run_id": "probe", "status": "completed", "artifacts": "probe"}
 
-    monkeypatch.setattr("tracecoder.tools.workflow.WorkflowRuntime.run", run)
+    monkeypatch.setattr("cluecoder.tools.workflow.WorkflowRuntime.run", run)
     assert json.loads(workflow.execute("review-changes"))["status"] == "completed"
     assert captured == [(goal, parent.on_usage)]
     assert journal.events[-1]["data"]["type"] == "workflow_run"

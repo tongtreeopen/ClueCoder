@@ -7,12 +7,12 @@ from pathlib import Path
 
 import pytest
 
-from tracecoder.tools.edit import EditFileTool
-from tracecoder.tools.glob_tool import GlobTool
-from tracecoder.tools.grep import GrepTool
-from tracecoder.tools.read import ReadFileTool
-from tracecoder.tools.write import WriteFileTool
-from tracecoder.workspace import WorkspacePolicy
+from cluecoder.tools.edit import EditFileTool
+from cluecoder.tools.glob_tool import GlobTool
+from cluecoder.tools.grep import GrepTool
+from cluecoder.tools.read import ReadFileTool
+from cluecoder.tools.write import WriteFileTool
+from cluecoder.workspace import WorkspacePolicy
 
 
 def test_in_root_paths_work_for_all_file_tools(tmp_path):

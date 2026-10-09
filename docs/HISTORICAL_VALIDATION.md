@@ -1,3 +1,5 @@
+> 本文保留改名前的来源与验证记录。当前项目名为 ClueCoder，包入口为 `cluecoder/`；参见 [命名迁移](CLUECODER_RENAME.md)。
+
 # Historical validation and provenance
 
 The reports linked below are portable summaries of work performed before the TraceCoder name change. They remain available in the source distribution. Their revisions, source hashes, original CoreCoder identity and known failure boundaries are preserved; results are not relabeled as TraceCoder release results.

@@ -23,13 +23,13 @@ def parse_frontmatter(content: str) -> tuple[dict, str]:
 class SkillCatalog:
     def __init__(self, workspace: Path, user_root: Path | None = None):
         self.workspace = workspace.resolve()
-        self.user_root = user_root or Path.home() / ".tracecoder" / "skills"
+        self.user_root = user_root or Path.home() / ".cluecoder" / "skills"
         self.skills: dict[str, tuple[str, str]] = {}
         self.scan()
 
     def scan(self) -> None:
         self.skills.clear()
-        project_root = self.workspace / ".tracecoder" / "skills"
+        project_root = self.workspace / ".cluecoder" / "skills"
         for root, allowed_parent in ((self.user_root, self.user_root.parent), (project_root, self.workspace)):
             if not root.exists():
                 continue

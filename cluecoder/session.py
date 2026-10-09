@@ -8,7 +8,7 @@ from pathlib import Path
 
 from .session_journal import SessionJournal
 
-SESSIONS_DIR = Path.home() / ".tracecoder" / "sessions"
+SESSIONS_DIR = Path.home() / ".cluecoder" / "sessions"
 _SAFE_SESSION_RE = re.compile(r"[^A-Za-z0-9._-]+")
 _MAX_SESSION_ID_LEN = 100  # keep filenames comfortably under the OS limit
 

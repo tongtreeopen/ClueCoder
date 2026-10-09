@@ -1,8 +1,8 @@
 import pytest
 
-from tracecoder.memory import MemoryStore
-from tracecoder.skills import SkillCatalog
-from tracecoder.tasks import TaskStore
+from cluecoder.memory import MemoryStore
+from cluecoder.skills import SkillCatalog
+from cluecoder.tasks import TaskStore
 
 
 def test_remember_is_versioned_and_undoable(tmp_path):
@@ -35,7 +35,7 @@ def test_tasks_isolate_corrupt_records_and_sanitize_missing_id(tmp_path, caplog)
     ("---\ndescription: described\n---\n", "fallback", "described"),
 ])
 def test_skill_metadata_fallback(tmp_path, header, name, description):
-    manifest = tmp_path / ".tracecoder/skills/fallback/SKILL.md"
+    manifest = tmp_path / ".cluecoder/skills/fallback/SKILL.md"
     manifest.parent.mkdir(parents=True)
     manifest.write_text(header + "body\nfull content", encoding="utf-8")
     catalog = SkillCatalog(tmp_path, user_root=tmp_path / "user")
@@ -44,7 +44,7 @@ def test_skill_metadata_fallback(tmp_path, header, name, description):
 
 
 def test_skill_manifest_link_inside_root_is_readable(tmp_path):
-    root = tmp_path / ".tracecoder/skills"
+    root = tmp_path / ".cluecoder/skills"
     target = root / "source.md"
     manifest = root / "linked/SKILL.md"
     manifest.parent.mkdir(parents=True)

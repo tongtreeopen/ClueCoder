@@ -5,7 +5,7 @@ import time
 
 import pytest
 
-from tracecoder.execution import MAX_OUTPUT_BYTES, DockerExecutor
+from cluecoder.execution import MAX_OUTPUT_BYTES, DockerExecutor
 
 
 def _executor(tmp_path):
@@ -40,8 +40,8 @@ def test_cancel_terminates_container_and_children(tmp_path):
 
 
 def test_bounded_wait_returns_running_then_completed(tmp_path):
-    from tracecoder.background import BackgroundManager
-    from tracecoder.tools.background import BackgroundStatusTool
+    from cluecoder.background import BackgroundManager
+    from cluecoder.tools.background import BackgroundStatusTool
 
     manager = BackgroundManager(_executor(tmp_path))
     task_id = manager.start("sleep 4; echo done")
@@ -66,7 +66,7 @@ def test_bounded_wait_returns_running_then_completed(tmp_path):
 def test_wait_does_not_block_parallel_cancel(tmp_path):
     from concurrent.futures import ThreadPoolExecutor
 
-    from tracecoder.background import BackgroundManager
+    from cluecoder.background import BackgroundManager
 
     manager = BackgroundManager(_executor(tmp_path))
     task_id = manager.start("sleep 30")
@@ -114,7 +114,7 @@ def test_cleanup_failure_is_not_success(tmp_path):
 
 
 def test_manager_capacity_and_repeat_queries(tmp_path):
-    from tracecoder.background import BackgroundManager
+    from cluecoder.background import BackgroundManager
 
     manager = BackgroundManager(_executor(tmp_path))
     try:
@@ -135,11 +135,11 @@ def test_manager_capacity_and_repeat_queries(tmp_path):
 
 
 def test_background_permissions_and_disabled_backend(tmp_path):
-    from tracecoder.agent import Agent
-    from tracecoder.demo import ScriptedLLM
-    from tracecoder.llm import ToolCall
-    from tracecoder.permissions import Permission
-    from tracecoder.tools.bash import DisabledBashTool
+    from cluecoder.agent import Agent
+    from cluecoder.demo import ScriptedLLM
+    from cluecoder.llm import ToolCall
+    from cluecoder.permissions import Permission
+    from cluecoder.tools.bash import DisabledBashTool
 
     agent = Agent(ScriptedLLM([]), tools=[DisabledBashTool()], permission=Permission())
     call = ToolCall(id="start", name="bash", arguments={"command": "echo ok", "run_in_background": True})
@@ -152,8 +152,8 @@ def test_background_permissions_and_disabled_backend(tmp_path):
 
 
 def _background_evidence(tmp_path, status="completed", interfered=False):
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.work_state import WorkStateStore
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.work_state import WorkStateStore
 
     journal = SessionJournal.create(tmp_path / "sessions", tmp_path, "offline")
     work = WorkStateStore(journal)
@@ -237,8 +237,8 @@ def test_background_bad_evidence_cannot_complete(tmp_path, status, interfered):
 
 
 def test_background_recovery_and_message_pairing(tmp_path):
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.work_state import WorkStateStore
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.work_state import WorkStateStore
 
     journal, work, event_id = _background_evidence(tmp_path)
     work.update(criteria=[{"kind": "check", "description": "fake", "command": "other", "event_id": event_id}])
@@ -254,19 +254,19 @@ def test_background_recovery_and_message_pairing(tmp_path):
 def test_agent_persists_background_once_and_reset_cleans(tmp_path, parallel):
     import threading
 
-    from tracecoder.agent import Agent
-    from tracecoder.cli import _bind_work
-    from tracecoder.cli_memory import MemoryCLI
-    from tracecoder.demo import ScriptedLLM
-    from tracecoder.llm import LLMResponse, ToolCall
-    from tracecoder.memory import MemoryStore
-    from tracecoder.memory_workflow import MemoryWorkflow
-    from tracecoder.permissions import Permission
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.tools.background import BackgroundStatusTool
-    from tracecoder.tools.bash import DockerBashTool
-    from tracecoder.tools.work import ReadWorkStateTool
-    from tracecoder.work_state import WorkStateStore
+    from cluecoder.agent import Agent
+    from cluecoder.cli import _bind_work
+    from cluecoder.cli_memory import MemoryCLI
+    from cluecoder.demo import ScriptedLLM
+    from cluecoder.llm import LLMResponse, ToolCall
+    from cluecoder.memory import MemoryStore
+    from cluecoder.memory_workflow import MemoryWorkflow
+    from cluecoder.permissions import Permission
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.tools.background import BackgroundStatusTool
+    from cluecoder.tools.bash import DockerBashTool
+    from cluecoder.tools.work import ReadWorkStateTool
+    from cluecoder.work_state import WorkStateStore
 
     bash = DockerBashTool(_executor(tmp_path))
     journal = SessionJournal.create(tmp_path / "sessions", tmp_path, "offline")
@@ -321,12 +321,12 @@ def test_agent_persists_background_once_and_reset_cleans(tmp_path, parallel):
 
 
 def test_subagent_shares_manager_and_parent_owns_cleanup(tmp_path):
-    from tracecoder.agent import Agent
-    from tracecoder.demo import ScriptedLLM
-    from tracecoder.llm import LLMResponse, ToolCall
-    from tracecoder.permissions import Permission
-    from tracecoder.tools.agent import AgentTool
-    from tracecoder.tools.bash import DockerBashTool
+    from cluecoder.agent import Agent
+    from cluecoder.demo import ScriptedLLM
+    from cluecoder.llm import LLMResponse, ToolCall
+    from cluecoder.permissions import Permission
+    from cluecoder.tools.agent import AgentTool
+    from cluecoder.tools.bash import DockerBashTool
 
     bash = DockerBashTool(_executor(tmp_path))
     agent_tool = AgentTool()
@@ -350,9 +350,9 @@ def test_subagent_shares_manager_and_parent_owns_cleanup(tmp_path):
 
 
 def test_background_failed_journal_write_is_retryable(tmp_path):
-    from tracecoder.agent import Agent
-    from tracecoder.demo import ScriptedLLM
-    from tracecoder.tools.bash import DockerBashTool
+    from cluecoder.agent import Agent
+    from cluecoder.demo import ScriptedLLM
+    from cluecoder.tools.bash import DockerBashTool
 
     bash = DockerBashTool(_executor(tmp_path))
     agent = Agent(ScriptedLLM([]), tools=[bash])
@@ -380,7 +380,7 @@ def test_container_deadline_survives_cli_process_exit(tmp_path):
     script = """
 import os, sys
 from pathlib import Path
-from tracecoder.execution import DockerExecutor
+from cluecoder.execution import DockerExecutor
 run = DockerExecutor(Path(sys.argv[1])).start('sleep 30 & wait', timeout=2, background=True)
 print(run.name, flush=True)
 os._exit(0)
@@ -424,8 +424,8 @@ def test_child_agent_call_invalidates_collected_background_evidence(tmp_path):
 
 
 def test_foreground_check_overlapping_background_cannot_pass(tmp_path):
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.work_state import WorkStateStore
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.work_state import WorkStateStore
 
     journal = SessionJournal.create(tmp_path / "sessions", tmp_path, "offline")
     work = WorkStateStore(journal)

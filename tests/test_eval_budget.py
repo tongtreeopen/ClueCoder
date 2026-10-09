@@ -7,11 +7,11 @@ from threading import Thread
 
 import pytest
 
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.eval.budget import BudgetedModel, EvalLimitExceeded
-from tracecoder.llm import EVAL_TRANSIENT_ATTEMPTS, LLM, LLMResponse, ToolCall
-from tracecoder.tools.agent import AgentTool
+from cluecoder.agent import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.eval.budget import BudgetedModel, EvalLimitExceeded
+from cluecoder.llm import EVAL_TRANSIENT_ATTEMPTS, LLM, LLMResponse, ToolCall
+from cluecoder.tools.agent import AgentTool
 
 
 def test_budget_counts_subagent_and_refuses_call_51(tmp_path):

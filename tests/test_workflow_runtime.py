@@ -3,9 +3,9 @@ import subprocess
 
 import pytest
 
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.workflow import ReviewPolicy, WorkflowRuntime, capture_source
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.workflow import ReviewPolicy, WorkflowRuntime, capture_source
 
 
 def repository(path):
@@ -93,7 +93,7 @@ def test_worker_cannot_write_or_read_runtime_and_unknown_usage_stops_new_calls(t
     ])
     result = WorkflowRuntime(tmp_path, model).run("review-changes")
     assert (tmp_path / "a.py").read_text() == "x = 2\n" and result["usage"]["unknown"]
-    journal = (tmp_path / ".tracecoder" / "workflows" / result["run_id"] / "events.jsonl").read_text(encoding="utf-8")
+    journal = (tmp_path / ".cluecoder" / "workflows" / result["run_id"] / "events.jsonl").read_text(encoding="utf-8")
     assert "unknown tool" in journal.lower()
 
 
@@ -114,7 +114,7 @@ def test_model_version_and_untracked_changes_invalidate_resume(tmp_path):
     with pytest.raises(ValueError, match="untracked"):
         WorkflowRuntime(tmp_path, ScriptedLLM([]), registry).run("probe", resume_from_run_id=result["run_id"])
     with pytest.raises(ValueError, match="internal"):
-        ReviewPolicy(tmp_path).resolve(".tracecoder/workflows")
+        ReviewPolicy(tmp_path).resolve(".cluecoder/workflows")
 
 
 def test_budget_is_cumulative_across_resume_and_completed_cache_works_at_limit(tmp_path):

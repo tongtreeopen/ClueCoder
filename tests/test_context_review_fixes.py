@@ -1,8 +1,8 @@
-from tracecoder.context_assembler import ContextAssembler
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse
-from tracecoder.session_journal import SessionJournal
-from tracecoder.work_state import WorkStateStore
+from cluecoder.context_assembler import ContextAssembler
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse
+from cluecoder.session_journal import SessionJournal
+from cluecoder.work_state import WorkStateStore
 
 
 def test_snipped_summary_keeps_original_source_cursor(tmp_path):

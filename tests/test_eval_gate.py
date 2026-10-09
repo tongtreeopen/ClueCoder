@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from tracecoder.eval.cases import TaskSpec, load_suite, materialize
-from tracecoder.eval.gate import _docker_args, run_gate
-from tracecoder.execution import DEFAULT_IMAGE
+from cluecoder.eval.cases import TaskSpec, load_suite, materialize
+from cluecoder.eval.gate import _docker_args, run_gate
+from cluecoder.execution import DEFAULT_IMAGE
 
 
 @pytest.fixture
@@ -29,7 +29,7 @@ def _task(tmp_path: Path, command: list[str]) -> TaskSpec:
 
 def test_gate_uses_read_only_container_argv(tmp_path: Path):
     task = _task(tmp_path, ["python", "-c", "print('ok')"])
-    args = _docker_args(task, task.snapshot_dir, DEFAULT_IMAGE, "tracecoder-gate-test")
+    args = _docker_args(task, task.snapshot_dir, DEFAULT_IMAGE, "cluecoder-gate-test")
     assert args[:2] == ["docker", "run"]
     assert "--network=none" in args
     assert "--user=65534:65534" in args
@@ -105,7 +105,7 @@ def test_gate_timeout_and_output_bound_leave_no_container(tmp_path: Path, docker
     assert "output limit" in result.output
     assert "overflow-diagnostic" in result.output
     assert not subprocess.run(
-        ["docker", "ps", "-a", "--filter", "name=tracecoder-gate-", "--format", "{{.Names}}"],
+        ["docker", "ps", "-a", "--filter", "name=cluecoder-gate-", "--format", "{{.Names}}"],
         capture_output=True, text=True, check=True,
     ).stdout.strip()
 
@@ -115,7 +115,7 @@ def test_gate_missing_image_is_setup_error(tmp_path: Path, docker_ready):
     missing = "ghcr.io/astral-sh/uv@sha256:" + "0" * 64
     assert run_gate(task, task.snapshot_dir, missing).status == "setup_error"
     assert not subprocess.run(
-        ["docker", "ps", "-a", "--filter", "name=tracecoder-gate-", "--format", "{{.Names}}"],
+        ["docker", "ps", "-a", "--filter", "name=cluecoder-gate-", "--format", "{{.Names}}"],
         capture_output=True, text=True, check=True,
     ).stdout.strip()
 
@@ -128,7 +128,7 @@ def test_gate_missing_fixed_command_is_gate_error(tmp_path: Path, docker_ready):
 
 
 def test_gate_rejects_premature_success_even_with_forged_unittest_summary(tmp_path: Path, docker_ready):
-    suite = load_suite(Path(__file__).resolve().parents[1] / "benchmarks/tracecoder-baseline-v1/manifest.json")
+    suite = load_suite(Path(__file__).resolve().parents[1] / "benchmarks/cluecoder-baseline-v1/manifest.json")
     task = next(task for task in suite.tasks if task.id == "ttl_cache")
     workspace = tmp_path / "candidate"
     materialize(task, workspace)
@@ -146,7 +146,7 @@ def test_gate_rejects_premature_success_even_with_forged_unittest_summary(tmp_pa
 
 
 def test_gate_rejects_candidate_forged_report_fd(tmp_path: Path, docker_ready):
-    suite = load_suite(Path(__file__).resolve().parents[1] / "benchmarks/tracecoder-baseline-v1/manifest.json")
+    suite = load_suite(Path(__file__).resolve().parents[1] / "benchmarks/cluecoder-baseline-v1/manifest.json")
     task = next(task for task in suite.tasks if task.id == "ttl_cache")
     workspace = tmp_path / "candidate"
     materialize(task, workspace)

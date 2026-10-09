@@ -1,6 +1,6 @@
 # TraceCoder 独立评测基线设计
 
-> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 tracecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
+> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 cluecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
 
 日期：2026-09-26。状态：设计规格已获用户确认；尚未实现或运行基线。
 
@@ -12,7 +12,7 @@
 
 ## 当前代码边界与方案
 
-现有严格 CLI 在 [`_cli_context`](../../../tracecoder/cli.py) 中绑定工作区文件工具和 `DockerExecutor`；Bash 仅在本地固定镜像可用时启用。[`DockerExecutor`](../../../tracecoder/execution.py) 用 `--network=none`、有限内存/CPU、非 root 用户和单工作区 bind mount 执行命令。[`SessionJournal`](../../../tracecoder/session_journal.py) 保存带序号的 `events.jsonl`。这些是可复用入口，但 CLI 目前没有评测任务清单、每运行独立状态目录、全局预算控制或外部 Test Gate。现有 `/goal` 完成门是 Agent 内部判断，不能充当独立评测结果。
+现有严格 CLI 在 [`_cli_context`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/cli.py) 中绑定工作区文件工具和 `DockerExecutor`；Bash 仅在本地固定镜像可用时启用。[`DockerExecutor`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/execution.py) 用 `--network=none`、有限内存/CPU、非 root 用户和单工作区 bind mount 执行命令。[`SessionJournal`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/session_journal.py) 保存带序号的 `events.jsonl`。这些是可复用入口，但 CLI 目前没有评测任务清单、每运行独立状态目录、全局预算控制或外部 Test Gate。现有 `/goal` 完成门是 Agent 内部判断，不能充当独立评测结果。
 
 选择**外部 Python runner 调用现有严格 CLI**。Runner 负责快照、预算、容器 Gate、归档和汇总；Agent 保持自己的工具循环。直接构造 Python `Agent` 虽易于采集指标，却会绕过严格 CLI 的默认装配，因此不作为第一版入口。只跑仓库自身 pytest 也不能衡量修复任务成功率。第二个 Agent 适配器留待此协议稳定后再接入，不合并两套 Agent 循环。
 

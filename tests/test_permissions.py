@@ -2,13 +2,13 @@
 
 import pytest
 
+from cluecoder import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.permissions import Permission
+from cluecoder.tools.agent import AgentTool
+from cluecoder.tools.write import WriteFileTool
 from tests.conftest import get_tool
-from tracecoder import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.permissions import Permission
-from tracecoder.tools.agent import AgentTool
-from tracecoder.tools.write import WriteFileTool
 
 
 def _write_call(call_id, path):
@@ -158,13 +158,13 @@ def test_sub_agent_inherits_the_permission_layer(tmp_path):
 # --- the CLI side of the layer ---
 
 def test_yes_flag_parses(monkeypatch):
-    from tracecoder.cli import _parse_args
-    monkeypatch.setattr("sys.argv", ["tracecoder", "--yes"])
+    from cluecoder.cli import _parse_args
+    monkeypatch.setattr("sys.argv", ["cluecoder", "--yes"])
     assert _parse_args().yes
 
 
 def test_ask_prompt_maps_answers(monkeypatch):
-    from tracecoder import cli
+    from cluecoder import cli
     answers = iter(["y", "a", "n", "garbage"])
     monkeypatch.setattr(cli, "pt_prompt", lambda *a, **k: next(answers))
 
@@ -175,7 +175,7 @@ def test_ask_prompt_maps_answers(monkeypatch):
 
 
 def test_ask_prompt_eof_denies(monkeypatch):
-    from tracecoder import cli
+    from cluecoder import cli
 
     def eof(*a, **k):
         raise EOFError

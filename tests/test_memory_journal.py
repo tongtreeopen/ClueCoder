@@ -2,7 +2,7 @@ import hashlib
 
 import pytest
 
-from tracecoder.memory import MemoryStore
+from cluecoder.memory import MemoryStore
 
 
 def test_typed_candidate_preserves_legacy_records_and_can_undo_after_restart(tmp_path):

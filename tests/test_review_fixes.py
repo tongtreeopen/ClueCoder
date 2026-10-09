@@ -9,10 +9,10 @@ import httpx
 import pytest
 from openai import APIConnectionError, BadRequestError
 
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import EVAL_TRANSIENT_ATTEMPTS, LLM, ToolCall
-from tracecoder.tools.bash import DisabledBashTool, DockerBashTool
+from cluecoder.agent import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import EVAL_TRANSIENT_ATTEMPTS, LLM, ToolCall
+from cluecoder.tools.bash import DisabledBashTool, DockerBashTool
 
 
 def test_default_agent_refuses_host_shell_and_outside_files(tmp_path):
@@ -51,14 +51,14 @@ def test_docker_dangerous_commands_blocked_before_execution(tmp_path):
 
 
 def test_plan_mode_does_not_persist_work_or_todos(tmp_path):
-    from tracecoder.cli import _bind_work
-    from tracecoder.cli_memory import MemoryCLI
-    from tracecoder.memory import MemoryStore
-    from tracecoder.memory_workflow import MemoryWorkflow
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.tools.todo import TodoWriteTool
-    from tracecoder.tools.work import WorkUpdateTool
-    from tracecoder.work_state import WorkStateStore
+    from cluecoder.cli import _bind_work
+    from cluecoder.cli_memory import MemoryCLI
+    from cluecoder.memory import MemoryStore
+    from cluecoder.memory_workflow import MemoryWorkflow
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.work import WorkUpdateTool
+    from cluecoder.work_state import WorkStateStore
 
     journal = SessionJournal.create(tmp_path / "sessions", tmp_path, "test")
     work = WorkStateStore(journal)
@@ -95,7 +95,7 @@ def test_provider_create_failures_have_one_retry_layer():
 
 
 def _memory_writer(workspace, applied, release):
-    from tracecoder.memory import MemoryStore
+    from cluecoder.memory import MemoryStore
 
     class PausedStore(MemoryStore):
         def _rebuild_index(self):
@@ -107,7 +107,7 @@ def _memory_writer(workspace, applied, release):
 
 
 def _memory_recover(workspace, ready, done):
-    from tracecoder.memory import MemoryStore
+    from cluecoder.memory import MemoryStore
 
     ready.set()
     assert MemoryStore(Path(workspace)).recover_pending() == 0
@@ -115,7 +115,7 @@ def _memory_recover(workspace, ready, done):
 
 
 def test_memory_recovery_cannot_rollback_another_live_writer(tmp_path):
-    from tracecoder.memory import MemoryStore
+    from cluecoder.memory import MemoryStore
 
     context = multiprocessing.get_context("spawn")
     applied, release, ready, done = context.Event(), context.Event(), context.Event(), context.Event()
@@ -142,7 +142,7 @@ def test_memory_recovery_cannot_rollback_another_live_writer(tmp_path):
 
 
 def test_selected_memory_undo_does_not_switch_to_a_newer_operation(tmp_path):
-    from tracecoder.memory import MemoryStore
+    from cluecoder.memory import MemoryStore
 
     store = MemoryStore(tmp_path)
     store.save_candidate("first", "first", "one", "project")
@@ -154,8 +154,8 @@ def test_selected_memory_undo_does_not_switch_to_a_newer_operation(tmp_path):
 
 
 def test_read_only_work_recovery_leaves_stale_snapshot_untouched(tmp_path):
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.work_state import WorkStateStore
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.work_state import WorkStateStore
 
     journal = SessionJournal.create(tmp_path / "sessions", tmp_path, "test")
     store = WorkStateStore(journal)
@@ -172,8 +172,8 @@ def test_read_only_work_recovery_leaves_stale_snapshot_untouched(tmp_path):
 
 
 def test_gate_trusted_python_isolates_candidate_imports(tmp_path):
-    from tracecoder.eval.cases import TaskSpec
-    from tracecoder.eval.gate import _UNITTEST_SUPERVISOR, _docker_args
+    from cluecoder.eval.cases import TaskSpec
+    from cluecoder.eval.gate import _UNITTEST_SUPERVISOR, _docker_args
 
     for name in ("json", "unittest"):
         (tmp_path / f"{name}.py").write_text("raise RuntimeError('candidate import')", encoding="utf-8")
@@ -196,10 +196,10 @@ def test_gate_trusted_python_isolates_candidate_imports(tmp_path):
 
 
 def test_index_shortening_omits_whole_entries_with_a_notice(tmp_path):
-    from tracecoder.context_assembler import ContextAssembler
-    from tracecoder.memory import bounded_index
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.work_state import WorkStateStore
+    from cluecoder.context_assembler import ContextAssembler
+    from cluecoder.memory import bounded_index
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.work_state import WorkStateStore
 
     journal = SessionJournal.create(tmp_path / "sessions", tmp_path, "test")
     rows = [f"- skill{i}: " + "x" * 67 for i in range(100)]
@@ -232,13 +232,13 @@ def test_failed_structured_context_recovery_restores_original_history():
 
 
 def test_memory_reading_toggle_updates_bound_tools_and_context(tmp_path):
-    from tracecoder.cli import _bind_work
-    from tracecoder.cli_memory import MemoryCLI
-    from tracecoder.memory import MemoryStore
-    from tracecoder.memory_workflow import MemoryWorkflow
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.tools.memory import ListMemoriesTool, ReadMemoryTool
-    from tracecoder.work_state import WorkStateStore
+    from cluecoder.cli import _bind_work
+    from cluecoder.cli_memory import MemoryCLI
+    from cluecoder.memory import MemoryStore
+    from cluecoder.memory_workflow import MemoryWorkflow
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.tools.memory import ListMemoriesTool, ReadMemoryTool
+    from cluecoder.work_state import WorkStateStore
 
     store = MemoryStore(tmp_path)
     store.remember("fact", "description", "saved body")
@@ -256,8 +256,8 @@ def test_memory_reading_toggle_updates_bound_tools_and_context(tmp_path):
 
 
 def test_session_tools_read_redacted_history_and_reject_bad_ids(tmp_path):
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.tools.session import ReadSessionEventTool, SearchSessionTool
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.tools.session import ReadSessionEventTool, SearchSessionTool
 
     journal = SessionJournal.create(tmp_path / "sessions", tmp_path, "test")
     for index in range(7):
@@ -273,11 +273,11 @@ def test_session_tools_read_redacted_history_and_reject_bad_ids(tmp_path):
 
 
 def test_goal_off_with_extra_whitespace_never_calls_model(tmp_path):
-    from tracecoder.cli import _run_once
-    from tracecoder.goal import GoalController
-    from tracecoder.goal_evaluator import GoalEvaluator
-    from tracecoder.session_journal import SessionJournal
-    from tracecoder.work_state import WorkStateStore
+    from cluecoder.cli import _run_once
+    from cluecoder.goal import GoalController
+    from cluecoder.goal_evaluator import GoalEvaluator
+    from cluecoder.session_journal import SessionJournal
+    from cluecoder.work_state import WorkStateStore
 
     agent = Agent(ScriptedLLM([]), tools=[])
     journal = SessionJournal.create(tmp_path / "sessions", tmp_path, "test")

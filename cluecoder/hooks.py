@@ -10,7 +10,7 @@ from pathlib import Path
 
 log = logging.getLogger(__name__)
 
-HOOKS_FILE = Path.home() / ".tracecoder" / "hooks.json"
+HOOKS_FILE = Path.home() / ".cluecoder" / "hooks.json"
 TIMEOUT = 10  # seconds; a hung hook must not hang the agent
 
 

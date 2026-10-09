@@ -11,16 +11,16 @@ build/
 venv/
 .mypy_cache/
 .ruff_cache/
-.tracecoder_history
+.cluecoder_history
 .DS_Store
 .pytest_cache/
-.tracecoder/memory/
-.tracecoder/tasks/
+.cluecoder/memory/
+.cluecoder/tasks/
 .tmp/
 .worktrees/
 
 # Local state and generated artifacts
-.tracecoder/
+.cluecoder/
 .superpowers/
 .env.*
 !.env.example
@@ -28,5 +28,9 @@ pip-install-*/
 pip-build-tracker-*/
 pip-ephem-wheel-cache-*/
 pytest-of-*/
-tracecoder-demo-*/
+cluecoder-demo-*/
 dsh-review/
+
+# Ignore state left by releases before the ClueCoder rename.
+.tracecoder/
+.tracecoder_history

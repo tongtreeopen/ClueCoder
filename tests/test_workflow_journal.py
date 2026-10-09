@@ -5,7 +5,7 @@ import time
 
 import pytest
 
-from tracecoder.workflow_journal import WorkflowJournal
+from cluecoder.workflow_journal import WorkflowJournal
 
 
 def test_completed_step_survives_reopen_and_bad_tail(tmp_path):
@@ -39,7 +39,7 @@ def test_os_lock_blocks_other_process_and_releases_on_exit(tmp_path):
     journal = WorkflowJournal.create(tmp_path, {"source": "frozen"})
     marker = tmp_path / "acquired"
     code = (
-        "import sys; from pathlib import Path; from tracecoder.workflow_journal import WorkflowJournal; "
+        "import sys; from pathlib import Path; from cluecoder.workflow_journal import WorkflowJournal; "
         "j=WorkflowJournal(Path(sys.argv[1]), sys.argv[2]); "
         "j.lock.__enter__(); Path(sys.argv[3]).write_text('acquired'); j.lock.__exit__(None,None,None)"
     )

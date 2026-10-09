@@ -1,6 +1,6 @@
 # P0：验证基线与工作区边界设计
 
-> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 tracecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
+> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 cluecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
 
 日期：2026-09-24
 修订：2026-09-25（所有 CLI 默认严格边界）
@@ -14,9 +14,9 @@
 
 ## 已核实的现状
 
-- 当前 [`Permission`](../../../tracecoder/permissions.py) 将工具分为只读与需同意；Plan Mode 在许可之前阻止修改。`--yes` 可放行需同意的工具，但“用户同意”不是工作区隔离。
-- [`read_file`、`write_file`、`edit_file`、`glob`、`grep`](../../../tracecoder/tools/) 各自解析路径，没有共享的工作区约束；[`bash`](../../../tracecoder/tools/bash.py) 用 `shell=True` 和危险命令正则，指定 `cwd` 不能阻止命令访问工作区以外。MCP、用户 Hook 也可能运行外部命令；子 Agent 继承父 Agent 工具。
-- [`ContextManager`](../../../tracecoder/context.py) 已有工具输出裁剪、旧消息摘要、紧急压缩，不需换成 s08 的独立循环，但要回归工具调用/结果成对性与近期消息保留。
+- 当前 [`Permission`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/permissions.py) 将工具分为只读与需同意；Plan Mode 在许可之前阻止修改。`--yes` 可放行需同意的工具，但“用户同意”不是工作区隔离。
+- [`read_file`、`write_file`、`edit_file`、`glob`、`grep`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/tools/) 各自解析路径，没有共享的工作区约束；[`bash`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/tools/bash.py) 用 `shell=True` 和危险命令正则，指定 `cwd` 不能阻止命令访问工作区以外。MCP、用户 Hook 也可能运行外部命令；子 Agent 继承父 Agent 工具。
+- [`ContextManager`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/context.py) 已有工具输出裁剪、旧消息摘要、紧急压缩，不需换成 s08 的独立循环，但要回归工具调用/结果成对性与近期消息保留。
 - 2026-09-24 Windows 当前工作树执行 `py -3.13 -m pytest tests -q`：225 passed、7 failed。两项为 README 行数和 `.env` 影响默认配置测试；五项 Hook 测试使用 Windows `cmd.exe` 不支持的 `sh`、`cat`、`sleep` 等 POSIX 命令。失败分类仅说明当前复现状态，不预断每项修法。
 - 工作树已有与本设计无关的未提交改动：`tracecoder/llm.py`、`tests/test_core.py`、`requirements.txt`，以及尚未跟踪的机制对照文档。实施时不得覆盖或顺手提交这些内容。
 

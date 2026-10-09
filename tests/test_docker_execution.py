@@ -9,13 +9,13 @@ from types import SimpleNamespace
 
 import pytest
 
-from tracecoder import cli as cli_module
-from tracecoder import execution as execution_module
-from tracecoder import session as session_module
-from tracecoder.demo import run_demo
-from tracecoder.eval.runner import _prepare_workspace
-from tracecoder.execution import DockerExecutor, _sandbox_user
-from tracecoder.tools.bash import DockerBashTool
+from cluecoder import cli as cli_module
+from cluecoder import execution as execution_module
+from cluecoder import session as session_module
+from cluecoder.demo import run_demo
+from cluecoder.eval.runner import _prepare_workspace
+from cluecoder.execution import DockerExecutor, _sandbox_user
+from cluecoder.tools.bash import DockerBashTool
 
 
 @pytest.fixture
@@ -54,10 +54,10 @@ def test_verified_docker_uses_testbed_without_changing_ordinary_mode(docker_read
 
 def test_eval_docker_configuration_errors_fail_closed(docker_ready, tmp_path, monkeypatch):
     assert DockerExecutor.available()
-    monkeypatch.setenv("TRACECODER_EVAL_MODE", "1")
-    monkeypatch.setenv("TRACECODER_EVAL_IMAGE", execution_module.DEFAULT_IMAGE)
-    monkeypatch.setenv("TRACECODER_EVAL_RUN_ID", "c" * 32)
-    monkeypatch.setenv("TRACECODER_EVAL_WORKSPACE_TARGET", "/wrong")
+    monkeypatch.setenv("CLUECODER_EVAL_MODE", "1")
+    monkeypatch.setenv("CLUECODER_EVAL_IMAGE", execution_module.DEFAULT_IMAGE)
+    monkeypatch.setenv("CLUECODER_EVAL_RUN_ID", "c" * 32)
+    monkeypatch.setenv("CLUECODER_EVAL_WORKSPACE_TARGET", "/wrong")
     with pytest.raises(ValueError, match="target"):
         DockerExecutor.try_create(tmp_path)
 
@@ -68,7 +68,7 @@ def test_cli_uses_local_pinned_docker_image_when_available(tmp_path, monkeypatch
     seen = []
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPENAI_API_KEY", "offline-test-key")
-    monkeypatch.setattr(sys, "argv", ["tracecoder", "-p", "hello", "--yes"])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", "-p", "hello", "--yes"])
     monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path / "sessions")
     monkeypatch.setattr(cli_module, "_run_once", lambda agent, prompt, memory, journal: seen.append(agent))
     cli_module.main()
@@ -124,12 +124,12 @@ def test_docker_image_failure_never_falls_back_to_host_shell(executor, tmp_path)
 
 def test_docker_timeout_removes_container_and_child_process(executor):
     before = subprocess.run(
-        ["docker", "ps", "-a", "--filter", f"label=tracecoder.eval.run={executor.run_id}", "--format", "{{.Names}}"],
+        ["docker", "ps", "-a", "--filter", f"label=cluecoder.eval.run={executor.run_id}", "--format", "{{.Names}}"],
         capture_output=True, text=True, check=True,
     ).stdout
     assert "timed out" in executor.run("sleep 15 & wait", timeout=2)
     after = subprocess.run(
-        ["docker", "ps", "-a", "--filter", f"label=tracecoder.eval.run={executor.run_id}", "--format", "{{.Names}}"],
+        ["docker", "ps", "-a", "--filter", f"label=cluecoder.eval.run={executor.run_id}", "--format", "{{.Names}}"],
         capture_output=True, text=True, check=True,
     ).stdout
     assert after == before
@@ -138,7 +138,7 @@ def test_docker_timeout_removes_container_and_child_process(executor):
 def test_docker_output_limit_stops_noisy_container(executor):
     assert "output limit" in executor.run("python -c 'print(\"x\" * 2000000)'", timeout=10)
     assert not subprocess.run(
-        ["docker", "ps", "-a", "--filter", f"label=tracecoder.eval.run={executor.run_id}", "--format", "{{.Names}}"],
+        ["docker", "ps", "-a", "--filter", f"label=cluecoder.eval.run={executor.run_id}", "--format", "{{.Names}}"],
         capture_output=True, text=True, check=True,
     ).stdout.strip()
 
@@ -157,7 +157,7 @@ def test_interrupt_cleans_up_docker_client_and_container(executor, monkeypatch):
     with pytest.raises(KeyboardInterrupt):
         executor.run("sleep 15", timeout=20)
     assert not subprocess.run(
-        ["docker", "ps", "-a", "--filter", f"label=tracecoder.eval.run={executor.run_id}", "--format", "{{.Names}}"],
+        ["docker", "ps", "-a", "--filter", f"label=cluecoder.eval.run={executor.run_id}", "--format", "{{.Names}}"],
         capture_output=True, text=True, check=True,
     ).stdout.strip()
 

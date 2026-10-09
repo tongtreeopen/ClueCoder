@@ -1,15 +1,15 @@
 import json
 from typing import ClassVar
 
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.extraction_queue import ExtractionQueue
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.memory import MemoryStore
-from tracecoder.session_journal import SessionJournal
-from tracecoder.tools.base import Tool
-from tracecoder.tools.write import WriteFileTool
-from tracecoder.workspace import WorkspacePolicy
+from cluecoder.agent import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.extraction_queue import ExtractionQueue
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.memory import MemoryStore
+from cluecoder.session_journal import SessionJournal
+from cluecoder.tools.base import Tool
+from cluecoder.tools.write import WriteFileTool
+from cluecoder.workspace import WorkspacePolicy
 
 
 class RecordingModel(ScriptedLLM):

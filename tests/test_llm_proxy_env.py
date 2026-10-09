@@ -12,7 +12,7 @@ import httpx
 import pytest
 from openai import APIConnectionError
 
-from tracecoder.llm import EVAL_TRANSIENT_ATTEMPTS, LLM, normalize_no_proxy
+from cluecoder.llm import EVAL_TRANSIENT_ATTEMPTS, LLM, normalize_no_proxy
 
 BRACKETED = "169.254.127.60,localhost,127.0.0.1,::1,[::1]"
 CLEAN = "169.254.127.60,localhost,127.0.0.1,::1"
@@ -112,7 +112,7 @@ def _eval_mode_llm(failures: int) -> LLM:
 
 
 def test_eval_mode_retries_a_connection_dropped_mid_stream(monkeypatch):
-    monkeypatch.setattr("tracecoder.llm.time.sleep", lambda _seconds: None)
+    monkeypatch.setattr("cluecoder.llm.time.sleep", lambda _seconds: None)
     llm = _eval_mode_llm(failures=1)
 
     # The connection drops after the first chunk; the call must still succeed, and
@@ -124,7 +124,7 @@ def test_eval_mode_retries_a_connection_dropped_mid_stream(monkeypatch):
 
 
 def test_eval_mode_gives_up_after_bounded_attempts(monkeypatch):
-    monkeypatch.setattr("tracecoder.llm.time.sleep", lambda _seconds: None)
+    monkeypatch.setattr("cluecoder.llm.time.sleep", lambda _seconds: None)
     llm = _eval_mode_llm(failures=99)
 
     with pytest.raises(APIConnectionError):

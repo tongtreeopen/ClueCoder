@@ -9,11 +9,11 @@ from unittest import mock
 import pytest
 from openai import BadRequestError
 
+from cluecoder import ALL_TOOLS, LLM, Agent, Config, __version__
+from cluecoder import session as session_module
+from cluecoder.context import ContextManager, estimate_tokens
+from cluecoder.session import list_sessions, load_session, save_session
 from tests.conftest import get_tool
-from tracecoder import ALL_TOOLS, LLM, Agent, Config, __version__
-from tracecoder import session as session_module
-from tracecoder.context import ContextManager, estimate_tokens
-from tracecoder.session import list_sessions, load_session, save_session
 
 
 def test_version():
@@ -32,16 +32,16 @@ def test_public_api_exports():
 
 
 def test_config_from_env(monkeypatch):
-    monkeypatch.setenv("TRACECODER_MODEL", "test-model")
+    monkeypatch.setenv("CLUECODER_MODEL", "test-model")
     c = Config.from_env()
     assert c.model == "test-model"
 
 
 def test_config_defaults(monkeypatch):
     # clear relevant env vars without leaking the change into other tests
-    monkeypatch.delenv("TRACECODER_MODEL", raising=False)
-    monkeypatch.delenv("TRACECODER_MAX_TOKENS", raising=False)
-    monkeypatch.setattr("tracecoder.config._load_dotenv", lambda: None)
+    monkeypatch.delenv("CLUECODER_MODEL", raising=False)
+    monkeypatch.delenv("CLUECODER_MAX_TOKENS", raising=False)
+    monkeypatch.setattr("cluecoder.config._load_dotenv", lambda: None)
 
     c = Config.from_env()
     assert c.model == "gpt-5.5"
@@ -60,7 +60,7 @@ def test_estimate_tokens():
 
 
 def test_estimate_tokens_tiered_by_content():
-    from tracecoder.context import _approx_tokens
+    from cluecoder.context import _approx_tokens
 
     prose = "The quick brown fox jumps over the lazy dog. " * 10  # 460 prose chars
     cjk = "你好世界，这是一段中文。" * 20  # 260 hanzi-ish chars
@@ -165,7 +165,7 @@ def test_list_sessions():
 
 
 def test_cost_estimation_known_model():
-    from tracecoder.llm import LLM
+    from cluecoder.llm import LLM
 
     llm = LLM.__new__(LLM)
     llm.model = "gpt-5.4"
@@ -177,7 +177,7 @@ def test_cost_estimation_known_model():
 
 
 def test_cost_estimation_unknown_model():
-    from tracecoder.llm import LLM
+    from cluecoder.llm import LLM
 
     llm = LLM.__new__(LLM)
     llm.model = "some-custom-model"
@@ -229,7 +229,7 @@ def test_cost_estimation_retired_models_is_unknown(model):
 
 
 def test_edit_tracks_changed_files(tmp_path):
-    from tracecoder.tools.edit import _changed_files
+    from cluecoder.tools.edit import _changed_files
 
     _changed_files.clear()
     edit = get_tool("edit_file")
@@ -241,7 +241,7 @@ def test_edit_tracks_changed_files(tmp_path):
 
 
 def test_write_tracks_changed_files(tmp_path):
-    from tracecoder.tools.edit import _changed_files
+    from cluecoder.tools.edit import _changed_files
 
     _changed_files.clear()
     write = get_tool("write_file")
@@ -257,7 +257,7 @@ def test_write_tracks_changed_files(tmp_path):
 def test_parallel_bash_calls_inherit_and_merge_session_cwd(tmp_path):
     """Pool workers must start from the session cwd, not the launch dir, and a
     cd inside the batch moves the session cwd afterwards."""
-    from tracecoder.tools.bash import get_tracked_cwd, set_tracked_cwd
+    from cluecoder.tools.bash import get_tracked_cwd, set_tracked_cwd
 
     bash = get_tool("bash")
     agent = Agent(llm=LLM.__new__(LLM), tools=[bash])
@@ -306,9 +306,9 @@ def test_parallel_edits_to_one_file_both_land(tmp_path):
 
 def test_sub_agent_cwd_does_not_leak_into_parent(tmp_path, monkeypatch):
     """A sub-agent's own cd must not move the parent's tracked cwd."""
-    from tracecoder.agent import Agent as CoreAgent
-    from tracecoder.tools.agent import AgentTool
-    from tracecoder.tools.bash import get_tracked_cwd, set_tracked_cwd
+    from cluecoder.agent import Agent as CoreAgent
+    from cluecoder.tools.agent import AgentTool
+    from cluecoder.tools.bash import get_tracked_cwd, set_tracked_cwd
 
     parent = Agent(llm=LLM.__new__(LLM), tools=[])
     tool = AgentTool()
@@ -332,7 +332,7 @@ def test_sub_agent_cwd_does_not_leak_into_parent(tmp_path, monkeypatch):
 
 def test_reset_clears_todo_list():
     """/reset must drop the dead conversation's checklist from the system prompt."""
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
 
     todo = TodoWriteTool()
     agent = Agent(llm=LLM.__new__(LLM), tools=[todo])
@@ -359,7 +359,7 @@ def test_agent_tool_scope_is_per_instance():
 
 def test_exec_tool_distinguishes_bad_args_from_internal_error():
     """A TypeError raised inside a tool must not be reported as bad arguments."""
-    from tracecoder.tools.base import Tool
+    from cluecoder.tools.base import Tool
 
     class _Boom(Tool):
         name = "boom"
@@ -406,7 +406,7 @@ def test_interrupt_backfills_missing_tool_replies():
 
 def test_todo_list_is_injected_into_system_context():
     """After a todo_write call, the next request must carry the list in the system message."""
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
 
     todo = TodoWriteTool()
     agent = Agent(llm=LLM.__new__(LLM), tools=[todo])
@@ -425,7 +425,7 @@ def test_todo_list_is_injected_into_system_context():
 
 def test_todo_injection_tracks_updates():
     """The injection is rebuilt every round: updates show, an empty list injects nothing."""
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.tools.todo import TodoWriteTool
 
     todo = TodoWriteTool()
     agent = Agent(llm=LLM.__new__(LLM), tools=[todo])

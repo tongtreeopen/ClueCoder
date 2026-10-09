@@ -18,7 +18,7 @@ import uuid
 from dataclasses import dataclass
 from pathlib import Path
 
-from tracecoder.eval.cases import TaskSpec
+from cluecoder.eval.cases import TaskSpec
 
 MAX_OUTPUT_BYTES = 1_000_000
 
@@ -198,7 +198,7 @@ def run_gate(task: TaskSpec, workspace: Path, image: str, timeout: int = 120) ->
     if inspected.returncode or not re.fullmatch(r"sha256:[0-9a-f]{64}", inspected.stdout.strip()):
         return result("setup_error", f"Pinned local image unavailable: {inspected.stderr.strip()}")
     image_id = inspected.stdout.strip()
-    name = f"tracecoder-gate-{uuid.uuid4().hex}"
+    name = f"cluecoder-gate-{uuid.uuid4().hex}"
     try:
         proc = subprocess.Popen(
             _docker_args(task, workspace, image, name, evidence), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,

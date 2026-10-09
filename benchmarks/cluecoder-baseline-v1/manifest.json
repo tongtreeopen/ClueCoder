@@ -1,5 +1,5 @@
 {
-  "id": "tracecoder-baseline-v1",
+  "id": "cluecoder-baseline-v1",
   "tasks": [
     {
       "id": "csv_quotes",

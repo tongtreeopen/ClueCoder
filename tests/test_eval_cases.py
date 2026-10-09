@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from tracecoder.eval.cases import _tree_hash as hash_tree
-from tracecoder.eval.cases import load_suite, materialize
+from cluecoder.eval.cases import _tree_hash as hash_tree
+from cluecoder.eval.cases import load_suite, materialize
 
 
 def _tree_hash(files: dict[str, bytes]) -> str:

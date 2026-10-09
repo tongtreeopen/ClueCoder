@@ -5,14 +5,14 @@ from pathlib import Path
 
 import pytest
 
-from tracecoder import cli as cli_module
-from tracecoder import session as session_module
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.llm import LLMResponse
-from tracecoder.memory import MemoryStore
-from tracecoder.session_journal import SessionJournal
-from tracecoder.work_state import WorkStateStore
+from cluecoder import cli as cli_module
+from cluecoder import session as session_module
+from cluecoder.agent import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.llm import LLMResponse
+from cluecoder.memory import MemoryStore
+from cluecoder.session_journal import SessionJournal
+from cluecoder.work_state import WorkStateStore
 
 
 def test_journal_roundtrip_and_workspace_boundary(tmp_path):
@@ -21,8 +21,8 @@ def test_journal_roundtrip_and_workspace_boundary(tmp_path):
     journal = SessionJournal.create(tmp_path / "sessions", workspace, "model-a")
     journal.append_message({"role": "user", "content": "修复这个问题"})
     journal.append_message({"role": "assistant", "content": "完成"})
-    journal.set_context_budget(128000, 4096, "TRACECODER_MAX_CONTEXT")
-    journal.set_context_budget(128000, 4096, "TRACECODER_MAX_CONTEXT")
+    journal.set_context_budget(128000, 4096, "CLUECODER_MAX_CONTEXT")
+    journal.set_context_budget(128000, 4096, "CLUECODER_MAX_CONTEXT")
 
     restored = SessionJournal.open(tmp_path / "sessions", journal.id, workspace)
     assert restored.messages() == [
@@ -180,7 +180,7 @@ def test_one_shot_cli_persists_work_card_and_answer(tmp_path, monkeypatch):
 
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPENAI_API_KEY", "offline-test-key")
-    monkeypatch.setattr(sys, "argv", ["tracecoder", "-p", "Fix the tests"])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", "-p", "Fix the tests"])
     monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path / "sessions")
     monkeypatch.setattr(cli_module, "LLM", OfflineLLM)
     monkeypatch.setattr(cli_module.DockerExecutor, "try_create", lambda workspace: None)
@@ -208,7 +208,7 @@ def test_one_shot_cli_autosaves_sourced_preference_without_prompt(tmp_path, monk
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(Path, "home", classmethod(lambda cls: tmp_path / "home"))
     monkeypatch.setenv("OPENAI_API_KEY", "offline-test-key")
-    monkeypatch.setattr(sys, "argv", ["tracecoder", "-p", "I prefer Chinese answers"])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", "-p", "I prefer Chinese answers"])
     monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path / "sessions")
     monkeypatch.setattr(cli_module, "LLM", OfflineLLM)
     monkeypatch.setattr(cli_module.DockerExecutor, "try_create", lambda workspace: None)
@@ -232,10 +232,10 @@ def test_one_shot_resume_restores_messages_and_work_card(tmp_path, monkeypatch):
     monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path / "sessions")
     monkeypatch.setattr(cli_module, "LLM", OfflineLLM)
     monkeypatch.setattr(cli_module.DockerExecutor, "try_create", lambda workspace: None)
-    monkeypatch.setattr(sys, "argv", ["tracecoder", "-p", "First request"])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", "-p", "First request"])
     cli_module.main()
     session_id = session_module.list_sessions()[0]["id"]
-    monkeypatch.setattr(sys, "argv", ["tracecoder", "--resume", session_id, "-p", "Continue"])
+    monkeypatch.setattr(sys, "argv", ["cluecoder", "--resume", session_id, "-p", "Continue"])
     cli_module.main()
 
     journal = session_module.resume_journal(session_id, tmp_path)
@@ -247,10 +247,10 @@ def test_one_shot_resume_restores_messages_and_work_card(tmp_path, monkeypatch):
 
 
 def test_repl_reset_preserves_old_work_and_starts_empty_session(tmp_path, monkeypatch):
-    from tracecoder.cli_memory import MemoryCLI
-    from tracecoder.config import Config
-    from tracecoder.memory_workflow import MemoryWorkflow
-    from tracecoder.tools.todo import TodoWriteTool
+    from cluecoder.cli_memory import MemoryCLI
+    from cluecoder.config import Config
+    from cluecoder.memory_workflow import MemoryWorkflow
+    from cluecoder.tools.todo import TodoWriteTool
 
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr(session_module, "SESSIONS_DIR", tmp_path / "sessions")

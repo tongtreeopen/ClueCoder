@@ -1,3 +1,5 @@
+> 本文保留改名前的来源与验证记录。当前项目名为 ClueCoder，包入口为 `cluecoder/`；参见 [命名迁移](CLUECODER_RENAME.md)。
+
 # 发布文件清单
 
 发布目录：`TraceCoder-publish-20261007`。本次不改产品代码，只精简发布材料与对应文档引用。

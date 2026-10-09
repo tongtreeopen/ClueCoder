@@ -1,13 +1,13 @@
 import pytest
 
-from tracecoder.context import estimate_tokens
-from tracecoder.context_assembler import ContextAssembler
-from tracecoder.memory import MemoryStore
-from tracecoder.session_journal import SessionJournal
-from tracecoder.tools.memory import SearchMemoryTool
-from tracecoder.tools.session import ReadSessionEventTool, SearchSessionTool
-from tracecoder.tools.work import ReadWorkStateTool
-from tracecoder.work_state import WorkStateStore
+from cluecoder.context import estimate_tokens
+from cluecoder.context_assembler import ContextAssembler
+from cluecoder.memory import MemoryStore
+from cluecoder.session_journal import SessionJournal
+from cluecoder.tools.memory import SearchMemoryTool
+from cluecoder.tools.session import ReadSessionEventTool, SearchSessionTool
+from cluecoder.tools.work import ReadWorkStateTool
+from cluecoder.work_state import WorkStateStore
 
 
 @pytest.mark.parametrize(("history", "actions"), [(0, 8), (0, 30), (9, 8), (9, 30)])

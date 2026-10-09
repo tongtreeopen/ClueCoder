@@ -3,24 +3,24 @@ from typing import ClassVar
 
 import pytest
 
-from tracecoder import cli as cli_module
-from tracecoder import session as session_module
-from tracecoder.agent import Agent
-from tracecoder.cli_memory import MemoryCLI
-from tracecoder.config import Config
-from tracecoder.demo import ScriptedLLM
-from tracecoder.goal import GoalController
-from tracecoder.goal_evaluator import GoalEvaluator
-from tracecoder.llm import LLMResponse
-from tracecoder.memory import MemoryStore
-from tracecoder.memory_workflow import MemoryWorkflow
-from tracecoder.permissions import Permission
-from tracecoder.session_journal import SessionJournal
-from tracecoder.tools.bash import DisabledBashTool
-from tracecoder.tools.work import WorkUpdateTool
-from tracecoder.tools.write import WriteFileTool
-from tracecoder.work_state import WorkStateStore
-from tracecoder.workspace import WorkspacePolicy
+from cluecoder import cli as cli_module
+from cluecoder import session as session_module
+from cluecoder.agent import Agent
+from cluecoder.cli_memory import MemoryCLI
+from cluecoder.config import Config
+from cluecoder.demo import ScriptedLLM
+from cluecoder.goal import GoalController
+from cluecoder.goal_evaluator import GoalEvaluator
+from cluecoder.llm import LLMResponse
+from cluecoder.memory import MemoryStore
+from cluecoder.memory_workflow import MemoryWorkflow
+from cluecoder.permissions import Permission
+from cluecoder.session_journal import SessionJournal
+from cluecoder.tools.bash import DisabledBashTool
+from cluecoder.tools.work import WorkUpdateTool
+from cluecoder.tools.write import WriteFileTool
+from cluecoder.work_state import WorkStateStore
+from cluecoder.workspace import WorkspacePolicy
 
 
 def _session(tmp_path):
@@ -247,7 +247,7 @@ def test_permission_refusal_needs_user_and_does_not_retry(tmp_path):
     goal = GoalController(journal, work, GoalEvaluator(ScriptedLLM([])))
     goal.set("Write file")
     target = tmp_path / "result.txt"
-    from tracecoder.llm import ToolCall
+    from cluecoder.llm import ToolCall
 
     agent = Agent(
         ScriptedLLM(
@@ -466,7 +466,7 @@ def test_evaluator_truncation_is_recorded_and_cannot_accept(tmp_path):
 
 
 def test_evaluator_context_preserves_activity_without_promoting_it(tmp_path):
-    from tracecoder.eval.budget import BudgetedModel
+    from cluecoder.eval.budget import BudgetedModel
 
     class InspectingEvaluator(ScriptedLLM):
         is_deepseek = True
@@ -519,7 +519,7 @@ def test_evaluator_context_preserves_activity_without_promoting_it(tmp_path):
 
 
 def test_response_preserves_reasoning_only_when_provider_supplies_it():
-    from tracecoder.llm import ToolCall
+    from cluecoder.llm import ToolCall
 
     response = LLMResponse(
         content="done",
@@ -599,7 +599,7 @@ def test_repl_goal_waits_in_plan_mode_and_can_be_cancelled(tmp_path, monkeypatch
 
 
 def test_auto_consent_cannot_turn_disabled_bash_into_goal_evidence(tmp_path):
-    from tracecoder.llm import ToolCall
+    from cluecoder.llm import ToolCall
 
     journal, work = _session(tmp_path)
     goal = GoalController(journal, work, GoalEvaluator(ScriptedLLM([])))
@@ -664,7 +664,7 @@ def test_repl_reset_starts_new_session_without_old_goal(tmp_path, monkeypatch):
 
 
 def test_goal_end_to_end_registers_real_result_then_accepts_once(tmp_path):
-    from tracecoder.llm import ToolCall
+    from cluecoder.llm import ToolCall
 
     class TestBash:
         name = "bash"

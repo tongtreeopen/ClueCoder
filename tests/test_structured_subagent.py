@@ -2,15 +2,15 @@ import json
 
 import pytest
 
-from tracecoder.agent import Agent
-from tracecoder.demo import ScriptedLLM
-from tracecoder.eval.budget import BudgetedModel
-from tracecoder.llm import LLMResponse, ToolCall
-from tracecoder.session_journal import SessionJournal
-from tracecoder.tools.agent import AgentTool
-from tracecoder.tools.read import ReadFileTool
-from tracecoder.work_state import WorkStateStore
-from tracecoder.workspace import WorkspacePolicy
+from cluecoder.agent import Agent
+from cluecoder.demo import ScriptedLLM
+from cluecoder.eval.budget import BudgetedModel
+from cluecoder.llm import LLMResponse, ToolCall
+from cluecoder.session_journal import SessionJournal
+from cluecoder.tools.agent import AgentTool
+from cluecoder.tools.read import ReadFileTool
+from cluecoder.work_state import WorkStateStore
+from cluecoder.workspace import WorkspacePolicy
 
 
 def report(**changes):
