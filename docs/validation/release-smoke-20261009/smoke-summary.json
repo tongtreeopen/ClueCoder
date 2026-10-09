@@ -59,9 +59,10 @@
     }
   ],
   "published_artifact_hashes": {
-    "patch.diff": "040b40963fd54f037d92b8e536f49124c5c29ee32750ed3b03ca7e5f2e663c93",
+    "patch.diff": "4ad7346dca0f22bf752b8182ac0a4d597078ccfbb00ccf14de018b039f4f17f9",
     "gate.txt": "2a9bb4c7c7e5ccbe6f42780eea3399b86ef99869a6c3f43505fbcec987dede98",
     "model_calls.json": "98711fc26f914cfde6f147502f28a2a4546c784f1e7e30f57f672fce55ed5a73"
   },
-  "published_attempt": 3
+  "published_attempt": 3,
+  "published_artifacts_note": "Published text uses LF line endings; original run artifacts remain local."
 }
