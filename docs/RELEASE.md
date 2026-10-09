@@ -2,7 +2,7 @@
 
 - Version: 0.1.0 (independent TraceCoder version sequence).
 - Maintainer: Tong ShuKai (local Git identity).
-- Intended GitHub repository: tongtreeopen/TraceCoder. This is a publication target, not an existing remote confirmed by this release preparation.
+- GitHub repository: https://github.com/tongtreeopen/TraceCoder (private during CI validation).
 - Upstream: CoreCoder by Yufeng He; original copyright and MIT license remain in LICENSE.
 - This source was curated from a modified local CoreCoder workspace. Its parent HEAD was f03bd9b6f7dd0e5dc96609436c1de3b6b27106a8; that commit alone does not reproduce the copied dirty workspace.
 - Compared with the locally saved upstream origin/main 427633641c4e8c624530475b9806a0029df0d388, additions include Goal verification, journals, memory, budget-aware context, Docker execution, structured review, and independent evaluation. This comparison does not claim the remote upstream is unchanged today.
@@ -10,7 +10,7 @@
 
 ## Publication status
 
-Local Git history and the release tag freeze this curated source. No GitHub repository or PyPI release is created by this preparation. Once the remote exists, add verified Repository and Issues URLs under project.urls in pyproject.toml. CI supplies the Linux/macOS and Python 3.10-3.13 checks; local Windows checks do not prove those matrix jobs pass.
+Local Git history and the release tag freeze this curated source. The repository was created privately at the user's request to run CI; public visibility and PyPI publication remain separate actions. Repository and Issues URLs are configured in pyproject.toml. CI checks Ubuntu/macOS/Windows with Python 3.10-3.13, installed-wheel isolation, and a separate Ubuntu Docker/Gate job; each run must be read before claiming it passed.
 
 ## Validation
 

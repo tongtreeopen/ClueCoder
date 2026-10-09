@@ -22,6 +22,6 @@
 
 ## 尚未确定
 
-首发版本为 0.1.0；维护者使用本地 Git 身份 Tong ShuKai。目标仓库为 tongtreeopen/TraceCoder，尚未创建远端，因此 pyproject.toml 不提供虚构的项目 URL。PyPI 发布尚未进行。具体首发验证见 docs/validation/2026-10-09-first-release.md。
+首发版本为 0.1.0；维护者使用本地 Git 身份 Tong ShuKai。私有远端 tongtreeopen/TraceCoder 已创建，pyproject.toml 已配置实际 Repository 和 Issues URL。PyPI 发布尚未进行。具体首发验证见 docs/validation/2026-10-09-first-release.md。
 
 验证范围：语法、配置一致性、本地文档链接及命名扫描。不将这些检查当作全量功能、Docker 或真实模型验证。

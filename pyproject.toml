@@ -37,6 +37,10 @@ dependencies = [
     "PyYAML>=6.0",
 ]
 
+[project.urls]
+Repository = "https://github.com/tongtreeopen/TraceCoder"
+Issues = "https://github.com/tongtreeopen/TraceCoder/issues"
+
 [tool.hatch.build.targets.wheel]
 packages = ["tracecoder"]
 

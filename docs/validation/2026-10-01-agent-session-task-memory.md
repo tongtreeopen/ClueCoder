@@ -27,8 +27,8 @@ Runner 的路径拒绝发生在产物导出后，入口见 [runner.py](../../tra
 
 原始成绩保持基线 15/16、候选 14/16；本轮没有重新跑新的正式基线成绩。
 
-复现脚本：[baseline_replay.py](E:/eval-runs/corecoder-boundaries-20261001/baseline_replay.py)。
-原始诊断：[baseline_replay.json](E:/eval-runs/corecoder-boundaries-20261001/baseline_replay.json)。
+复现脚本：baseline_replay.py（历史本地产物：`E:/eval-runs/corecoder-boundaries-20261001/baseline_replay.py`，未随发布提供）。
+原始诊断：baseline_replay.json（历史本地产物：`E:/eval-runs/corecoder-boundaries-20261001/baseline_replay.json`，未随发布提供）。
 首次重放曾未得到预期 Gate 结果，随后同一补丁的独立重放复现异常；未把首次基础设施/断言失败算成 Agent 新失败。
 
 ## 2. 会话和 Task 并发边界
@@ -52,8 +52,8 @@ Runner 的路径拒绝发生在产物导出后，入口见 [runner.py](../../tra
 共享 TaskStore 状态的独立实例/进程，以及同一会话的多个写进程，尚不具备正确协调；正常返回不能视为安全。
 本轮只验证，不修复产品行为。下一步应优先让同一 session 的第二个写进程被明确拒绝，并使 Task 领取成为真正跨实例/进程互斥的操作。
 
-脚本：[concurrency_probe.py](E:/eval-runs/corecoder-boundaries-20261001/concurrency_probe.py)。
-每次领取结果、最终 owner、会话读回结果：[concurrency_probe.json](E:/eval-runs/corecoder-boundaries-20261001/concurrency_probe.json)。
+脚本：concurrency_probe.py（历史本地产物：`E:/eval-runs/corecoder-boundaries-20261001/concurrency_probe.py`，未随发布提供）。
+每次领取结果、最终 owner、会话读回结果：concurrency_probe.json（历史本地产物：`E:/eval-runs/corecoder-boundaries-20261001/concurrency_probe.json`，未随发布提供）。
 
 ## 3. Memory 真实模型质量
 
@@ -80,8 +80,8 @@ Runner 的路径拒绝发生在产物导出后，入口见 [runner.py](../../tra
 因此同义重述和更正可以绕过 existing 判断，成为新的自动保存记录。
 这些问题在两轮均复现，修复重点应是超长来源的分段提取，以及相关旧记忆的重复/更正审阅。
 
-固定样例：[memory_probe_manifest.json](E:/eval-runs/corecoder-boundaries-20261001/memory-valid-v2/memory_probe_manifest.json)。
-提取记录、待审队列和来源：[memory_probe_results.json](E:/eval-runs/corecoder-boundaries-20261001/memory-valid-v2/memory_probe_results.json)。
+固定样例：memory_probe_manifest.json（历史本地产物：`E:/eval-runs/corecoder-boundaries-20261001/memory-valid-v2/memory_probe_manifest.json`，未随发布提供）。
+提取记录、待审队列和来源：memory_probe_results.json（历史本地产物：`E:/eval-runs/corecoder-boundaries-20261001/memory-valid-v2/memory_probe_results.json`，未随发布提供）。
 该文件中的首次读回 on/off 对照不用于最终比较，原因见下一节。
 
 ### 3.2 Agent 按需读回，匹配 CLI reading 开关
@@ -103,9 +103,9 @@ Agent 使用真实 SessionJournal、WorkStateStore、ContextAssembler 以及 lis
 最终配对用量：on 为 25 次调用 / 24,164 input / 1,958 output；off 为 24 次调用 / 21,434 input / 1,860 output。
 Memory 在这组资料查询中提供了信息，也有额外成本；不能据此宣称编码任务成功率提高或总体 token 降低。
 
-最终配对脚本：[memory_paired_probe.py](E:/eval-runs/corecoder-boundaries-20261001/memory_paired_probe.py)。
-固定协议：[manifest.json](E:/eval-runs/corecoder-boundaries-20261001/memory-paired-v3/manifest.json)。
-原始回答和用量：[results.json](E:/eval-runs/corecoder-boundaries-20261001/memory-paired-v3/results.json)。
+最终配对脚本：memory_paired_probe.py（历史本地产物：`E:/eval-runs/corecoder-boundaries-20261001/memory_paired_probe.py`，未随发布提供）。
+固定协议：manifest.json（历史本地产物：`E:/eval-runs/corecoder-boundaries-20261001/memory-paired-v3/manifest.json`，未随发布提供）。
+原始回答和用量：results.json（历史本地产物：`E:/eval-runs/corecoder-boundaries-20261001/memory-paired-v3/results.json`，未随发布提供）。
 所有有效模型调用完整记录 prompt、响应与提供方 usage；v2 共 58 次/50,579 tokens，v3 共 49 次/49,416 tokens，usage 全部已知。
 v2 总用量包含弃用的首组工具 schema 对照，不能混入 v3 配对成本。
 

@@ -6,6 +6,8 @@ English | [中文](README_CN.md)
 
 TraceCoder is for developers who want to inspect how an agent changes code, understand why it stops, and resume unfinished work. The model reads, reasons, and selects tools. The runtime records actions and enforces workspace boundaries, budgets, and completion evidence.
 
+This is a maintained extension of upstream CoreCoder. The same added mechanisms also exist in the local extended CoreCoder workspace; the TraceCoder name identifies this curated distribution, not an independently reimplemented engine.
+
 The project tracks a task beyond patch generation: preserve the current request, record actual operations, recover progress, and distinguish a proposed final answer from a result supported by checks.
 
 ## Capabilities
@@ -56,7 +58,7 @@ For one-shot execution, explicitly approve mutating tools:
 tracecoder --yes -p "Fix empty-input handling in parse_config, add regression tests, and run the checks"
 ```
 
-CLI file tools are restricted to the startup workspace. Bash requires a local Docker Linux Engine and the configured digest-pinned image; otherwise execution is refused. See [execution.py](tracecoder/execution.py) for the image definition. `--yes` does not bypass workspace or execution boundaries. Without Docker, tasks that require Bash checks cannot complete those checks.
+CLI file tools are restricted to the startup workspace. Bash requires a local Docker Linux Engine and the configured digest-pinned image; otherwise execution is refused. See the [first-run checklist](docs/GETTING_STARTED.md) for the exact image pull command and [execution.py](tracecoder/execution.py) for its definition. `--yes` does not bypass workspace or execution boundaries. Without Docker, tasks that require Bash checks cannot complete those checks.
 
 ## Completion supported by evidence
 
@@ -136,7 +138,7 @@ tracecoder/
 - [Skill, Memory, and Task guide (Chinese)](docs/skill-memory-task-usage.md)
 - [Mechanism attribution and tradeoffs (Chinese)](docs/learn-claude-code-mechanism-comparison.md)
 - [Design documents](docs/superpowers/specs/)
-- [Historical validation reports](docs/validation/)
+- [Historical validation summaries and provenance](docs/HISTORICAL_VALIDATION.md)
 
 ## Origin and license
 

@@ -54,9 +54,9 @@ DeepSeek v4 Flash、temperature=0，沿用前一轮冻结的十类提取案例�
 
 原始固定协议、回答、来源和用量：
 
-- [最终提取 manifest](E:/eval-runs/corecoder-fixes-20261001/memory-final/manifest.json)、[结果](E:/eval-runs/corecoder-fixes-20261001/memory-final/results.json)
-- [中间提取与配对读回](E:/eval-runs/corecoder-fixes-20261001/memory-after/results.json)
-- [真实模型验证脚本](E:/eval-runs/corecoder-fixes-20261001/memory_final.py)
+- 最终提取 manifest（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/memory-final/manifest.json`，未随发布提供）、结果（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/memory-final/results.json`，未随发布提供）
+- 中间提取与配对读回（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/memory-after/results.json`，未随发布提供）
+- 真实模型验证脚本（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/memory_final.py`，未随发布提供）
 
 ### 固定编码基线与全量回归
 
@@ -87,9 +87,9 @@ git diff --check
 
 验证日志和固定产物：
 
-- [最终第一轮](E:/eval-runs/corecoder-fixes-20261001/baseline-final-r1/summary.json)、[第二轮](E:/eval-runs/corecoder-fixes-20261001/baseline-final-r2/summary.json)
-- [中间第一轮](E:/eval-runs/corecoder-fixes-20261001/baseline-after-r1/summary.json)、[第二轮](E:/eval-runs/corecoder-fixes-20261001/baseline-after-r2/summary.json)
-- [全量回归日志](E:/eval-runs/corecoder-fixes-20261001/pytest-final.txt)、[协议与产物审计](E:/eval-runs/corecoder-fixes-20261001/audit_results.json)
+- 最终第一轮（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/baseline-final-r1/summary.json`，未随发布提供）、第二轮（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/baseline-final-r2/summary.json`，未随发布提供）
+- 中间第一轮（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/baseline-after-r1/summary.json`，未随发布提供）、第二轮（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/baseline-after-r2/summary.json`，未随发布提供）
+- 全量回归日志（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/pytest-final.txt`，未随发布提供）、协议与产物审计（历史本地产物：`E:/eval-runs/corecoder-fixes-20261001/audit_results.json`，未随发布提供）
 
 对 692 个归档文本文件扫描运行环境中的真实 key/token/password/secret 值，匹配数为 0。最终 Docker 容器列表为空；验证 worktree 保留本地提交，没有推送。
 

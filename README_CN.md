@@ -8,6 +8,8 @@ TraceCoder 面向需要理解 Agent 如何修改代码、为什么停止、如�
 
 我们关注的不只是生成补丁，还包括一项任务从开始到交接的完整过程：保留当前需求，记录真实操作，恢复工作进度，并区分“模型说完成”和“已有检查证据”。
 
+本项目是基于上游 CoreCoder 的维护扩展。这些新增机制也存在于本地扩展后的 CoreCoder 工作区；TraceCoder 标识的是整理后的独立发布版本，而非重新实现的全新引擎。
+
 ## 能做什么
 
 | 能力 | 实际行为 |
@@ -55,6 +57,8 @@ tracecoder
 ```powershell
 tracecoder --yes -p "修复 parse_config 的空输入处理，补充回归测试并执行检查"
 ```
+
+镜像拉取和首次启动步骤见[首次运行检查表](docs/GETTING_STARTED.md)。
 
 CLI 文件工具限定于启动工作区。Bash 要求本地 Docker Linux Engine 与配置的固定 digest 镜像可用，否则拒绝执行；镜像定义见 [execution.py](tracecoder/execution.py)。`--yes` 不绕过工作区或执行边界。因此，没有 Docker 时不能完成依赖 Bash 的测试检查。
 
@@ -136,7 +140,7 @@ tracecoder/
 - [Skill、Memory 与 Task 使用说明](docs/skill-memory-task-usage.md)
 - [机制来源、改进与取舍](docs/learn-claude-code-mechanism-comparison.md)
 - [设计说明](docs/superpowers/specs/)
-- [历史验证报告](docs/validation/)
+- [历史验证摘要与来源](docs/HISTORICAL_VALIDATION.md)
 
 ## 来源与许可
 
