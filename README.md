@@ -2,7 +2,7 @@
 
 **A Python coding agent with traceable execution, recoverable state, and evidence-based task verification.**
 
-English | [中文](README_CN.md)
+English | [中文](https://github.com/tongtreeopen/TraceCoder/blob/main/README_CN.md)
 
 TraceCoder is for developers who want to inspect how an agent changes code, understand why it stops, and resume unfinished work. The model reads, reasons, and selects tools. The runtime records actions and enforces workspace boundaries, budgets, and completion evidence.
 
@@ -58,7 +58,7 @@ For one-shot execution, explicitly approve mutating tools:
 tracecoder --yes -p "Fix empty-input handling in parse_config, add regression tests, and run the checks"
 ```
 
-CLI file tools are restricted to the startup workspace. Bash requires a local Docker Linux Engine and the configured digest-pinned image; otherwise execution is refused. See the [first-run checklist](docs/GETTING_STARTED.md) for the exact image pull command and [execution.py](tracecoder/execution.py) for its definition. `--yes` does not bypass workspace or execution boundaries. Without Docker, tasks that require Bash checks cannot complete those checks.
+CLI file tools are restricted to the startup workspace. Bash requires a local Docker Linux Engine and the configured digest-pinned image; otherwise execution is refused. See the [first-run checklist](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/GETTING_STARTED.md) for the exact image pull command and [execution.py](https://github.com/tongtreeopen/TraceCoder/blob/main/tracecoder/execution.py) for its definition. `--yes` does not bypass workspace or execution boundaries. Without Docker, tasks that require Bash checks cannot complete those checks.
 
 ## Completion supported by evidence
 
@@ -114,9 +114,9 @@ python -m pytest tests/ -q
 python -m ruff check tracecoder tests examples
 ```
 
-The fixed suites are `benchmarks/tracecoder-baseline-v1/` and `benchmarks/tracecoder-holdout-v1/`. Gate tests and reference patches are excluded from the Agent workspace. Reports preserve calls, usage, patches, and Gate results. See the [baseline protocol](docs/evaluation-baseline.md) and [holdout protocol](docs/evaluation-holdout.md) for setup, commands, and scoring limitations.
+The fixed suites are `benchmarks/tracecoder-baseline-v1/` and `benchmarks/tracecoder-holdout-v1/`. Gate tests and reference patches are excluded from the Agent workspace. Reports preserve calls, usage, patches, and Gate results. See the [baseline protocol](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/evaluation-baseline.md) and [holdout protocol](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/evaluation-holdout.md) for setup, commands, and scoring limitations.
 
-This is an experimental project. The first-release Windows/Python 3.13 regression passed 539 tests with 47 skipped; Docker and live-model checks were not run. TraceCoder 0.1.0 uses its own release version sequence and is maintained by Tong ShuKai. See the [first-release verification](docs/validation/2026-10-09-first-release.md) for current checks and the [release record](docs/RELEASE.md) for provenance and publication status. `tracecoder --demo` uses a bundled scripted model and generated Python assertions; it needs no API key or pytest. Ordinary CLI Bash still requires Docker. Historical real-model and Docker results apply only to their recorded source snapshots. Candidate programs can read `/gate` in the validation container; the evaluator does not claim adversarial hidden-test isolation.
+This is an experimental project. The first-release Windows/Python 3.13 regression passed 539 tests with 47 skipped; Docker and live-model checks were not run. TraceCoder 0.1.0 uses its own release version sequence and is maintained by Tong ShuKai. See the [first-release verification](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/validation/2026-10-09-first-release.md) for current checks and the [release record](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/RELEASE.md) for provenance and publication status. `tracecoder --demo` uses a bundled scripted model and generated Python assertions; it needs no API key or pytest. Ordinary CLI Bash still requires Docker. Historical real-model and Docker results apply only to their recorded source snapshots. Candidate programs can read `/gate` in the validation container; the evaluator does not claim adversarial hidden-test isolation.
 
 ## Code and documentation
 
@@ -135,13 +135,13 @@ tracecoder/
   eval/                   Independent evaluation runner
 ```
 
-- [Skill, Memory, and Task guide (Chinese)](docs/skill-memory-task-usage.md)
-- [Mechanism attribution and tradeoffs (Chinese)](docs/learn-claude-code-mechanism-comparison.md)
-- [Design documents](docs/superpowers/specs/)
-- [Historical validation summaries and provenance](docs/HISTORICAL_VALIDATION.md)
+- [Skill, Memory, and Task guide (Chinese)](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/skill-memory-task-usage.md)
+- [Mechanism attribution and tradeoffs (Chinese)](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/learn-claude-code-mechanism-comparison.md)
+- [Design documents](https://github.com/tongtreeopen/TraceCoder/tree/main/docs/superpowers/specs/)
+- [Historical validation summaries and provenance](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/HISTORICAL_VALIDATION.md)
 
 ## Origin and license
 
 TraceCoder extends [CoreCoder by Yufeng He](https://github.com/he-yufeng/CoreCoder) and draws on mechanism examples from [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code). Our additions focus on evidence-based completion, recoverable state, reviewable memory provenance, budget-aware context, controlled background execution, structured review, and independent evaluation. The mechanism comparison documents their sources and limitations.
 
-The original copyright and [MIT License](LICENSE) are preserved.
+The original copyright and [MIT License](https://github.com/tongtreeopen/TraceCoder/blob/main/LICENSE) are preserved.

@@ -2,7 +2,7 @@
 
 **可追踪执行、可恢复状态、基于证据验收的 Python 编程 Agent。**
 
-中文 | [English](README.md)
+中文 | [English](https://github.com/tongtreeopen/TraceCoder/blob/main/README.md)
 
 TraceCoder 面向需要理解 Agent 如何修改代码、为什么停止、如何恢复任务的开发者。模型负责阅读、推理和选择工具；运行层负责工作区约束、状态记录、预算与验收证据。
 
@@ -58,9 +58,9 @@ tracecoder
 tracecoder --yes -p "修复 parse_config 的空输入处理，补充回归测试并执行检查"
 ```
 
-镜像拉取和首次启动步骤见[首次运行检查表](docs/GETTING_STARTED.md)。
+镜像拉取和首次启动步骤见[首次运行检查表](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/GETTING_STARTED.md)。
 
-CLI 文件工具限定于启动工作区。Bash 要求本地 Docker Linux Engine 与配置的固定 digest 镜像可用，否则拒绝执行；镜像定义见 [execution.py](tracecoder/execution.py)。`--yes` 不绕过工作区或执行边界。因此，没有 Docker 时不能完成依赖 Bash 的测试检查。
+CLI 文件工具限定于启动工作区。Bash 要求本地 Docker Linux Engine 与配置的固定 digest 镜像可用，否则拒绝执行；镜像定义见 [execution.py](https://github.com/tongtreeopen/TraceCoder/blob/main/tracecoder/execution.py)。`--yes` 不绕过工作区或执行边界。因此，没有 Docker 时不能完成依赖 Bash 的测试检查。
 
 ## 让完成有据可查
 
@@ -116,9 +116,9 @@ python -m pytest tests/ -q
 python -m ruff check tracecoder tests examples
 ```
 
-固定评测使用 `benchmarks/tracecoder-baseline-v1/` 与 `benchmarks/tracecoder-holdout-v1/` 两套任务。Agent 工作区不放入 Gate 测试或参考补丁；报告保留调用、用量、补丁与 Gate 结果。配置、命令和评分限制见[开发集协议](docs/evaluation-baseline.md)和[留出集协议](docs/evaluation-holdout.md)。
+固定评测使用 `benchmarks/tracecoder-baseline-v1/` 与 `benchmarks/tracecoder-holdout-v1/` 两套任务。Agent 工作区不放入 Gate 测试或参考补丁；报告保留调用、用量、补丁与 Gate 结果。配置、命令和评分限制见[开发集协议](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/evaluation-baseline.md)和[留出集协议](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/evaluation-holdout.md)。
 
-这是实验性项目。首发 Windows/Python 3.13 全量回归为 539 通过、47 跳过、0 失败；未进行 Docker 或真实模型端到端验证。TraceCoder 首发版本为 0.1.0，采用独立版本序列，维护者为 Tong ShuKai。当前检查见[首发验证](docs/validation/2026-10-09-first-release.md)，来源与发布状态见[发布记录](docs/RELEASE.md)。`tracecoder --demo` 使用内置脚本模型和生成的 Python 断言，无需 API Key 或 pytest；普通 CLI Bash 仍要求 Docker。历史真实模型和 Docker 成绩仅适用于原始源码快照。验证容器内的候选程序可以读取 `/gate`，评测不声称实现对抗性隐藏测试隔离。
+这是实验性项目。首发 Windows/Python 3.13 全量回归为 539 通过、47 跳过、0 失败；未进行 Docker 或真实模型端到端验证。TraceCoder 首发版本为 0.1.0，采用独立版本序列，维护者为 Tong ShuKai。当前检查见[首发验证](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/validation/2026-10-09-first-release.md)，来源与发布状态见[发布记录](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/RELEASE.md)。`tracecoder --demo` 使用内置脚本模型和生成的 Python 断言，无需 API Key 或 pytest；普通 CLI Bash 仍要求 Docker。历史真实模型和 Docker 成绩仅适用于原始源码快照。验证容器内的候选程序可以读取 `/gate`，评测不声称实现对抗性隐藏测试隔离。
 
 ## 代码与文档
 
@@ -137,13 +137,13 @@ tracecoder/
   eval/                     独立评测 Runner
 ```
 
-- [Skill、Memory 与 Task 使用说明](docs/skill-memory-task-usage.md)
-- [机制来源、改进与取舍](docs/learn-claude-code-mechanism-comparison.md)
-- [设计说明](docs/superpowers/specs/)
-- [历史验证摘要与来源](docs/HISTORICAL_VALIDATION.md)
+- [Skill、Memory 与 Task 使用说明](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/skill-memory-task-usage.md)
+- [机制来源、改进与取舍](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/learn-claude-code-mechanism-comparison.md)
+- [设计说明](https://github.com/tongtreeopen/TraceCoder/tree/main/docs/superpowers/specs/)
+- [历史验证摘要与来源](https://github.com/tongtreeopen/TraceCoder/blob/main/docs/HISTORICAL_VALIDATION.md)
 
 ## 来源与许可
 
 TraceCoder 基于 [Yufeng He 的 CoreCoder](https://github.com/he-yufeng/CoreCoder) 扩展，并参考 [learn-claude-code](https://github.com/shareAI-lab/learn-claude-code) 的机制示例。我们的增量集中于证据验收、可恢复状态、来源可审阅的记忆、预算感知上下文、受控后台执行、结构化审查与独立评测；具体来源和边界在机制对照文档中记录。
 
-项目保留原作者版权及 [MIT License](LICENSE)。
+项目保留原作者版权及 [MIT License](https://github.com/tongtreeopen/TraceCoder/blob/main/LICENSE)。
