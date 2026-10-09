@@ -10,10 +10,10 @@
 
 ## Publication status
 
-Local Git history freezes this curated source. The original local `v0.1.0` tag preserves the first validation snapshot; `release-ready-20261009` identifies the final CI-validated candidate. The repository was created privately at the user's request to run CI; public visibility and PyPI publication remain separate actions. Repository and Issues URLs are configured in pyproject.toml. CI checks Ubuntu/macOS/Windows with Python 3.10-3.13, installed-wheel isolation, and a separate Ubuntu Docker/Gate job; each run must be read before claiming it passed.
+Local Git history freezes this curated source. The original local `v0.1.0` tag preserves the first validation snapshot; `release-ready-20261009` identifies the earlier CI-validated candidate. The subsequent four-defect repair is frozen as `release-fixed-20261009`. The repository was created privately at the user's request to run CI; public visibility and PyPI publication remain separate actions. Repository and Issues URLs are configured in pyproject.toml. CI checks Ubuntu/macOS/Windows with Python 3.10-3.13, installed-wheel isolation, and a separate Ubuntu Docker/Gate job; each run must be read before claiming it passed.
 
 ## Validation
 
-See [release follow-up](validation/2026-10-09-release-followup.md) and [initial first-release verification](validation/2026-10-09-first-release.md). Historical CoreCoder results are retained with their original identity and do not count as tests of this release.
+See [review repair validation](validation/2026-10-09-review-fixes.md), [release follow-up](validation/2026-10-09-release-followup.md) and [initial first-release verification](validation/2026-10-09-first-release.md). Historical CoreCoder results are retained with their original identity and do not count as tests of this release.
 
 The offline demo runs only a bundled scripted model and generated Fibonacci assertions, using the current Python interpreter. It requires no API key or pytest. It exercises explicit host execution for this fixed demo; ordinary CLI Bash still requires the configured Docker isolation backend.
