@@ -8,6 +8,8 @@ plan mode ON -> read allowed, edit refused -> plan presented -> approve ->
 edit/write/pytest flowing through with Pre/PostToolUse hooks firing.
 """
 
+import shlex
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -66,6 +68,9 @@ class DemoHooks:
 
 
 def _script(workdir: Path) -> list[LLMResponse]:
+    test_args = [sys.executable, "-m", "pytest", str(workdir / "test_fib.py"), "-q",
+                 f"--rootdir={workdir}", f"--confcutdir={workdir}"]
+    test_command = subprocess.list2cmdline(test_args) if sys.platform == "win32" else shlex.join(test_args)
     edit_args = {
         "file_path": str(workdir / "fib.py"),
         "old_string": FIB_PY,
@@ -96,9 +101,9 @@ def _script(workdir: Path) -> list[LLMResponse]:
         ),
         LLMResponse(
             content="Running the suite.",
-            tool_calls=[ToolCall(id="p5", name="bash", arguments={"command": f"cd {workdir} && python -m pytest -q"})],
+            tool_calls=[ToolCall(id="p5", name="bash", arguments={"command": test_command})],
         ),
-        LLMResponse(content="Guard is in and both tests pass, including the new negative-n case."),
+        LLMResponse(content="The guard and tests are written. The actual test result is shown below."),
     ]
 
 
@@ -130,8 +135,11 @@ def run() -> int:
         on_tool=lambda name, args: console.print(f"[cyan]tool:[/] {name} {_brief(args)}"),
     )
     console.print(Panel.fit(Markdown(result), title="final"))
+    test_result = next(message["content"] for message in agent.messages
+                       if message.get("role") == "tool" and message.get("tool_call_id") == "p5")
+    console.print("Test result: " + test_result, markup=False)
     console.print(f"[dim]workspace kept at {workdir}[/]")
-    return 0
+    return 1 if any(marker in test_result for marker in ("Error:", "[exit code:", " failed")) else 0
 
 
 if __name__ == "__main__":

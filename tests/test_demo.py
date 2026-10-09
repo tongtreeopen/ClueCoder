@@ -48,9 +48,25 @@ def test_plan_hooks_example_guards_then_lets_through(tmp_path, monkeypatch):
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
 
-    monkeypatch.setattr(mod.tempfile, "mkdtemp", lambda prefix: str(tmp_path))
+    workdir = tmp_path / "project with spaces"
+    workdir.mkdir()
+    monkeypatch.setattr(mod.tempfile, "mkdtemp", lambda prefix: str(workdir))
 
     assert mod.run() == 0
-    fib = (tmp_path / "fib.py").read_text()
+    fib = (workdir / "fib.py").read_text()
     assert "ValueError" in fib
-    assert "test_negative_raises" in (tmp_path / "test_fib.py").read_text()
+    assert "test_negative_raises" in (workdir / "test_fib.py").read_text()
+
+
+def test_plan_hooks_example_reports_shell_failure(tmp_path, monkeypatch):
+    import importlib.util
+    from pathlib import Path
+
+    spec = importlib.util.spec_from_file_location(
+        "plan_hooks_demo", Path(__file__).parent.parent / "examples" / "plan_hooks_demo.py"
+    )
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    monkeypatch.setattr(mod.tempfile, "mkdtemp", lambda prefix: str(tmp_path))
+    monkeypatch.setattr(mod.BashTool, "execute", lambda self, **kwargs: "Error: test command failed")
+    assert mod.run() == 1

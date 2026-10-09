@@ -18,6 +18,8 @@ COMMAND = ["python", "-m", "unittest", "discover", "-s", "/gate", "-p", "test_*.
 
 
 def test_all_holdout_cases_discriminate_in_real_docker(docker_ready, tmp_path: Path):
+    image_id = subprocess.run(["docker", "image", "inspect", "--format", "{{.Id}}", DEFAULT_IMAGE],
+                              capture_output=True, text=True, check=True).stdout.strip()
     suite = load_suite(HOLDOUT / "manifest.json")
     assert suite.id == "tracecoder-holdout-v1"
     assert [task.id for task in suite.tasks] == HOLDOUT_TASK_IDS
@@ -39,7 +41,7 @@ def test_all_holdout_cases_discriminate_in_real_docker(docker_ready, tmp_path: P
         subprocess.run(["git", "apply", str(patch)], cwd=workspace, check=True, capture_output=True)
         fixed = run_gate(task, workspace, DEFAULT_IMAGE)
         assert fixed.status == "pass" and fixed.exit_code == 0, (task.id, fixed)
-        assert broken.image_id == fixed.image_id == DEFAULT_IMAGE.rsplit("@", 1)[1]
+        assert broken.image_id == fixed.image_id == image_id
         print(f"{task.id}: base={broken.status}, reference={fixed.status}, image={fixed.image_id}")
 
 

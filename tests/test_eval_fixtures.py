@@ -9,6 +9,8 @@ from tracecoder.execution import DEFAULT_IMAGE
 
 
 def test_all_fixed_cases_discriminate(docker_ready, tmp_path: Path):
+    image_id = subprocess.run(["docker", "image", "inspect", "--format", "{{.Id}}", DEFAULT_IMAGE],
+                              capture_output=True, text=True, check=True).stdout.strip()
     suite = load_suite(Path(__file__).resolve().parents[1] / "benchmarks/tracecoder-baseline-v1/manifest.json")
     assert suite.id == "tracecoder-baseline-v1"
     assert {task.id for task in suite.tasks} == {
@@ -32,5 +34,5 @@ def test_all_fixed_cases_discriminate(docker_ready, tmp_path: Path):
         fixed = run_gate(task, workspace, DEFAULT_IMAGE)
         assert fixed.status == "pass", f"{task.id} reference: {fixed.status}\n{fixed.output}"
         assert fixed.exit_code == 0
-        assert broken.image_id == fixed.image_id == DEFAULT_IMAGE.rsplit("@", 1)[1]
+        assert broken.image_id == fixed.image_id == image_id
         print(f"{task.id}: base={broken.status}, reference={fixed.status}, image={fixed.image_id}")

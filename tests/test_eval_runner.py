@@ -22,6 +22,7 @@ from tracecoder.eval.runner import (
     _cleanup_workers,
     _model_calls_trace_complete,
     _patch,
+    _prepare_workspace,
     _redactor,
     _revision,
     _run_process,
@@ -392,6 +393,7 @@ def test_runner_file_tool_refuses_forbidden_path_before_creation(docker_ready, s
 
 
 def test_timeout_cleans_only_run_labeled_containers(docker_ready, tmp_path):
+    _prepare_workspace(tmp_path)
     run_id = uuid.uuid4().hex
     other = subprocess.run(
         ["docker", "run", "-d", "--rm", "--pull=never", "--network=none", DEFAULT_IMAGE, "sleep", "60"],
