@@ -78,7 +78,7 @@
 
 **s03 Permission。** [教学源码](https://github.com/shareAI-lab/learn-claude-code/blob/0dcafa2ae053a1ddd6a72f265431104b08a5aa13/s03_permission/code.py) 的核心是工具调用许可；许可本身不是文件系统隔离。ClueCoder 保留 [`Permission`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/permissions.py) 的用户同意与 Plan Mode，同时在 [`_cli_context`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/cli.py) 绑定 [`WorkspacePolicy`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/workspace.py)：`read_file`、`write_file`、`edit_file`、`glob`、`grep` 在读取/写入或输出结果前拒绝已解析的工作区外路径；`--yes` 不能放行。相比教学示例，这是为所有 CLI 模式新增的确定性文件边界。`Agent`/`ALL_TOOLS` 直接经 Python API 构造仍保留原行为，调用方要自行提供策略。路径解析不能抵御并发替换符号链接，不能称为 OS 沙箱。见 [`tests/test_workspace.py`](../tests/test_workspace.py) 和 [`tests/test_cli_workspace.py`](../tests/test_cli_workspace.py)。
 
-**s04 Hooks。** [教学源码](https://github.com/shareAI-lab/learn-claude-code/blob/0dcafa2ae053a1ddd6a72f265431104b08a5aa13/s04_hooks/code.py) 展示工具调用前后的 Hook 扩展。ClueCoder 的 [`hooks.py`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/hooks.py) 继续支持 API 调用方显式接入，失败时跳过的语义也未变；但所有严格 CLI 默认传空 Hooks，亦不自动加载 MCP，因为两者可执行工作区外副作用。不是删除这两个模块；是取消默认 CLI 暴露。`--demo` 也使用严格装配。代价是旧 CLI 的 Hook/MCP 配置暂不生效；未来若放行，须逐工具白名单及等价隔离。见 [`tests/test_hooks.py`](../tests/test_hooks.py)（API 语义）和 [`tests/test_cli_workspace.py`](../tests/test_cli_workspace.py)（严格 CLI）。
+**s04 Hooks。** [教学源码](https://github.com/shareAI-lab/learn-claude-code/blob/0dcafa2ae053a1ddd6a72f265431104b08a5aa13/s04_hooks/code.py) 展示工具调用前后的 Hook 扩展。ClueCoder 的 [`hooks.py`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/hooks.py) 继续支持 API 调用方显式接入，失败时跳过的语义也未变；但所有严格 CLI 默认传空 Hooks，亦不自动加载 MCP，因为两者可执行工作区外副作用。不是删除这两个模块；是取消默认 CLI 暴露。`--demo` 是例外：CLI 调用默认 `run_demo(strict=False)`，固定脚本使用宿主 `BashTool()`，不装配 Docker、journal 或 memory；它只验证离线示例，不证明严格 CLI 隔离链路通过。代价是旧 CLI 的 Hook/MCP 配置暂不生效；未来若放行，须逐工具白名单及等价隔离。见 [`tests/test_hooks.py`](../tests/test_hooks.py)（API 语义）和 [`tests/test_cli_workspace.py`](../tests/test_cli_workspace.py)（严格 CLI）。
 
 **s08 Context。** [教学源码](https://github.com/shareAI-lab/learn-claude-code/blob/0dcafa2ae053a1ddd6a72f265431104b08a5aa13/s08_context_compact/code.py) 是独立章节的压缩机制；ClueCoder 的 [`ContextManager`](https://github.com/tongtreeopen/ClueCoder/blob/f48ffef08762212d4f080b18442c963d35fdc339/tracecoder/context.py) 已按长工具结果裁剪、旧消息摘要、紧急压缩三层工作，因此 P0 不重写。新增 [`tests/test_context_regression.py`](../tests/test_context_regression.py) 验证近期消息、工具调用/结果配对与摘要失败回退。这只证明离线消息结构，未证明真实模型长会话的摘要质量。
 
@@ -128,7 +128,7 @@
 
 **四阶段及归档。** 顺序与 learn-claude-code `s08_context_compact` 对齐：`tool_result_budget` 对超 200,000 字符的当前工具结果批次按最大结果优先归档；`snip_compact` 在消息视图超过 50 条时保留开头 3 条与末尾约 46 条并记旧事件范围；`micro_compact/fit_tool_results` 在估算超过 70% 目标后归档较旧已消费输出，最近三个优先保留原文；低成本步骤后仍超过 85% 才运行 `compact_history`。归档先脱敏，文件路径限定于当前 session，记录 SHA-256 并支持有界读取；事件搜索仍返回短预览，`read_session_event` 可读取归档片段。摘要是低信任导航信息。超过 95% 进入紧急视图，供应方明确拒绝 prompt 长度时另做一次紧急视图重试。显式 `/compact` 也走相同组装器。
 
-**评测预算提示与边界。** 仅 `TRACECODER_EVAL_MODE=1`、提供方累计 usage 已知且 Git 状态可读时，60% 无生产代码 diff 和 80% 总预算会触发一次进度提示；普通会话不触发。该提示不限制工具调用，也不证明 patch 正确。当前估算仍是启发式，真实模型窗口须由 `TRACECODER_MAX_CONTEXT` 配置；服务端硬窗口不匹配时依靠一次 prompt-too-long 恢复。离线脚本测试覆盖了预算公式、usage 校准、四阶段、配对保留、归档脱敏/哈希/回读、摘要去重、紧急重试和 eval-only 提示；没有真实模型或 SWE-bench Verified Mini 对照结果，因此尚不能声称成功率提高或总 token 降低。实现计划见 `2026-09-29-budget-aware-context.md`（归档材料未收录于此副本）。
+**评测预算提示与边界。** 仅 `CLUECODER_EVAL_MODE=1`、提供方累计 usage 已知且 Git 状态可读时，60% 无生产代码 diff 和 80% 总预算会触发一次进度提示；普通会话不触发。该提示不限制工具调用，也不证明 patch 正确。当前估算仍是启发式，真实模型窗口须由 `CLUECODER_MAX_CONTEXT` 配置；服务端硬窗口不匹配时依靠一次 prompt-too-long 恢复。离线脚本测试覆盖了预算公式、usage 校准、四阶段、配对保留、归档脱敏/哈希/回读、摘要去重、紧急重试和 eval-only 提示；没有真实模型或 SWE-bench Verified Mini 对照结果，因此尚不能声称成功率提高或总 token 降低。实现计划见 `2026-09-29-budget-aware-context.md`（归档材料未收录于此副本）。
 
 ## s09 Memory / s10 Task / 会话并发：真实验证补充（2026-10-01）
 
@@ -274,3 +274,7 @@
 **Tradeoffs.** Goal-bound parallel model requests serialize; network cancellation is unchanged, so a single in-flight request can exceed remaining tokens or wall time. Work-card refresh replays recorded card revisions. The existing StateLock busy timeout still applies. These costs keep the repair small and retain the fail-closed budget/recovery contracts.
 
 **Verification and boundaries.** Regression cases cover simultaneous work_update calls, separate stores, child-to-parent workflow execution, disallowed/allowed child writes, known/unknown child usage, parallel budget contention, and structured correction costs. Final results are recorded in [review repair validation](validation/2026-10-09-review-fixes.md). The earlier release real-model smoke belongs to the previous runtime tree and is not a real-model test of these repairs.
+
+## 源码链接约定
+
+相对源码链接指向当前 `cluecoder/`。包含 `blob/<commit>/tracecoder/` 的永久链接指向对应历史提交中的实际目录，用于核对当时源码；不应按当前包名替换其路径。历史验证结果仅适用于报告记录的源码快照。

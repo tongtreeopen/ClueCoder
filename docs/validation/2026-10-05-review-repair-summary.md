@@ -1,6 +1,6 @@
 # 第二轮 review 修复与裁定
 
-> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 tracecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
+> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 cluecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
 
 日期：2026-10-05。分支 `codex/skill-memory-task`，HEAD `f03bd9b`。修复均在原有脏工作区，未提交或推送；保留既有删除项和未跟踪特性。原报告针对已提交 HEAD，本文件针对当前工作区。
 

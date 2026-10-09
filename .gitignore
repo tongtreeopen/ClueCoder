@@ -23,7 +23,6 @@ venv/
 .cluecoder/
 .superpowers/
 .env.*
-!.env.example
 pip-install-*/
 pip-build-tracker-*/
 pip-ephem-wheel-cache-*/

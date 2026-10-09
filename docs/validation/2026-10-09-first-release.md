@@ -1,3 +1,5 @@
+> Historical snapshot; superseded for current release status by [ClueCoder release validation](2026-10-09-cluecoder-release.md) and [release record](../RELEASE.md). The checks and publication status below describe the initial snapshot only.
+
 # TraceCoder 0.1.0 first-release verification
 
 Date: 2026-10-09. This report describes the curated TraceCoder publication copy, not historical CoreCoder snapshots.

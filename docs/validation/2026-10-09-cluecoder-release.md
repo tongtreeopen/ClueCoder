@@ -20,3 +20,7 @@ Local full suite on Windows/Python 3.13 with Docker available: **599 passed, 1 s
 92 tracked historical evidence and benchmark task files were compared byte-for-byte in Git against reference revision `f48ffef08762212d4f080b18442c963d35fdc339`; all were unchanged. Benchmark task contents and historical hashes retain their recorded meaning. Previous release tags remain unchanged.
 
 No fresh real-model call was made for this release check. Earlier real-model results retain their tested revision and original recorded identifiers. The repository remains private; neither public release nor PyPI upload was performed.
+
+## Documentation corrections after the recorded release checks
+
+The subsequent documentation-only correction repaired 16 relative source links and 12 stale current-source banners, updated configuration names and demo behavior, refreshed both README validation summaries and command tables, and marked the initial release report as superseded for current status. All relative Markdown file links under `docs/` resolved locally; all 79 historical `blob/f48ffef…/tracecoder/` URLs were unchanged. Runtime source, tests, examples, package metadata and CI were unchanged. The byte-for-byte statement above describes the recorded release snapshot; later report prose/link edits are not changes to raw traces or benchmark tasks. No new full suite or model run was required or claimed for these prose corrections.

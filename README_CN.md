@@ -82,6 +82,10 @@ Goal 默认最多自动续跑 3 次，累计活动时间 15 分钟、100,000 个
 | --- | --- |
 | `/help` | 查看交互命令 |
 | `/plan` | 切换只读规划模式 |
+| `/tokens` | 查看累计 token 用量及可用的费用估算 |
+| `/compact` | 压缩当前会话上下文 |
+| `/diff` | 列出本会话修改的工作区文件 |
+| `/undo` | 撤销最近一次受控文件修改 |
 | `/goal <目标>`、`/goal`、`/goal off` | 设置、查看或关闭 Goal |
 | `/work status`、`/work confirm`、`/work reopen` | 查看、验收或重新打开工作卡 |
 | `/save`、`/sessions` | 查看当前会话 ID 和可恢复会话 |
@@ -118,7 +122,7 @@ python -m ruff check cluecoder tests examples
 
 固定评测使用 `benchmarks/cluecoder-baseline-v1/` 与 `benchmarks/cluecoder-holdout-v1/` 两套任务。Agent 工作区不放入 Gate 测试或参考补丁；报告保留调用、用量、补丁与 Gate 结果。配置、命令和评分限制见[开发集协议](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/evaluation-baseline.md)和[留出集协议](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/evaluation-holdout.md)。
 
-这是实验性项目。首发 Windows/Python 3.13 全量回归为 539 通过、47 跳过、0 失败；未进行 Docker 或真实模型端到端验证。ClueCoder 首发版本为 0.1.0，采用独立版本序列，维护者为 Tong ShuKai。当前检查见[首发验证](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/validation/2026-10-09-first-release.md)，来源与发布状态见[发布记录](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/RELEASE.md)。`cluecoder --demo` 使用内置脚本模型和生成的 Python 断言，无需 API Key 或 pytest；普通 CLI Bash 仍要求 Docker。历史真实模型和 Docker 成绩仅适用于原始源码快照。验证容器内的候选程序可以读取 `/gate`，评测不声称实现对抗性隐藏测试隔离。
+这是实验性项目。当前已记录的 Windows/Python 3.13 全量回归（Docker 可用）为 **599 通过、1 跳过**；跨平台 [CI run 37934319139](https://github.com/tongtreeopen/ClueCoder/actions/runs/37934319139) 全部 **15 个任务通过**，其中独立 Ubuntu Docker 检查为 78 通过、0 跳过。这些结果绑定验证报告中的源码 revision，不代表本次文档修改重新进行了模型测试。ClueCoder 首发版本为 0.1.0，采用独立版本序列，维护者为 Tong ShuKai。当前检查见[发布验证](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/validation/2026-10-09-cluecoder-release.md)，来源与发布状态见[发布记录](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/RELEASE.md)。`cluecoder --demo` 使用内置脚本模型和生成的 Python 断言，无需 API Key 或 pytest；普通 CLI Bash 仍要求 Docker。历史真实模型和 Docker 成绩仅适用于原始源码快照。验证容器内的候选程序可以读取 `/gate`，评测不声称实现对抗性隐藏测试隔离。
 
 ## 代码与文档
 

@@ -1,6 +1,6 @@
 # 后台任务实现与验证（2026-10-02）
 
-> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 tracecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
+> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 cluecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
 
 已实现严格 CLI 会话内的后台 Docker 命令：`bash(command, timeout=120, run_in_background=true)` 返回任务 ID，`background_status(task_id)` 查询状态/退出码/部分输出，`background_cancel(task_id)` 终止并验证清理。同步 Bash 默认保持原接口。
 
@@ -13,7 +13,7 @@
 - 主线程保存后台启动/完成 note 事件，查询结果提供真实完成事件 ID；日志落盘失败时保留待写结果以便重试。
 - 工作卡与 Goal 检查真实启动回执和结构化终态。未结束、无终态、清理失败及受干扰的结果不能验收，用户确认也不覆盖运行中/未清理状态。
 
-入口见 [Docker 执行器](../../tracecoder/execution.py)、[会话管理器](../../tracecoder/background.py)、[工具](../../tracecoder/tools/background.py)、[工作卡证据门](../../tracecoder/work_state.py)。与教学 s11 的保留、新增及边界见 [机制对照](../learn-claude-code-mechanism-comparison.md)。
+入口见 [Docker 执行器](../../cluecoder/execution.py)、[会话管理器](../../cluecoder/background.py)、[工具](../../cluecoder/tools/background.py)、[工作卡证据门](../../cluecoder/work_state.py)。与教学 s11 的保留、新增及边界见 [机制对照](../learn-claude-code-mechanism-comparison.md)。
 
 ## 已执行检查及快照边界
 

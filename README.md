@@ -80,6 +80,10 @@ Goal defaults are three automatic continuations, 15 minutes of active time, and 
 | --- | --- |
 | `/help` | Show interactive commands |
 | `/plan` | Toggle read-only planning |
+| `/tokens` | Show accumulated token usage and available cost estimate |
+| `/compact` | Compact the current conversation context |
+| `/diff` | List workspace files modified in this session |
+| `/undo` | Undo the latest controlled file change |
 | `/goal <task>`, `/goal`, `/goal off` | Set, inspect, or disable a Goal |
 | `/work status`, `/work confirm`, `/work reopen` | Inspect, accept, or reopen the work card |
 | `/save`, `/sessions` | Show the current session ID and available sessions |
@@ -116,7 +120,7 @@ python -m ruff check cluecoder tests examples
 
 The fixed suites are `benchmarks/cluecoder-baseline-v1/` and `benchmarks/cluecoder-holdout-v1/`. Gate tests and reference patches are excluded from the Agent workspace. Reports preserve calls, usage, patches, and Gate results. See the [baseline protocol](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/evaluation-baseline.md) and [holdout protocol](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/evaluation-holdout.md) for setup, commands, and scoring limitations.
 
-This is an experimental project. The first-release Windows/Python 3.13 regression passed 539 tests with 47 skipped; Docker and live-model checks were not run. ClueCoder 0.1.0 uses its own release version sequence and is maintained by Tong ShuKai. See the [first-release verification](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/validation/2026-10-09-first-release.md) for current checks and the [release record](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/RELEASE.md) for provenance and publication status. `cluecoder --demo` uses a bundled scripted model and generated Python assertions; it needs no API key or pytest. Ordinary CLI Bash still requires Docker. Historical real-model and Docker results apply only to their recorded source snapshots. Candidate programs can read `/gate` in the validation container; the evaluator does not claim adversarial hidden-test isolation.
+This is an experimental project. The recorded Windows/Python 3.13 regression with Docker available passed **599 tests with 1 skipped**. Cross-platform [CI run 37934319139](https://github.com/tongtreeopen/ClueCoder/actions/runs/37934319139) passed all **15 jobs**, including 78 passes with no skips in the separate Ubuntu Docker job. These results apply to the source revisions recorded in the report; this documentation update does not claim a new model run. ClueCoder 0.1.0 uses its own release version sequence and is maintained by Tong ShuKai. See the [release verification](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/validation/2026-10-09-cluecoder-release.md) for recorded checks and the [release record](https://github.com/tongtreeopen/ClueCoder/blob/main/docs/RELEASE.md) for provenance and publication status. `cluecoder --demo` uses a bundled scripted model and generated Python assertions; it needs no API key or pytest. Ordinary CLI Bash still requires Docker. Historical real-model and Docker results apply only to their recorded source snapshots. Candidate programs can read `/gate` in the validation container; the evaluator does not claim adversarial hidden-test isolation.
 
 ## Code and documentation
 

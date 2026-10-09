@@ -1,6 +1,6 @@
 # Agent 失败、会话/Task 并发与 Memory 真实模型验证
 
-> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 tracecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
+> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 cluecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
 
 日期：2026-10-01。代码 HEAD：`f03bd9b6f7dd0e5dc96609436c1de3b6b27106a8`。
 当前分支：`codex/skill-memory-task`；工作区原有 50 项未提交变更。
@@ -19,7 +19,7 @@
 | 候选第 1 轮 `config_merge` | 最终补丁含 `solution.py` 和 `test_solution.py`；诊断性功能 Gate 通过 | 用户只允许改 `solution.py`。事件 33 明说为保留可复现检查而留下测试文件，最终触发 runner 的 forbidden-path 检查 |
 
 `config_merge` 的诊断性功能通过不覆盖原始 `agent_error`，也不修正成功率。
-Runner 的路径拒绝发生在产物导出后，入口见 [runner.py](../../tracecoder/eval/runner.py)。
+Runner 的路径拒绝发生在产物导出后，入口见 [runner.py](../../cluecoder/eval/runner.py)。
 
 四个历史 run 中均没有 `model_view_compaction` 事件；候选最大单次提供方 prompt 为 5,935 tokens，远低于默认输入预算 111,104。
 因此上次 token 增长不能用来判定预算触发压缩的节省效果。近期事件裁剪/导航视图仍在工作，不能由“没有压缩事件”推断两个版本上下文完全一致。
@@ -44,9 +44,9 @@ Runner 的路径拒绝发生在产物导出后，入口见 [runner.py](../../tra
 | 四进程同时写同一 session，各写 8 条 | 四个写者均正常结束；重新打开失败：`Invalid session event sequence or kind` |
 | 四进程分别写独立 session，各写 8 条 | 4/4 会话重新打开成功，每会话 8 条 |
 
-根因是锁属于 Python 对象，而不是持久化状态：[TaskStore](../../tracecoder/tasks.py) 的 `RLock` 只保护该实例。
+根因是锁属于 Python 对象，而不是持久化状态：[TaskStore](../../cluecoder/tasks.py) 的 `RLock` 只保护该实例。
 临时文件替换保证单次文件替换，不保证 `get -> 检查 pending -> 写入 owner` 的完整领取操作互斥。
-[SessionJournal](../../tracecoder/session_journal.py) 的事件序号取自各自内存 `events` 长度；独立写者会使用重复序号，实例级锁无法协调其他实例/进程。
+[SessionJournal](../../cluecoder/session_journal.py) 的事件序号取自各自内存 `events` 长度；独立写者会使用重复序号，实例级锁无法协调其他实例/进程。
 
 已验证的支持范围是共享单实例中的线程写入、彼此独立的会话。
 共享 TaskStore 状态的独立实例/进程，以及同一会话的多个写进程，尚不具备正确协调；正常返回不能视为安全。
@@ -75,7 +75,7 @@ Runner 的路径拒绝发生在产物导出后，入口见 [runner.py](../../tra
 | 已有中文偏好的同义重述 | 0/2 | 不同 name/不同原文的同义偏好被再次自动保存 |
 | 默认语言从中文更正为英文 | 0/2 | 英文更正以新 name 自动保存，旧中文记忆仍在，未进入冲突审阅 |
 
-源码入口：[ExtractionQueue._process_job](../../tracecoder/extraction_queue.py)。
+源码入口：[ExtractionQueue._process_job](../../cluecoder/extraction_queue.py)。
 输入只含会话证据，没有现有记忆的语义索引；去重依赖正文规范化后的精确相等，冲突依赖生成 name 的精确匹配。
 因此同义重述和更正可以绕过 existing 判断，成为新的自动保存记录。
 这些问题在两轮均复现，修复重点应是超长来源的分段提取，以及相关旧记忆的重复/更正审阅。

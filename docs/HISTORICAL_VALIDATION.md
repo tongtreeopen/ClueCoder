@@ -11,7 +11,7 @@ The reports linked below summarize development and validation of the CoreCoder-b
 | State, memory and Agent boundaries | [2026-10-01 report](validation/2026-10-01-agent-state-memory-fixes.md) |
 | Sessions, Tasks and paired memory checks | [2026-10-01 report](validation/2026-10-01-agent-session-task-memory.md) |
 | Background Docker execution | [2026-10-02 report](validation/2026-10-02-background-tasks.md) |
-| Initial release verification | [2026-10-09 report](validation/2026-10-09-first-release.md) |
+| Initial release snapshot (superseded for current status) | [2026-10-09 report](validation/2026-10-09-first-release.md) |
 
 Historical raw artifacts under local drive paths are not included in this release. They are shown as literal provenance references, not clickable public evidence. They cannot be independently reproduced from a parent commit alone when a report refers to a dirty workspace. Publicly usable evidence consists of the bundled summaries and source, followed by checks of a frozen ClueCoder commit.
 

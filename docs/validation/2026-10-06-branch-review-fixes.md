@@ -1,6 +1,6 @@
 # skill-memory-task 分支审查修复
 
-> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 tracecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
+> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 cluecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
 
 范围为上一轮 code-review 的三项 Spec 缺陷和一项 Standards 判断项。当前分支 codex/skill-memory-task，HEAD f03bd9b；在现有未提交修改上局部修复，未提交或推送。
 

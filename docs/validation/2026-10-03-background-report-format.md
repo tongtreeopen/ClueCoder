@@ -1,12 +1,12 @@
 # blocked Goal 答复格式修复（2026-10-03）
 
-> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 tracecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
+> 历史记录：本文对应当时的设计或验证源码快照，当前代码位于 cluecoder/；历史 revision、哈希及产物路径保留原始 CoreCoder 身份。当前用法以 README 和 CLI 帮助为准；历史成绩不代表当前版本。
 
 ## 失败原因与最小修复
 
 上一轮严格测评 7/8，唯一失败为 round-2-failure（归档材料未收录于此副本）：检查故意失败，模型正确记录 blocker 和 `verified=false`，但最后候选使用 Markdown 代码围栏。同时 Agent 对非 achieved 的答复统一加 `[Goal needs_user; candidate unaccepted]` 前缀，导致即便候选为纯 JSON，实际返回值也不能直接解析。blocker 的确定性出口应直接交还用户，不应为了格式重新运行检查或让评估器把失败变成成功。
 
-[`Agent._blocked_json_report`](../../tracecoder/agent.py) 仅在显式 Goal 的 needs_user 状态且工作卡有 blocker 时工作：解析整个候选，或去掉包住整个候选的单层 ` ```json ` / ` ``` ` 围栏；必须为 JSON 对象且 `verified` 是布尔 false。返回正文原文，不改 reason、证据 ID 或其他字段，不补造数据。有效结构化失败报告不再添加状态前缀；状态继续在 Goal 和工作卡中记录。
+[`Agent._blocked_json_report`](../../cluecoder/agent.py) 仅在显式 Goal 的 needs_user 状态且工作卡有 blocker 时工作：解析整个候选，或去掉包住整个候选的单层 ` ```json ` / ` ``` ` 围栏；必须为 JSON 对象且 `verified` 是布尔 false。返回正文原文，不改 reason、证据 ID 或其他字段，不补造数据。有效结构化失败报告不再添加状态前缀；状态继续在 Goal 和工作卡中记录。
 
 去掉围栏时保留原始候选，追加 `goal_report_format` 记录关联原候选事件，再持久记录输出正文；保留原回复的 native reasoning 字段以免破坏后续 DeepSeek 请求协议。整个过程没有额外模型调用或工具执行，不改变预算、续跑次数或成功门。畸形 JSON、附加解释、数组、`verified=true`、无 Goal、无 blocker 和其他停止状态保持原行为。这是有界格式序列化，不是通用格式修补或失败事实纠正。
 
