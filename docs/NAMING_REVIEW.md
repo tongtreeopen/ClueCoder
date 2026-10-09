@@ -1,6 +1,6 @@
 # TraceCoder 命名与来源审查（2026-10-09）
 
-范围：发布副本的源码、配置、测试、示例、评测 fixtures、README、设计与验证说明。本目录无 Git 历史；以改名要求和原 CoreCoder 工作区为对照，未开展全仓行为正确性审计。
+范围：发布副本的源码、配置、测试、示例、评测 fixtures、README、设计与验证说明。最初检查时本目录无 Git 历史；现已建立独立 Git 历史与私有远端。以改名要求和原 CoreCoder 工作区为对照，未开展全仓行为正确性审计。
 
 ## 已确认与修复
 
@@ -17,7 +17,7 @@
 - LICENSE 中原作者版权及 MIT 条款。
 - README 中 CoreCoder 来源链接和旧数据迁移说明。
 - 历史验证路径、原始 revision 和源码哈希。
-- pyproject.toml 中原作者信息；已说明 TraceCoder 维护者身份尚未配置，未虚构姓名或邮箱。
+- pyproject.toml 中原作者信息；TraceCoder 维护者现已按本地 Git 身份配置为 Tong ShuKai。
 - 模型列表中的 Claude/nano 型号是真实配置标识，不属于旧项目命名。
 
 ## 尚未确定

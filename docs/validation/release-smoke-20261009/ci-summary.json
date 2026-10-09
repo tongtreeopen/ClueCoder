@@ -1,0 +1,107 @@
+{
+  "run_url": "https://github.com/tongtreeopen/TraceCoder/actions/runs/37899328094",
+  "tested_commit": "9ae2af7c42b42018c7b57e2ec8f7d7980c751823",
+  "jobs": [
+    {
+      "name": "docker",
+      "conclusion": "success",
+      "test_summaries": [
+        "78 passed in 90.94s (0:01:30)"
+      ]
+    },
+    {
+      "name": "package",
+      "conclusion": "success",
+      "test_summaries": []
+    },
+    {
+      "name": "test (macos-latest, 3.13)",
+      "conclusion": "success",
+      "test_summaries": [
+        "540 passed, 51 skipped in 92.19s (0:01:32)"
+      ]
+    },
+    {
+      "name": "test (ubuntu-latest, 3.10)",
+      "conclusion": "success",
+      "test_summaries": [
+        "540 passed, 51 skipped in 55.85s"
+      ]
+    },
+    {
+      "name": "lint",
+      "conclusion": "success",
+      "test_summaries": []
+    },
+    {
+      "name": "test (ubuntu-latest, 3.11)",
+      "conclusion": "success",
+      "test_summaries": [
+        "540 passed, 51 skipped in 62.04s (0:01:02)"
+      ]
+    },
+    {
+      "name": "test (windows-latest, 3.11)",
+      "conclusion": "success",
+      "test_summaries": [
+        "543 passed, 48 skipped in 191.90s (0:03:11)"
+      ]
+    },
+    {
+      "name": "test (macos-latest, 3.11)",
+      "conclusion": "success",
+      "test_summaries": [
+        "540 passed, 51 skipped in 92.29s (0:01:32)"
+      ]
+    },
+    {
+      "name": "test (macos-latest, 3.12)",
+      "conclusion": "success",
+      "test_summaries": [
+        "540 passed, 51 skipped in 88.96s (0:01:28)"
+      ]
+    },
+    {
+      "name": "test (ubuntu-latest, 3.12)",
+      "conclusion": "success",
+      "test_summaries": [
+        "540 passed, 51 skipped in 64.64s (0:01:04)"
+      ]
+    },
+    {
+      "name": "test (windows-latest, 3.10)",
+      "conclusion": "success",
+      "test_summaries": [
+        "543 passed, 48 skipped in 135.73s (0:02:15)"
+      ]
+    },
+    {
+      "name": "test (windows-latest, 3.12)",
+      "conclusion": "success",
+      "test_summaries": [
+        "543 passed, 48 skipped in 202.98s (0:03:22)"
+      ]
+    },
+    {
+      "name": "test (ubuntu-latest, 3.13)",
+      "conclusion": "success",
+      "test_summaries": [
+        "540 passed, 51 skipped in 53.28s"
+      ]
+    },
+    {
+      "name": "test (macos-latest, 3.10)",
+      "conclusion": "success",
+      "test_summaries": [
+        "540 passed, 51 skipped in 93.60s (0:01:33)"
+      ]
+    },
+    {
+      "name": "test (windows-latest, 3.13)",
+      "conclusion": "success",
+      "test_summaries": [
+        "543 passed, 48 skipped in 170.52s (0:02:50)"
+      ]
+    }
+  ]
+}
